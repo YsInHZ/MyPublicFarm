@@ -27,6 +27,7 @@
                 <data android:mimeType="text/plain"></data>
             </intent-filter>
         </activity>
+        <activity android:name=".activity.LoginActivity"></activity>
     </application>
 
 </manifest>
