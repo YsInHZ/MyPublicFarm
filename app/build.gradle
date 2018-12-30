@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'org.greenrobot.greendao'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -9,6 +9,11 @@ android {
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    greendao {
+        schemaVersion 1
+        daoPackage 'com.example.administrator.mydemo.db'// 设置DaoMaster、DaoSession、Dao 包名
+        targetGenDir 'src/main/java'
     }
     buildTypes {
         release {
@@ -22,6 +27,9 @@ android {
     }
 }
 
+
+
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibVersion"
@@ -29,4 +37,11 @@ dependencies {
     testImplementation "junit:junit:$rootProject.ext.junit"
     androidTestImplementation  "com.android.support.test:runner:$rootProject.ext.test_runner"
     androidTestImplementation  "com.android.support.test.espresso:espresso-core:$rootProject.ext.test_espresso_espresso_core"
+
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxandroidVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxjava2Version"
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit2Version"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofit2Version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.ext.retrofit2Version"
+    implementation "org.greenrobot:greendao:$rootProject.ext.greendaoVersion"
 }
