@@ -30,7 +30,7 @@ public class CustomDensity {
 
                 }
             });
-            float targetDensity = displayMetrics.widthPixels / 360f;
+            float targetDensity = displayMetrics.widthPixels / 375f;
             float targetScaledDensity = targetDensity * (sNocompatScaledDensity / sNocompatDensity);
             int targetDensityDpi = (int) (160*targetDensity);
 

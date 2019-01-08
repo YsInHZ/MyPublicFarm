@@ -3,20 +3,25 @@ package com.example.administrator.mydemo.base;
 import android.os.Environment;
 import android.os.Handler;
 
-import com.example.administrator.mydemo.download_util.DownLoadManager;
+//import com.example.administrator.mydemo.download_util.DownLoadManager;
+import com.example.administrator.mydemo.application.MyApplication;
 import com.example.administrator.mydemo.http.DownloadService;
 import com.example.administrator.mydemo.http.RetrofitService;
 import com.example.administrator.mydemo.model.BaseBean;
 import com.example.administrator.mydemo.model.CaipiaoBean;
-import com.example.administrator.mydemo.model.FileDownLoadBean;
+//import com.example.administrator.mydemo.model.FileDownLoadBean;
 import com.example.administrator.mydemo.util.FilePathUtil;
+import com.example.administrator.mydemo.util.NetWorkTool;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONException;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -39,7 +44,7 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 public class MyModel  {
 
     private static Retrofit retrofit=null;
-
+    private static Retrofit wxRetrofit = null;
     /**
      * 初始化Retrofit
      */
@@ -52,6 +57,22 @@ public class MyModel  {
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .baseUrl("http://apis.juhe.cn/lottery/")
+                    .build();
+        }
+    }
+
+    /**
+     * 初始化微信retrofit
+     */
+    private static void initWXRetrofit(){
+        if(retrofit==null){
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd hh:mm:ss")
+                    .create();
+            retrofit = new Retrofit.Builder()
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .baseUrl("https://api.weixin.qq.com/sns/")
                     .build();
         }
     }
@@ -104,33 +125,33 @@ public class MyModel  {
                 });
     }
 
-    public static void downLoadFile(FileDownLoadBean fileBean){
-
-        initRetrofit();
-        DownloadService downloadService = retrofit.create(DownloadService.class);
-        Observable<Response<ResponseBody>> loadFile = downloadService.retrofitDownloadFile(fileBean.getUrl(),"Last-Modified","bytes=0-");
-        loadFile.subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(new Observer<Response<ResponseBody>>() {
-                    private  Disposable d;
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        this.d = d;
-                    }
-
-                    @Override
-                    public void onNext(Response<ResponseBody> responseBody) {
-                        DownLoadManager.writeResponseBodyToDisk(fileBean,responseBody);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) { }
-
-                    @Override
-                    public void onComplete() { }
-                });
-    }
+//    public static void downLoadFile(FileDownLoadBean fileBean){
+//
+//        initRetrofit();
+//        DownloadService downloadService = retrofit.create(DownloadService.class);
+//        Observable<Response<ResponseBody>> loadFile = downloadService.retrofitDownloadFile(fileBean.getUrl(),"Last-Modified","bytes=0-");
+//        loadFile.subscribeOn(Schedulers.io())
+//                .unsubscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
+//                .subscribe(new Observer<Response<ResponseBody>>() {
+//                    private  Disposable d;
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//                        this.d = d;
+//                    }
+//
+//                    @Override
+//                    public void onNext(Response<ResponseBody> responseBody) {
+////                        DownLoadManager.writeResponseBodyToDisk(fileBean,responseBody);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) { }
+//
+//                    @Override
+//                    public void onComplete() { }
+//                });
+//    }
 
     /**
      * demo
@@ -156,5 +177,99 @@ public class MyModel  {
                 callback.onComplete();
             }
         },2000);
+    }
+
+    public static void getWXAccessToken(Observable<String> observable,ICallBack iCallBack){
+        initWXRetrofit();
+        observable.subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(String o) {
+                        try {
+                            org.json.JSONObject jsonObject = new org.json.JSONObject(o);
+                            String access_token = jsonObject.getString("access_token");
+                            String openid = jsonObject.getString("openid");
+                            Map<String,String> map = new HashMap<>();
+                            map.put("access_token",access_token);
+                            map.put("openid",openid);
+                            iCallBack.onSuccess(map);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            iCallBack.onFailure("json转换失败");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if(NetWorkTool.netWorkState(MyApplication.getInstance())){
+                            iCallBack.onFailure("微信登录失败");
+                        }else {
+                            iCallBack.onFailure("无网络连接，请检查网络");
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        iCallBack.onComplete();
+                    }
+                });
+    }
+    public static void getUserInfo(Observable<String> observable,ICallBack iCallBack){
+        initWXRetrofit();
+        observable.subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(String o) {
+                        try {
+                            org.json.JSONObject jsonObject = new org.json.JSONObject(o);
+                            String nickname = jsonObject.getString("nickname");
+                            String headimgurl = jsonObject.getString("headimgurl");
+                            String unionid = jsonObject.getString("unionid");
+                            String openid = jsonObject.getString("openid");
+
+                            //存储用户信息
+//                            SharedPreference.getInstance().setInfo(SharedPreference.FILE_USERINFO,mContext,SharedPreference.USERINFO_WEIXIN_NICKNAME,nickname);
+//                            SharedPreference.getInstance().setInfo(SharedPreference.FILE_USERINFO,mContext,SharedPreference.USERINFO_WEIXIN_HEADIMGURL,headimgurl);
+//                            SharedPreference.getInstance().setInfo(SharedPreference.FILE_USERINFO,mContext,SharedPreference.USERINFO_WEIXIN_UNIONID,unionid);
+//                            SharedPreference.getInstance().setInfo(SharedPreference.FILE_USERINFO,mContext,SharedPreference.USERINFO_WEIXIN_OPENID,openid);
+
+
+
+
+                            iCallBack.onSuccess(null);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            iCallBack.onFailure("微信获取用户信息失败");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if(NetWorkTool.netWorkState(MyApplication.getInstance())){
+                            iCallBack.onFailure("微信登录失败");
+                        }else {
+                            iCallBack.onFailure("无网络连接，请检查网络");
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        iCallBack.onComplete();
+                    }
+                });
     }
 }
