@@ -1,6 +1,8 @@
 package com.example.administrator.mydemo;
 
 import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -58,6 +60,42 @@ public class MainActivity extends AppCompatActivity {
         String action = getIntent().getAction();
         if (action != null && getIntent().ACTION_VIEW.equals(action)) {
             String dataString = getIntent().getDataString();
+            Log.d(TAG, "onCreate: "+dataString);
+            Uri uri = Uri.parse(dataString);
+            //拿到真实路径
+            //TODO 保存真实路径为历史打开记录
+            String path = getPath(this, uri);
+            Log.d(TAG, "realPath: "+path);
+        }
+//        readTxt(action);
+//        getNetData();
+//        getDownLoad();
+//        DbTest();
+
+
+    }
+
+    public static String getPath(Context context, Uri uri) {
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {"_data"};
+            Cursor cursor = null;
+            try {
+                cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow("_data");
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    private void readTxt(String action) {
+        if (action != null && getIntent().ACTION_VIEW.equals(action)) {
+            String dataString = getIntent().getDataString();
             if (dataString.indexOf("file:///") == 0) {
                 dataString = dataString.substring(7);
             }
@@ -104,42 +142,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "未传入打开文件 ");
         }
-//        getNetData();
-//        getDownLoad();
-//        DbTest();
-
-        Observer<String> observer = new Observer<String>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(String o) {
-                System.out.println("I Observer a msg" + o);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
-        //1.实例化被观察者
-        //2.设置被观察者发出去的数据
-        Observable<String> observable = Observable.just("XXX1", "XXX2", "XXX3", "XXX4");
-        observable.doOnDispose(new Action() {
-            @Override
-            public void run() throws Exception {
-
-            }
-        });
-        //为被观察者设置观察者
-        observable.subscribe(observer);
     }
 
 

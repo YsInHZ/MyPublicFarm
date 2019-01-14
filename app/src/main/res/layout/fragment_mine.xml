@@ -1,0 +1,62 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.administrator.mydemo.fragment.MineFragment">
+    <ImageView
+        android:id="@+id/ivHead"
+        android:layout_width="0dp"
+        android:layout_height="110dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/colorMain"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/ivHead"
+        android:layout_marginBottom="20dp"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+
+            android:layout_marginLeft="20dp"
+            android:id="@+id/ciHead"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:src="@mipmap/img_wechat_logo"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FFf"/>
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/ciHead"
+            android:layout_marginLeft="25dp"
+            android:includeFontPadding="false"
+            android:text="Znone"
+            android:textColor="#ffffffff"
+            android:textSize="33sp"
+            />
+        <TextView
+            android:id="@+id/tvPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/ciHead"
+            android:layout_marginLeft="25dp"
+            android:layout_below="@id/tvName"
+            android:text="185****8888"
+            android:textColor="#ffffffff"
+            android:textSize="15sp"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="29dp"
+            android:src="@mipmap/img_home_off"/>
+    </RelativeLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>

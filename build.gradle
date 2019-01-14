@@ -41,6 +41,8 @@ ext{
     retrofit2Version = '2.4.0'
     greendaoVersion = '3.2.2'
     butterKnifeVersion = '9.0.0-rc3'
+    flycoTabLayoutVersion = '2.1.2@aar'
+    circleimageviewVersion = '3.0.0'
 }
 task clean(type: Delete) {
     delete rootProject.buildDir
