@@ -19,6 +19,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "https://jitpack.io" }
         google()
         jcenter()
     }
@@ -43,6 +44,7 @@ ext{
     butterKnifeVersion = '9.0.0-rc3'
     flycoTabLayoutVersion = '2.1.2@aar'
     circleimageviewVersion = '3.0.0'
+    BaseRecyclerViewAdapterHelperVersion = '2.9.30'
 }
 task clean(type: Delete) {
     delete rootProject.buildDir

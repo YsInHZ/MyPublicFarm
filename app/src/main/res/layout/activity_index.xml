@@ -2,10 +2,11 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootcontent"
     xmlns:tl="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.administrator.mydemo.activity.IndexActivity">
+    tools:context="com.example.administrator.mydemo.com.ys.administrator.mydemo.activity.IndexActivity">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vpMain"

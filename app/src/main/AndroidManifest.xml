@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.administrator.mydemo">
+    package="com.ys.administrator.mydemo">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,7 +19,9 @@
         <activity android:name=".MainActivity">
             <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/zip" />
                 <data android:mimeType="application/x-rar-compressed" />
                 <data android:mimeType="application/vnd.ms-excel" />
@@ -32,12 +34,7 @@
                 <data android:mimeType="image/vnd.dxf" />
                 <data android:mimeType="application/x-autocad" />
                 <data android:mimeType="text/plain" />
-
-
-
-
             </intent-filter>
-
         </activity>
         <activity android:name=".activity.LoginActivity">
             <intent-filter>
@@ -48,7 +45,12 @@
         </activity>
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.RetrieveActivity" />
-        <activity android:name=".activity.IndexActivity"></activity>
+        <activity
+            android:name=".activity.IndexActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity android:name=".activity.MinePersonalDataActivity" />
+        <activity android:name=".activity.MinePersonalPhoneChangeActivity" />
+        <activity android:name=".activity.MineContactActivity"></activity>
     </application>
 
 </manifest>

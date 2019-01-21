@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.example.administrator.mydemo"
+        applicationId "com.ys.administrator.mydemo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
@@ -32,8 +32,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibVersion"
+    implementation "com.android.support:recyclerview-v7:$rootProject.ext.supportLibVersion"
     implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraint_layout"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    compile "com.android.support:design:$rootProject.ext.supportLibVersion"
     implementation 'com.android.support:support-v4:28.0.0'
     testImplementation "junit:junit:$rootProject.ext.junit"
     androidTestImplementation "com.android.support.test:runner:$rootProject.ext.test_runner"
@@ -56,4 +58,7 @@ dependencies {
     //flycoTabLayout
     implementation "com.flyco.tablayout:FlycoTabLayout_Lib:$rootProject.ext.flycoTabLayoutVersion"
     implementation "de.hdodenhof:circleimageview:$rootProject.ext.circleimageviewVersion"
+
+    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.ext.BaseRecyclerViewAdapterHelperVersion"
+    implementation 'com.lijiankun24:shadowlayout:1.1.0'
 }

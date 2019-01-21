@@ -6,4 +6,19 @@
     <color name="colorEdit">#6CAAFF</color>
     <color name="colorMain">#4996FF</color>
     <color name="color7F8393">#7F8393</color>
+    <color name="color333">#333333</color>
+    <color name="color666">#666666</color>
+    <color name="color999">#999999</color>
+    <color name="colorccc">#cccccc</color>
+
+    <color name="colordeep">#2474ED</color>
+    <color name="colortint">#4991FD</color>
+    <color name="colormine">#4A98FD</color>
+    <color name="colorunline">#e6e6e6</color>
+    <color name="white">#ffffff</color>
+    <color name="orange">#e5c77c</color>
+    <color name="color_fc6449">#fc6449</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="multiple_image_select_primaryDark">#4991FD</color>
+    <color name="multiple_image_select_primary">#4991FD</color>
 </resources>
