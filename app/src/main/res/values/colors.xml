@@ -10,6 +10,7 @@
     <color name="color666">#666666</color>
     <color name="color999">#999999</color>
     <color name="colorccc">#cccccc</color>
+    <color name="backgroundcolor">#F8F8F8</color>
 
     <color name="colordeep">#2474ED</color>
     <color name="colortint">#4991FD</color>

@@ -15,6 +15,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * 个人资料
+ */
 public class MinePersonalDataActivity extends BaseActivity {
 
     @BindView(R.id.ciHead)

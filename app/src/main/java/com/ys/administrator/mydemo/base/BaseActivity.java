@@ -185,7 +185,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     }
     public void initToolbar(String titleString){
-        initToolbar(titleString,false);
+        initToolbar(titleString,true);
     }
     public void initToolbar(String titleString,boolean back) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

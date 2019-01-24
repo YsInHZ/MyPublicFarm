@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F8F8F8"
-    tools:context="com.example.administrator.mydemo.com.ys.administrator.mydemo.fragment.MineFragment">
+    tools:context="com.ys.administrator.mydemo.fragment.MineFragment">
     <ImageView
         android:id="@+id/ivHead"
         android:layout_width="0dp"
@@ -12,6 +12,20 @@
         app:layout_constraintRight_toRightOf="parent"
         android:background="@mipmap/img_mine_bg"
         app:layout_constraintLeft_toLeftOf="parent"/>
+    <TextView
+        android:id="@+id/tvLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="注销"
+        android:textColor="#ffffffff"
+        android:padding="20dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="15sp"
+        android:shadowRadius="5"
+        android:shadowColor="#a32e7dea"
+        />
     <RelativeLayout
         android:id="@+id/grzx"
         android:layout_width="match_parent"
@@ -39,6 +53,8 @@
             android:includeFontPadding="false"
             android:textStyle="bold"
             android:text="Znone"
+            android:shadowRadius="10"
+            android:shadowColor="#33000000"
             android:textColor="#ffffffff"
             android:textSize="33sp"
             />

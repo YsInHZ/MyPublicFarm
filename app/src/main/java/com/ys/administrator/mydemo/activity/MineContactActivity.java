@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 咨询
+ */
 public class MineContactActivity extends BaseActivity {
 
     @BindView(R.id.rvList)

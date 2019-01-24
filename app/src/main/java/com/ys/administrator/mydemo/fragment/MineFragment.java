@@ -67,7 +67,7 @@ public class MineFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.ciHead, R.id.tvName, R.id.tvPhone, R.id.kfzx, R.id.wdwj, R.id.wdmb, R.id.fxyy, R.id.qchc,R.id.grzx})
+    @OnClick({R.id.ciHead, R.id.tvName, R.id.tvPhone, R.id.kfzx, R.id.wdwj, R.id.wdmb, R.id.fxyy, R.id.qchc,R.id.grzx,R.id.tvLogout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ciHead:
@@ -89,6 +89,9 @@ public class MineFragment extends Fragment {
                 break;
             case R.id.grzx:
                 ((BaseActivity)getContext()).openActivity(MinePersonalDataActivity.class);
+                break;
+            case R.id.tvLogout:
+                //TODO 注销
                 break;
         }
     }

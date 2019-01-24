@@ -31,6 +31,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * 首页
+ */
 public class IndexActivity extends BaseActivity {
 
     @BindView(R.id.vpMain)
@@ -83,6 +86,22 @@ public class IndexActivity extends BaseActivity {
                 return fragments.size();
             }
         };
+        vpMain.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                setSelectedMain(i==0);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
         vpMain.setAdapter(adapter);
         setSelectedMain(true);
     }

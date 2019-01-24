@@ -16,7 +16,6 @@
         android:textSize="18sp"
         android:gravity="center"
         android:elevation="3dp"
-
         android:layout_height="42dp" />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvDialog"
@@ -27,6 +26,11 @@
         android:layout_marginTop="3dp"
         android:layout_marginBottom="5dp"
         android:layout_height="122dp"></android.support.v7.widget.RecyclerView>
+    <ImageView
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvName"
+        android:src="@mipmap/img_log_yiny"/>
 
     <View
         android:layout_below="@id/tvName"
@@ -52,6 +56,10 @@
             android:textColor="#ff27bfb2"
             android:textSize="16sp"
             />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/img_shufenge"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -61,6 +69,10 @@
             android:textColor="#ff787878"
             android:textSize="16sp"
             />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/img_shufenge"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"

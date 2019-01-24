@@ -14,6 +14,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * 更换手机
+ */
 public class MinePersonalPhoneChangeActivity extends BaseActivity {
 
     @BindView(R.id.tvOld)

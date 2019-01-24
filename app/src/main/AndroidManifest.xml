@@ -50,7 +50,8 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".activity.MinePersonalDataActivity" />
         <activity android:name=".activity.MinePersonalPhoneChangeActivity" />
-        <activity android:name=".activity.MineContactActivity"></activity>
+        <activity android:name=".activity.MineContactActivity" />
+        <activity android:name=".activity.ProjectCreatActivity"></activity>
     </application>
 
 </manifest>
