@@ -1,22 +1,22 @@
 package com.ys.administrator.mydemo.model;
 
 public class BaseBean {
-    private String reason;
-    private int error_code;
+    private int code;
+    private String msg;
 
-    public String getReason() {
-        return reason;
+    public int getCode() {
+        return code;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public int getError_code() {
-        return error_code;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setError_code(int error_code) {
-        this.error_code = error_code;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }

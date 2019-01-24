@@ -18,6 +18,8 @@ import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
+import com.ys.administrator.mydemo.model.BaseBean;
+import com.ys.administrator.mydemo.model.UserInfoBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
 import com.ys.administrator.mydemo.util.AndroidBug54971Workaround;
 import com.ys.administrator.mydemo.util.Constant;
@@ -59,9 +61,7 @@ public class LoginActivity extends BaseActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(NavigationBarUtil.hasNavigationBar(this)){
-            NavigationBarUtil.initActivity(findViewById(android.R.id
-
-                    .content));
+            NavigationBarUtil.initActivity(findViewById(android.R.id.content));
         }
         StatusbarUtils.enableTranslucentStatusbar(this);
         setContentView(R.layout.activity_login);
@@ -79,10 +79,10 @@ public class LoginActivity extends BaseActivity  {
         String path = s+"/tencent/QQfile_recv";
 //        path = s;
         Log.d(TAG, "QQ下载文件");
-        readFiles(path);
+//        readFiles(path);
         Log.d(TAG, "微信下载文件");
         path = s+"/tencent/MicroMsg/Download";
-        readFiles(path);
+//        readFiles(path);
     }
 
     private void readFiles(String path) {
@@ -131,6 +131,7 @@ public class LoginActivity extends BaseActivity  {
                 openActivity(IndexActivity.class);
                 if(verifyClickTime() && checkInput()){
                     //TODO 网络请求进行登录
+                    getLogin();
                 }
 
                 break;
@@ -157,6 +158,34 @@ public class LoginActivity extends BaseActivity  {
 
                 break;
         }
+    }
+
+    private void getLogin() {
+        showUpingDialog();
+        Map<String,String> map = new HashMap<>();
+        map.put("mobile",phoneString);
+        map.put("passwd",secretString);
+        MyModel.getNetData(MyModel.getRetrofitService().getLogin(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
+            @Override
+            public void onSuccess(UserInfoBean data) {
+                Log.d(TAG, "onSuccess: ");
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast(msg);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void onComplete() {
+            closeUpingDialog();
+            }
+        });
     }
 
     private boolean checkInput() {

@@ -1,26 +1,52 @@
 package com.ys.administrator.mydemo.http;
 
-import com.ys.administrator.mydemo.model.CaipiaoBean;
+import com.ys.administrator.mydemo.model.BaseBean;
+import com.ys.administrator.mydemo.model.UserInfoBean;
 
 import java.util.Map;
 
 import io.reactivex.Observable;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.adapter.rxjava2.Result;
+import retrofit2.http.Body;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 public interface RetrofitService {
     @GET("types")
-    Call<CaipiaoBean> getFarm(@Query("key") String key);
+    Call<BaseBean> getFarm(@Query("key") String key);
 
-    @POST("/blog")
-    Observable<Result<String>> getBlogs();
-    @GET("types")
-    Observable<Response<CaipiaoBean>> getCaipiao(@Query("key") String key);
+    /**
+     * 注册
+     * @param body
+     * @return
+     */
+    @Headers({"Content-Type: application/json;charset=UTF-8"})
+    @POST("/user/signup")
+    Observable<Response<BaseBean>> getSingUp(@Body RequestBody body);
+    /**
+     * 发验证短信
+     * @param key
+     * @return
+     */
+    @GET("/user/smsCode")
+    Observable<Response<BaseBean>> getSmsCode(@Query("mobile") String key);
+    /**
+     * 登录
+     * @param body
+     * @return
+     */
+    @Headers({"Content-Type: application/json;charset=UTF-8"})
+    @POST("/user/login")
+    Observable<Response<UserInfoBean>> getLogin(@Body RequestBody body);
+
 
     @GET("/oauth2/access_token")
     Observable<String> getWXAccessToken(@QueryMap Map<String,String> map);

@@ -86,7 +86,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     }
     @Override
     public void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        if(msg!=null && !msg.isEmpty()){
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        }
+
     }
     @Override
     public void showErr() {

@@ -7,6 +7,8 @@ import com.ys.administrator.mydemo.application.MyApplication;
 import com.ys.administrator.mydemo.http.RetrofitService;
 import com.ys.administrator.mydemo.model.BaseBean;
 //import com.example.administrator.mydemo.model.FileDownLoadBean;
+import com.ys.administrator.mydemo.model.UserInfoBean;
+import com.ys.administrator.mydemo.util.Constant;
 import com.ys.administrator.mydemo.util.NetWorkTool;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,6 +23,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -45,7 +48,8 @@ public class MyModel  {
             retrofit = new Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))
-                    .baseUrl("http://apis.juhe.cn/lottery/")
+//                    .baseUrl("http://apis.juhe.cn/lottery/")
+                    .baseUrl(Constant.BaseUrl)
                     .build();
         }
     }
@@ -79,24 +83,30 @@ public class MyModel  {
 
     /**
      * 实际网络请求方法
-     * @param caipiao Observable
+     * @param observable Observable
      * @param callback ICallBack
      */
-    public static void getNetData(Observable caipiao,ICallBack callback){
+    public static void getNetData (Observable observable,ICallBack callback){
         initRetrofit();
-        caipiao.subscribeOn(Schedulers.io())
+        observable.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<BaseBean>>() {
+                .subscribe(new Observer<Response<Object>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
 
                     @Override
-                    public void onNext(Response<BaseBean> o) {
-                        if(o.isSuccessful() ){
-                            //TODO 返回码判断请求结果
-                            callback.onSuccess(o.body());
+                    public void onNext(Response<Object> o) {
+                        boolean b = o.body() instanceof BaseBean;
+                        if(o.isSuccessful() && o.body()!=null && b){
+                            BaseBean bb = (BaseBean) o.body();
+                            // 返回码判断请求结果
+                            if(bb.getCode()==200){
+                                callback.onSuccess(o.body());
+                            }else {
+                                callback.onFailure(bb.getMsg());
+                            }
                         }else {
                             callback.onError();
                         }
@@ -260,5 +270,9 @@ public class MyModel  {
                         iCallBack.onComplete();
                     }
                 });
+    }
+    public static RequestBody getJsonRequestBody(Object map){
+        RequestBody body=RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),new Gson().toJson(map));
+        return body;
     }
 }

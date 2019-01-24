@@ -1,20 +1,32 @@
 package com.ys.administrator.mydemo.activity;
 
+import android.graphics.ColorSpace;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.base.BaseActivity;
+import com.ys.administrator.mydemo.base.ICallBack;
+import com.ys.administrator.mydemo.base.MyModel;
+import com.ys.administrator.mydemo.model.BaseBean;
+import com.ys.administrator.mydemo.model.UserInfoBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
 import com.ys.administrator.mydemo.util.PhoneUtil;
 import com.ys.administrator.mydemo.util.StatusbarUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.RequestBody;
 
 /**
  * 注册
@@ -56,19 +68,79 @@ public class RegisterActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tvSendCode:
-                //TODO 发送验证码
+                // 发送验证码
                 if(checkInput()){
                     countDown();
+                    sendCode();
                 }
                 break;
             case R.id.tvRegister:
                 //TODO 注册
                 if(checkAllInput() && verifyClickTime()){
-
+                    register();
                 }
                 break;
         }
     }
+
+    private void register() {
+        showUpingDialog();
+        Map<String,String> map = new HashMap<>();
+        map.put("mobile",phoneString);
+        map.put("passwd",secretString);
+        map.put("smsCode",codeString);
+
+        MyModel.getNetData(MyModel.getRetrofitService().getSingUp(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
+            @Override
+            public void onSuccess(UserInfoBean data) {
+                Log.d(TAG, "onSuccess: ");
+                //TODO  保存登录成功用户信息
+                //TODO 跳转主页面
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                Log.d(TAG, "onFailure: ");
+                showToast(msg);
+            }
+
+            @Override
+            public void onError() {
+                Log.d(TAG, "onError: ");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d(TAG, "onComplete: ");
+                closeUpingDialog();
+            }
+        });
+    }
+
+    private void sendCode() {
+        MyModel.getNetData(MyModel.getRetrofitService().getSmsCode(phoneString), new ICallBack<BaseBean>() {
+            @Override
+            public void onSuccess(BaseBean data) {
+                Log.d(TAG, "onSuccess: ");
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                Log.d(TAG, "onFailure: ");
+            }
+
+            @Override
+            public void onError() {
+                Log.d(TAG, "onError: ");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d(TAG, "onComplete: ");
+            }
+        });
+    }
+
     //检查手机
     private boolean checkInput() {
         phoneString = etPhone.getText().toString().trim();

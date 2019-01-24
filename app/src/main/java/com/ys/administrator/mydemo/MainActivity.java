@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
-import com.ys.administrator.mydemo.model.CaipiaoBean;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -177,33 +176,33 @@ public class MainActivity extends AppCompatActivity {
 //        disposables.dispose();
 //    }
 
-    public void getNetData() {
-        MyModel.getNetData(MyModel.getRetrofitService().getCaipiao("a0912c42407c782251ae0d46af098462"), new ICallBack<CaipiaoBean>() {
-            @Override
-            public void onSuccess(CaipiaoBean data) {
-                Log.d(TAG, "caipiaoBeanResult.getReason: " + data.getReason());
-                List<CaipiaoBean.ResultBean> result = data.getResult();
-                for (CaipiaoBean.ResultBean s : result) {
-                    Log.d(TAG, "" + s.getLottery_name());
-                }
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                Log.d(TAG, "onFailure: " + msg);
-            }
-
-            @Override
-            public void onError() {
-                Log.d(TAG, "onError: ");
-            }
-
-            @Override
-            public void onComplete() {
-                Log.d(TAG, "onComplete: ");
-            }
-        });
-    }
+//    public void getNetData() {
+//        MyModel.getNetData(MyModel.getRetrofitService().getCaipiao("a0912c42407c782251ae0d46af098462"), new ICallBack<CaipiaoBean>() {
+//            @Override
+//            public void onSuccess(CaipiaoBean data) {
+//                Log.d(TAG, "caipiaoBeanResult.getReason: " + data.getReason());
+//                List<CaipiaoBean.ResultBean> result = data.getResult();
+//                for (CaipiaoBean.ResultBean s : result) {
+//                    Log.d(TAG, "" + s.getLottery_name());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(String msg) {
+//                Log.d(TAG, "onFailure: " + msg);
+//            }
+//
+//            @Override
+//            public void onError() {
+//                Log.d(TAG, "onError: ");
+//            }
+//
+//            @Override
+//            public void onComplete() {
+//                Log.d(TAG, "onComplete: ");
+//            }
+//        });
+//    }
 
 
     @OnClick({R.id.start, R.id.stop})
