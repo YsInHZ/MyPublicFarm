@@ -17,11 +17,16 @@ import android.widget.TextView;
 
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.base.BaseActivity;
+import com.ys.administrator.mydemo.base.ICallBack;
+import com.ys.administrator.mydemo.base.MyModel;
+import com.ys.administrator.mydemo.custom_view.MyFillDialog;
 import com.ys.administrator.mydemo.fragment.IndexFragment;
 import com.ys.administrator.mydemo.fragment.MineFragment;
+import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
 import com.ys.administrator.mydemo.util.AndroidBug54971Workaround;
 import com.ys.administrator.mydemo.util.NavigationBarUtil;
+import com.ys.administrator.mydemo.util.SPUtil;
 import com.ys.administrator.mydemo.util.StatusbarUtils;
 
 import java.util.ArrayList;
@@ -70,6 +75,8 @@ public class IndexActivity extends BaseActivity {
         interceptKeyBack = true;
         initViewPager();
     }
+
+
 
     private void initViewPager() {
         fragments = new ArrayList<>();

@@ -61,4 +61,6 @@ dependencies {
 
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.ext.BaseRecyclerViewAdapterHelperVersion"
     implementation 'com.lijiankun24:shadowlayout:1.1.0'
+
+    implementation 'com.alibaba:fastjson:1.1.70.android'
 }

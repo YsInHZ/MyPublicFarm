@@ -12,7 +12,11 @@ import android.widget.TextView;
 
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.adapter.IndexAdapter;
+import com.ys.administrator.mydemo.base.ICallBack;
+import com.ys.administrator.mydemo.base.MyModel;
 import com.ys.administrator.mydemo.custom_view.MyFillDialog;
+import com.ys.administrator.mydemo.model.StatusListBean;
+import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.util.ArrayList;
 
@@ -57,6 +61,7 @@ public class IndexFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         initView();
+        getStatusList();
         return view;
     }
 
@@ -68,7 +73,29 @@ public class IndexFragment extends Fragment {
         typeDialog = new MyFillDialog(getContext(),R.layout.dialog_itemchoise);
         RecyclerView rvDialog = (RecyclerView) typeDialog.findViewById(R.id.rvDialog);
     }
+    private void getStatusList() {
+        MyModel.getNetData(MyModel.getRetrofitService().getStatusList(), new ICallBack<StatusListBean>() {
+            @Override
+            public void onSuccess(StatusListBean data) {
+                SPUtil.saveStatusList(data);
+            }
 
+            @Override
+            public void onFailure(String msg) {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
 
     @Override
     public void onDestroyView() {

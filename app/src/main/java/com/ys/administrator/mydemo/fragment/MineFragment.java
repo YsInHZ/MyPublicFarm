@@ -12,6 +12,7 @@ import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.activity.MineContactActivity;
 import com.ys.administrator.mydemo.activity.MinePersonalDataActivity;
 import com.ys.administrator.mydemo.base.BaseActivity;
+import com.ys.administrator.mydemo.util.SPUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +58,12 @@ public class MineFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_mine, container, false);
 
         unbinder = ButterKnife.bind(this, view);
+        initData();
         return view;
+    }
+
+    private void initData() {
+        tvPhone.setText(SPUtil.getMobile());
     }
 
 

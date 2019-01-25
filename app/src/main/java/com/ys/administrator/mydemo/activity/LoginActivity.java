@@ -25,6 +25,7 @@ import com.ys.administrator.mydemo.util.AndroidBug54971Workaround;
 import com.ys.administrator.mydemo.util.Constant;
 import com.ys.administrator.mydemo.util.NavigationBarUtil;
 import com.ys.administrator.mydemo.util.PhoneUtil;
+import com.ys.administrator.mydemo.util.SPUtil;
 import com.ys.administrator.mydemo.util.StatusbarUtils;
 import com.ys.administrator.mydemo.util.WeiXinUtil;
 
@@ -127,10 +128,8 @@ public class LoginActivity extends BaseActivity  {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tvLogin:
-                //TODO
-                openActivity(IndexActivity.class);
                 if(verifyClickTime() && checkInput()){
-                    //TODO 网络请求进行登录
+                    // 网络请求进行登录
                     getLogin();
                 }
 
@@ -168,6 +167,8 @@ public class LoginActivity extends BaseActivity  {
         MyModel.getNetData(MyModel.getRetrofitService().getLogin(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
             @Override
             public void onSuccess(UserInfoBean data) {
+                SPUtil.saveUserInfo(data.getUser());
+                openActivity(IndexActivity.class);
                 Log.d(TAG, "onSuccess: ");
             }
 

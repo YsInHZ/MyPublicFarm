@@ -18,6 +18,7 @@ import com.ys.administrator.mydemo.model.BaseBean;
 import com.ys.administrator.mydemo.model.UserInfoBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
 import com.ys.administrator.mydemo.util.PhoneUtil;
+import com.ys.administrator.mydemo.util.SPUtil;
 import com.ys.administrator.mydemo.util.StatusbarUtils;
 
 import java.util.HashMap;
@@ -75,7 +76,7 @@ public class RegisterActivity extends BaseActivity {
                 }
                 break;
             case R.id.tvRegister:
-                //TODO 注册
+                // 注册
                 if(checkAllInput() && verifyClickTime()){
                     register();
                 }
@@ -94,8 +95,10 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onSuccess(UserInfoBean data) {
                 Log.d(TAG, "onSuccess: ");
-                //TODO  保存登录成功用户信息
-                //TODO 跳转主页面
+                //  保存登录成功用户信息
+                // 跳转主页面
+                SPUtil.saveUserInfo(data.getUser());
+                openActivity(IndexActivity.class);
             }
 
             @Override

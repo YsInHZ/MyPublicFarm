@@ -1,6 +1,7 @@
 package com.ys.administrator.mydemo.http;
 
 import com.ys.administrator.mydemo.model.BaseBean;
+import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.model.UserInfoBean;
 
 import java.util.Map;
@@ -30,7 +31,15 @@ public interface RetrofitService {
      */
     @Headers({"Content-Type: application/json;charset=UTF-8"})
     @POST("/user/signup")
-    Observable<Response<BaseBean>> getSingUp(@Body RequestBody body);
+    Observable<Response<UserInfoBean>> getSingUp(@Body RequestBody body);
+    /**
+     * 找回密码
+     * @param body
+     * @return
+     */
+    @Headers({"Content-Type: application/json;charset=UTF-8"})
+    @POST("/user/setPasswd")
+    Observable<Response<UserInfoBean>> getSetPasswd(@Body RequestBody body);
     /**
      * 发验证短信
      * @param key
@@ -46,7 +55,12 @@ public interface RetrofitService {
     @Headers({"Content-Type: application/json;charset=UTF-8"})
     @POST("/user/login")
     Observable<Response<UserInfoBean>> getLogin(@Body RequestBody body);
-
+    /**
+     * 获取项目进度列表
+     * @return
+     */
+    @GET("/project/status/list")
+    Observable<Response<StatusListBean>> getStatusList();
 
     @GET("/oauth2/access_token")
     Observable<String> getWXAccessToken(@QueryMap Map<String,String> map);
