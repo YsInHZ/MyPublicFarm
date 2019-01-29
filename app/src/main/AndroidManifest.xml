@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".application.MyApplication"
@@ -39,21 +39,25 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.LoginActivity">
+
+        </activity>
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.RetrieveActivity" />
+        <activity
+            android:name=".activity.IndexActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.RetrieveActivity" />
-        <activity
-            android:name=".activity.IndexActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".activity.MinePersonalDataActivity" />
         <activity android:name=".activity.MinePersonalPhoneChangeActivity" />
         <activity android:name=".activity.MineContactActivity" />
-        <activity android:name=".activity.ProjectCreatActivity"></activity>
+        <activity android:name=".activity.ProjectCreatActivity" />
+        <activity android:name=".activity.MineFileActivity" />
+        <activity android:name=".activity.MineFileListActivity"></activity>
     </application>
 
 </manifest>

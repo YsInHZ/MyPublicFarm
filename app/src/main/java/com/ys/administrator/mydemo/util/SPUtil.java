@@ -35,12 +35,18 @@ public class SPUtil {
         editor.putString("token",userBean.getLoginToken());
         editor.putString("mobile",userBean.getMobile());
         editor.putInt("Id",userBean.getId());
+        editor.putLong("loginat",userBean.getLoginAt());
         editor.commit();
     }
 
     public static String getToken(){
         initSharedPreferences("UserInfoBean");
         String token = sharedPreferences.getString("token", "");
+        return token;
+    }
+    public static long getLongAt(){
+        initSharedPreferences("UserInfoBean");
+        long token = sharedPreferences.getLong("loginat", -1);
         return token;
     }
     public static String getMobile(){
@@ -50,7 +56,7 @@ public class SPUtil {
     }
     public static int getId(){
         initSharedPreferences("UserInfoBean");
-        int token = sharedPreferences.getInt("Id", 0);
+        int token = sharedPreferences.getInt("Id", -1);
         return token;
     }
     /**
@@ -76,4 +82,12 @@ public class SPUtil {
         return statusListBean;
     }
 
+    /**
+     * 清除用户相关数据
+     */
+    public static  void clearStore( ){
+        SharedPreferences.Editor editor = initEditor("UserInfoBean");
+        editor.clear();
+        editor.commit();
+    }
 }

@@ -21,7 +21,6 @@ import com.ys.administrator.mydemo.base.MyModel;
 import com.ys.administrator.mydemo.model.BaseBean;
 import com.ys.administrator.mydemo.model.UserInfoBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
-import com.ys.administrator.mydemo.util.AndroidBug54971Workaround;
 import com.ys.administrator.mydemo.util.Constant;
 import com.ys.administrator.mydemo.util.NavigationBarUtil;
 import com.ys.administrator.mydemo.util.PhoneUtil;
@@ -70,6 +69,7 @@ public class LoginActivity extends BaseActivity  {
         commonPresenter = new CommonPresenter();
         commonPresenter.attachView(this);
         interceptKeyBack = true;
+        finishAllWithOut(LoginActivity.class);
         /**
          * ---------------------------------text------------------------------
          */
@@ -111,9 +111,6 @@ public class LoginActivity extends BaseActivity  {
             }
             //申请权限
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-
-        } else {
-            Toast.makeText(this, "授权成功！", Toast.LENGTH_SHORT).show();
 
         }
     }

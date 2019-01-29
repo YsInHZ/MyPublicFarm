@@ -3,6 +3,9 @@ package com.ys.administrator.mydemo.http;
 import com.ys.administrator.mydemo.model.BaseBean;
 import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.model.UserInfoBean;
+import com.ys.administrator.mydemo.model.UserInfoDetialBean;
+import com.ys.administrator.mydemo.util.Constant;
+import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.util.Map;
 
@@ -15,6 +18,8 @@ import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -61,6 +66,16 @@ public interface RetrofitService {
      */
     @GET("/project/status/list")
     Observable<Response<StatusListBean>> getStatusList();
+
+
+    /**
+     * 获取个人资料
+     * @return
+     */
+
+    @GET("/user/my")
+    Observable<Response<UserInfoDetialBean>> getUserDetialInfo(@HeaderMap Map<String,String> map);
+
 
     @GET("/oauth2/access_token")
     Observable<String> getWXAccessToken(@QueryMap Map<String,String> map);

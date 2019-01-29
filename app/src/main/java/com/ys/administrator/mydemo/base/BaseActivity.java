@@ -117,6 +117,18 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             activity.finish();
         }
     }
+    /**关闭所有(前台、后台) 除了当前传入的class*/
+    protected static void finishAllWithOut(Class cl) {
+        int len = listActivity.size();
+        for (int i = 0; i < len; i++) {
+
+            Activity activity = listActivity.pop();
+            if(!activity.getClass().equals(cl)){
+                activity.finish();
+            }
+
+        }
+    }
     /** 验证上次点击按钮时间间隔，防止重复点击 重复点击返回false*/
     public boolean verifyClickTime() {
         if (System.currentTimeMillis() - lastClickTime <= CLICK_TIME) {

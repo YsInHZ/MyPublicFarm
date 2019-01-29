@@ -50,13 +50,14 @@
             android:layout_toRightOf="@id/ciHead"
             android:elevation="3dp"
             android:layout_marginLeft="25dp"
+            android:layout_marginTop="6dp"
             android:includeFontPadding="false"
             android:textStyle="bold"
             android:text="Znone"
             android:shadowRadius="10"
             android:shadowColor="#33000000"
             android:textColor="#ffffffff"
-            android:textSize="33sp"
+            android:textSize="24sp"
             />
         <TextView
             android:id="@+id/tvPhone"
@@ -66,7 +67,6 @@
             android:layout_marginLeft="25dp"
             android:elevation="3dp"
             android:layout_below="@id/tvName"
-            android:textStyle="bold"
             android:text="185****8888"
             android:textColor="#ffffffff"
             android:textSize="15sp"

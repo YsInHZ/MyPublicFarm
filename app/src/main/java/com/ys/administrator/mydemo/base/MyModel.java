@@ -3,15 +3,18 @@ package com.ys.administrator.mydemo.base;
 import android.os.Handler;
 
 //import com.example.administrator.mydemo.download_util.DownLoadManager;
+import com.alibaba.fastjson.JSON;
 import com.ys.administrator.mydemo.application.MyApplication;
 import com.ys.administrator.mydemo.http.RetrofitService;
 import com.ys.administrator.mydemo.model.BaseBean;
 //import com.example.administrator.mydemo.model.FileDownLoadBean;
 import com.ys.administrator.mydemo.model.UserInfoBean;
 import com.ys.administrator.mydemo.util.Constant;
+import com.ys.administrator.mydemo.util.MD5;
 import com.ys.administrator.mydemo.util.NetWorkTool;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ys.administrator.mydemo.util.SPUtil;
 
 import org.json.JSONException;
 
@@ -98,6 +101,7 @@ public class MyModel  {
 
                     @Override
                     public void onNext(Response<Object> o) {
+                        String s = JSON.toJSONString(o.body());
                         boolean b = o.body() instanceof BaseBean;
                         if(o.isSuccessful() && o.body()!=null && b){
                             BaseBean bb = (BaseBean) o.body();
@@ -271,8 +275,29 @@ public class MyModel  {
                     }
                 });
     }
+
+    /**
+     * 参数转换为json，生生requestBody
+     * @param map
+     * @return
+     */
     public static RequestBody getJsonRequestBody(Object map){
         RequestBody body=RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),new Gson().toJson(map));
         return body;
+    }
+
+    /**
+     * 一登陆的
+     * 获取请求头Headers
+     * @param url
+     * @return
+     */
+    public static Map<String,String> getRequestHeaderMap(String url){
+        long ts = System.currentTimeMillis();
+        Map<String,String> map = new HashMap<>();
+        map.put("userId",SPUtil.getId()+"");
+        map.put("ts", ts +"");
+        map.put("sign",MD5.encodeMd5(Constant.getUserId()+url+ ts +Constant.getToken()+Constant.getLoginAt()));
+        return map;
     }
 }

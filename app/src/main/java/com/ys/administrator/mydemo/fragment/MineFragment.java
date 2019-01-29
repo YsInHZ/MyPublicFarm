@@ -1,18 +1,35 @@
 package com.ys.administrator.mydemo.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ys.administrator.mydemo.R;
+import com.ys.administrator.mydemo.activity.LoginActivity;
 import com.ys.administrator.mydemo.activity.MineContactActivity;
+import com.ys.administrator.mydemo.activity.MineFileActivity;
 import com.ys.administrator.mydemo.activity.MinePersonalDataActivity;
 import com.ys.administrator.mydemo.base.BaseActivity;
+import com.ys.administrator.mydemo.base.ICallBack;
+import com.ys.administrator.mydemo.base.MyModel;
+import com.ys.administrator.mydemo.custom_view.MyFillDialog;
+import com.ys.administrator.mydemo.model.BaseBean;
+import com.ys.administrator.mydemo.model.StatusListBean;
+import com.ys.administrator.mydemo.model.UserInfoDetialBean;
+import com.ys.administrator.mydemo.util.Constant;
+import com.ys.administrator.mydemo.util.MD5;
 import com.ys.administrator.mydemo.util.SPUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +49,7 @@ public class MineFragment extends Fragment {
     Unbinder unbinder;
 
     RecyclerView df;
+    MyFillDialog outDialog;
     public MineFragment() {
     }
 
@@ -59,14 +77,44 @@ public class MineFragment extends Fragment {
 
         unbinder = ButterKnife.bind(this, view);
         initData();
+        getUserDetialInfo();
         return view;
     }
 
     private void initData() {
-        tvPhone.setText(SPUtil.getMobile());
+        tvPhone.setText(Constant.getMobile());
     }
 
+    private void getUserDetialInfo() {
 
+        MyModel.getNetData(MyModel.getRetrofitService().getUserDetialInfo(MyModel.getRequestHeaderMap("/user/my")), new ICallBack<UserInfoDetialBean>() {
+            @Override
+            public void onSuccess(UserInfoDetialBean data) {
+                Log.d("", "onSuccess: ");
+
+                String nickname = data.getUser().getNickname();
+                tvName.setText(TextUtils.isEmpty(nickname)?"用户"+Constant.getMobile().substring(7):nickname);
+                if(!TextUtils.isEmpty(data.getUser().getAvatar())){
+                    Glide.with(getContext()).load(data.getUser().getAvatar()).into(ciHead);
+                }
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                Log.d("", "onSuccess: ");
+            }
+
+            @Override
+            public void onError() {
+                Log.d("", "onSuccess: ");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d("", "onSuccess: ");
+            }
+        });
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -86,6 +134,7 @@ public class MineFragment extends Fragment {
                 ((BaseActivity)getContext()).openActivity(MineContactActivity.class);
                 break;
             case R.id.wdwj:
+                ((BaseActivity)getContext()).openActivity(MineFileActivity.class);
                 break;
             case R.id.wdmb:
                 break;
@@ -98,7 +147,32 @@ public class MineFragment extends Fragment {
                 break;
             case R.id.tvLogout:
                 //TODO 注销
+                if(outDialog==null){
+                    initDialog();
+                }
+                outDialog.show();
                 break;
         }
+    }
+    private void initDialog(){
+        outDialog = new MyFillDialog(getContext(),R.layout.dialog_msg_twobutton);
+        outDialog.setText(R.id.tvMsg,"是否退出当前账号？");
+        View tvCancel = outDialog.findViewById(R.id.tvCancel);
+        View tvSure = outDialog.findViewById(R.id.tvSure);
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                outDialog.dismiss();
+            }
+        });
+        tvSure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Constant.clearUserInfo();
+                SPUtil.clearStore();
+                Intent intent = new Intent(getContext(),LoginActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

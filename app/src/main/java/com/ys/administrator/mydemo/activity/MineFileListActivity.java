@@ -1,0 +1,80 @@
+package com.ys.administrator.mydemo.activity;
+
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+
+import com.ys.administrator.mydemo.R;
+import com.ys.administrator.mydemo.adapter.FileListAdapter;
+import com.ys.administrator.mydemo.base.BaseActivity;
+import com.ys.administrator.mydemo.presenter.CommonPresenter;
+import com.ys.administrator.mydemo.util.FilePathUtil;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MineFileListActivity extends BaseActivity {
+    public static final String FILE_QQ = "FILE_QQ";//
+    public static final String FILE_WX = "FILE_WX";
+    public static final String FILE_OTHER = "FILE_OTHER";
+    @BindView(R.id.recycler)
+    RecyclerView recycler;
+
+    private String fileType = null;
+    private String title = "";
+    private List<File> files;
+    FileListAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_mine_file_list);
+        ButterKnife.bind(this);
+        initData();
+        initToolbar(title);
+        initView();
+        commonPresenter = new CommonPresenter();
+        commonPresenter.attachView(this);
+    }
+
+    private void initView() {
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new FileListAdapter(R.layout.item_mine_list_file,files);
+        recycler.setAdapter(adapter);
+    }
+
+    private void initData() {
+        fileType = getIntent().getStringExtra("type");
+        if (fileType == null || fileType.isEmpty()) {
+            showToast("未获取到类型");
+            finish();
+        }
+        String s = Environment.getExternalStorageDirectory().toString();
+        String path = "";
+
+        if (FILE_QQ.equals(fileType)) {
+            title = "QQ下载文件";
+            path = s + "/tencent/QQfile_recv";
+            files = FilePathUtil.readFiles(path);
+        } else if (FILE_WX.equals(fileType)) {
+            title = "微信下载文件";
+            path = s + "/tencent/MicroMsg/Download";
+            files = FilePathUtil.readFiles(path);
+        } else if (FILE_OTHER.equals(fileType)) {
+            title = "其他文件";
+            files = new ArrayList<>();
+        } else {
+            finish();
+        }
+    }
+
+    @Override
+    public void showData(Object data) {
+
+    }
+}

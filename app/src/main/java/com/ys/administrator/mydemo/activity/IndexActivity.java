@@ -24,7 +24,6 @@ import com.ys.administrator.mydemo.fragment.IndexFragment;
 import com.ys.administrator.mydemo.fragment.MineFragment;
 import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
-import com.ys.administrator.mydemo.util.AndroidBug54971Workaround;
 import com.ys.administrator.mydemo.util.NavigationBarUtil;
 import com.ys.administrator.mydemo.util.SPUtil;
 import com.ys.administrator.mydemo.util.StatusbarUtils;
