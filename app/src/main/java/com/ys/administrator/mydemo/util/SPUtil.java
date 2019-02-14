@@ -9,6 +9,7 @@ import com.ys.administrator.mydemo.application.MyApplication;
 import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.model.UserInfoBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +39,7 @@ public class SPUtil {
         editor.putString("mobile",userBean.getMobile());
         editor.putInt("Id",userBean.getId());
         editor.putLong("loginat",userBean.getLoginAt());
+        editor.putLong("expireAt",userBean.getExpireAt());
         editor.commit();
     }
 
@@ -62,6 +64,11 @@ public class SPUtil {
     public static long getLongAt(){
         initSharedPreferences("UserInfoBean");
         long token = sharedPreferences.getLong("loginat", -1);
+        return token;
+    }
+    public static long getExpireAt(){
+        initSharedPreferences("UserInfoBean");
+        long token = sharedPreferences.getLong("expireAt", -1);
         return token;
     }
     public static String getMobile(){
@@ -116,7 +123,7 @@ public class SPUtil {
         initSharedPreferences("LocalFileList");
         String data = sharedPreferences.getString("data", "");
         List<String> statusListBean = JSON.parseArray(data, String.class);
-        return statusListBean;
+        return statusListBean==null?new ArrayList<>():statusListBean;
     }
 
     /**

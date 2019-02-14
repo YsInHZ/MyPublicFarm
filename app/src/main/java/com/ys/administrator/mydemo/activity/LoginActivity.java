@@ -207,8 +207,40 @@ public class LoginActivity extends BaseActivity  {
         setIntent(intent);
         String code = getIntent().getStringExtra("code");
         if(code!=null && Constant.WX_LGOIN){
-            getAccteeToken(code);
+//            getAccteeToken(code);
+            wxLogin(code);
         }
+    }
+
+    /**
+     * 微信登录
+     * @param code
+     */
+    private void wxLogin(String code){
+        Map<String,String> map = new HashMap<>();
+        map.put("wx",code);
+        MyModel.getNetData(MyModel.getRetrofitService().getWXLogin(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
+            @Override
+            public void onSuccess(UserInfoBean data) {
+                SPUtil.saveUserInfo(data.getUser());
+                openActivity(IndexActivity.class);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                showToast(msg);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void onComplete() {
+                closeUpingDialog();
+            }
+        });
     }
     /**
      * 获取微信AccessTOKEN

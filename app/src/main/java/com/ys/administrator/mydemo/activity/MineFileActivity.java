@@ -57,7 +57,7 @@ public class MineFileActivity extends BaseActivity {
         return true;
     }
 
-    @OnClick({R.id.rlQQFile, R.id.rlWXfile, R.id.rlOtherFile})
+    @OnClick({R.id.rlQQFile, R.id.rlWXfile, R.id.rlOtherFile,R.id.rlDownLoadfile})
     public void onViewClicked(View view) {
         Bundle bundle = new Bundle();
         switch (view.getId()) {
@@ -72,6 +72,10 @@ public class MineFileActivity extends BaseActivity {
             case R.id.rlOtherFile:
                 if(checkPermission())
                     bundle.putString("type",MineFileListActivity.FILE_OTHER);
+                break;
+            case R.id.rlDownLoadfile:
+                if(checkPermission())
+                    bundle.putString("type",MineFileListActivity.FILE_DOWN_LOAD);
                 break;
         }
         openActivity(MineFileListActivity.class,bundle);

@@ -29,7 +29,16 @@ public class UserInfoBean extends BaseBean {
         private String mobile;
         private String loginToken;
         private long loginAt;
+        private long expireAt;
         private boolean isAdmin;
+
+        public long getExpireAt() {
+            return expireAt;
+        }
+
+        public void setExpireAt(long expireAt) {
+            this.expireAt = expireAt;
+        }
 
         public int getId() {
             return id;

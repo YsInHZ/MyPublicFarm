@@ -73,5 +73,7 @@ dependencies {
     implementation 'com.github.duanhong169:picker-view:1.0.0'
     //照片选择
     implementation 'com.yuyh.imgsel:library:2.0.6'
+    //一个工具类
+    implementation 'com.luffykou:android-common-utils:1.1.3'
 
 }

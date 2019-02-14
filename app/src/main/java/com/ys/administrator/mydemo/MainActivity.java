@@ -2,6 +2,7 @@ package com.ys.administrator.mydemo;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
 import com.ys.administrator.mydemo.model.UserInfoBean;
 import com.ys.administrator.mydemo.util.Constant;
+import com.ys.administrator.mydemo.util.PathUtil;
 import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.io.BufferedReader;
@@ -54,7 +56,8 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     List<String> localFileList;
-
+    String msg = "";
+    String path;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,12 +72,15 @@ public class MainActivity extends BaseActivity {
             Uri uri = Uri.parse(dataString);
             //拿到真实路径
             //TODO 保存真实路径为历史打开记录
-            String path = getPath(this, uri);
-            localFileList.add(path);
-            SPUtil.saveLocalFileList(localFileList);
+            path = getPath(this, uri);
+//            String path = PathUtil.getFilePathByUri(this,uri);
+            if(!TextUtils.isEmpty(path)){
+                localFileList.add(path);
+                SPUtil.saveLocalFileList(localFileList);
+            }
             Log.d(TAG, "realPath: "+path);
-//            checkToken();
-            getToken();
+            checkToken();
+//            getToken();
         }
 //        readTxt(action);
 //        getNetData();
@@ -84,12 +90,26 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d(TAG, "onNewIntent: ");
+    }
+
     private void checkToken() {
-        long l = System.currentTimeMillis();//当前时间戳
-        if(TextUtils.isEmpty(Constant.getToken()) && true){//检查token失效时间
-
-        }else {
-
+        if(TextUtils.isEmpty(path)){
+            showToast("打开文件出错，请联系管理员");
+            if(!TextUtils.isEmpty(Constant.getToken()) && SPUtil.getExpireAt()>System.currentTimeMillis()){//已经登录
+                openActivity(IndexActivity.class);
+            }else {//未登录
+                openActivity(LoginActivity.class);
+            }
+        }else if(!TextUtils.isEmpty(Constant.getToken()) && SPUtil.getExpireAt()>System.currentTimeMillis()){//已经登录
+            showToast("请到我的文件中查看");
+            openActivity(IndexActivity.class);
+        }else {//未登录
+            showToast("请登录后到我的文件中查看");
+            openActivity(LoginActivity.class);
         }
     }
 
@@ -104,6 +124,10 @@ public class MainActivity extends BaseActivity {
                     return cursor.getString(column_index);
                 }
             } catch (Exception e) {
+                String filePathFromURI = PathUtil.getFilePathFromURI(context, uri);
+                Log.d(TAG, "getPath: "+e.getLocalizedMessage());
+                return filePathFromURI;
+
             }
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();

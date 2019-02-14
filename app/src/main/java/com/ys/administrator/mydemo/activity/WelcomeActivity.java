@@ -19,20 +19,28 @@ public class WelcomeActivity extends BaseActivity {
 
     public static final int LOGIN = 1;
     public static final int NOTLOGIN = 2;
+    public static final int FIRSTOPEN = 3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StatusbarUtils.enableTranslucentStatusbar(this);
         setContentView(R.layout.activity_welcome);
-        if(TextUtils.isEmpty(Constant.getToken())){
-            if(true){//判断是否第一次登录 跳转引导页/登录页
-                handler.sendEmptyMessageDelayed(NOTLOGIN,3000);
-            }else {
-
-            }
-        }else {
-            getToken();
+        if(false){//是否第一次登录
+            handler.sendEmptyMessageDelayed(FIRSTOPEN,3000);
+        }else if(!TextUtils.isEmpty(Constant.getToken()) && SPUtil.getExpireAt()>System.currentTimeMillis()){//已经登录
+            handler.sendEmptyMessageDelayed(LOGIN,3000);
+        }else {//未登录
+            handler.sendEmptyMessageDelayed(NOTLOGIN,3000);
         }
+//        if(TextUtils.isEmpty(Constant.getToken())){
+//            if(true){//判断是否第一次登录 跳转引导页/登录页
+//                handler.sendEmptyMessageDelayed(NOTLOGIN,3000);
+//            }else {
+//
+//            }
+//        }else {
+//            getToken();
+//        }
 
     }
 

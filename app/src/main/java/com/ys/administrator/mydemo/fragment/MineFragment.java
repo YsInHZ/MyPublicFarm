@@ -147,6 +147,7 @@ public class MineFragment extends Fragment {
             case R.id.wdmb:
                 break;
             case R.id.fxyy:
+
                 break;
             case R.id.qchc:
                 new Handler().postDelayed(new Runnable() {

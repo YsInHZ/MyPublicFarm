@@ -5,8 +5,8 @@ package com.ys.administrator.mydemo.util;
  */
 
 public class Constant {
-    public static final String APP_ID =  "";
-    public static final String APP_SECRET =  "";
+    public static final String APP_ID =  "wx56a88eb247ff9805";
+    public static final String APP_SECRET =  "6fcb78faf3a7fdaf5a17581d965ba0b6";
     public static  boolean WX_LGOIN =  false;
     public static  final String BaseUrl  =  "http://39.98.48.26/";
     public static  final String BitmapBaseUrl  =  "http://39.98.48.26";

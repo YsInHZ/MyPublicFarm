@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.adapter.FileListAdapter;
@@ -23,6 +24,7 @@ public class MineFileListActivity extends BaseActivity {
     public static final String FILE_QQ = "FILE_QQ";//
     public static final String FILE_WX = "FILE_WX";
     public static final String FILE_OTHER = "FILE_OTHER";
+    public static final String FILE_DOWN_LOAD = "FILE_DOWN_LOAD";
     @BindView(R.id.recycler)
     RecyclerView recycler;
 
@@ -70,9 +72,19 @@ public class MineFileListActivity extends BaseActivity {
             title = "其他文件";
             files = new ArrayList<>();
             List<String> localFileList = SPUtil.getLocalFileList();
-            for (int i = 0; i <localFileList.size() ; i++) {
-                files.add(new File(localFileList.get(i)));
+            if(localFileList!=null){
+                for (int i = 0; i <localFileList.size() ; i++) {
+                    if(!TextUtils.isEmpty(localFileList.get(i))){
+                        files.add(new File(localFileList.get(i)));
+                    }
+
+                }
             }
+
+        }else if(FILE_DOWN_LOAD.equals(fileType)){
+            title = "项目下载文件";
+            //TODO 已下载的项目列表遍历
+            //需要以文件为item的适配器，每点击item如果为文件夹则遍历文件夹更新列表
         } else {
             finish();
         }

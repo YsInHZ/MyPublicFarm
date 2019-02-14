@@ -67,6 +67,14 @@ public interface RetrofitService {
     @POST("/user/login")
     Observable<Response<UserInfoBean>> getLogin(@Body RequestBody body);
     /**
+     * 登录
+     * @param body
+     * @return
+     */
+    @Headers({"Content-Type: application/json;charset=UTF-8"})
+    @POST("/user/login/wx")
+    Observable<Response<UserInfoBean>> getWXLogin(@Body RequestBody body);
+    /**
      * 绑定/换绑手机号码
      * @return
      */
