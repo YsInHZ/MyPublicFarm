@@ -2,6 +2,8 @@ package com.ys.administrator.mydemo.model;
 
 import java.util.List;
 
+import top.defaults.view.PickerView;
+
 public class StatusListBean extends BaseBean {
 
     private List<ListBean> list;
@@ -14,7 +16,7 @@ public class StatusListBean extends BaseBean {
         this.list = list;
     }
 
-    public static class ListBean {
+    public static class ListBean implements  PickerView.PickerItem{
         /**
          * id : 1
          * name : 开始设计
@@ -37,6 +39,11 @@ public class StatusListBean extends BaseBean {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        @Override
+        public String getText() {
+            return name;
         }
     }
 }

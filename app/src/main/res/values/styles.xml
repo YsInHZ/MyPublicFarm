@@ -18,4 +18,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">15sp</item>
     </style>
+    <style name="StartTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@mipmap/img_welcome</item>
+    </style>
 </resources>

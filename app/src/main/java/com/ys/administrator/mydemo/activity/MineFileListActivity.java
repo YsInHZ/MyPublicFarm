@@ -10,6 +10,7 @@ import com.ys.administrator.mydemo.adapter.FileListAdapter;
 import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
 import com.ys.administrator.mydemo.util.FilePathUtil;
+import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,6 +69,10 @@ public class MineFileListActivity extends BaseActivity {
         } else if (FILE_OTHER.equals(fileType)) {
             title = "其他文件";
             files = new ArrayList<>();
+            List<String> localFileList = SPUtil.getLocalFileList();
+            for (int i = 0; i <localFileList.size() ; i++) {
+                files.add(new File(localFileList.get(i)));
+            }
         } else {
             finish();
         }

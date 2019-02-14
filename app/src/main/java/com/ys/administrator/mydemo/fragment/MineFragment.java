@@ -2,6 +2,8 @@ package com.ys.administrator.mydemo.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,9 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.ys.administrator.mydemo.R;
+import com.ys.administrator.mydemo.activity.IndexActivity;
 import com.ys.administrator.mydemo.activity.LoginActivity;
 import com.ys.administrator.mydemo.activity.MineContactActivity;
 import com.ys.administrator.mydemo.activity.MineFileActivity;
@@ -50,6 +55,7 @@ public class MineFragment extends Fragment {
 
     RecyclerView df;
     MyFillDialog outDialog;
+    String jsonData ;
     public MineFragment() {
     }
 
@@ -85,17 +91,19 @@ public class MineFragment extends Fragment {
         tvPhone.setText(Constant.getMobile());
     }
 
+    /**
+     * 获取用户信息
+     */
     private void getUserDetialInfo() {
 
         MyModel.getNetData(MyModel.getRetrofitService().getUserDetialInfo(MyModel.getRequestHeaderMap("/user/my")), new ICallBack<UserInfoDetialBean>() {
             @Override
             public void onSuccess(UserInfoDetialBean data) {
-                Log.d("", "onSuccess: ");
-
+                jsonData = JSON.toJSONString(data);
                 String nickname = data.getUser().getNickname();
                 tvName.setText(TextUtils.isEmpty(nickname)?"用户"+Constant.getMobile().substring(7):nickname);
                 if(!TextUtils.isEmpty(data.getUser().getAvatar())){
-                    Glide.with(getContext()).load(data.getUser().getAvatar()).into(ciHead);
+                    Glide.with(getContext()).load(Constant.BitmapBaseUrl+data.getUser().getAvatar()).into(ciHead);
                 }
             }
 
@@ -124,12 +132,12 @@ public class MineFragment extends Fragment {
     @OnClick({R.id.ciHead, R.id.tvName, R.id.tvPhone, R.id.kfzx, R.id.wdwj, R.id.wdmb, R.id.fxyy, R.id.qchc,R.id.grzx,R.id.tvLogout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.ciHead:
-                break;
-            case R.id.tvName:
-                break;
-            case R.id.tvPhone:
-                break;
+//            case R.id.ciHead:
+//                break;
+//            case R.id.tvName:
+//                break;
+//            case R.id.tvPhone:
+//                break;
             case R.id.kfzx:
                 ((BaseActivity)getContext()).openActivity(MineContactActivity.class);
                 break;
@@ -141,12 +149,20 @@ public class MineFragment extends Fragment {
             case R.id.fxyy:
                 break;
             case R.id.qchc:
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(),"清除缓存成功",Toast.LENGTH_SHORT).show();
+                    }
+                },200);
                 break;
             case R.id.grzx:
-                ((BaseActivity)getContext()).openActivity(MinePersonalDataActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("data",jsonData);
+                ((BaseActivity)getContext()).openActivityWithResult(MinePersonalDataActivity.class,bundle,550);
                 break;
             case R.id.tvLogout:
-                //TODO 注销
+                // 注销
                 if(outDialog==null){
                     initDialog();
                 }
@@ -174,5 +190,18 @@ public class MineFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 550 && data!=null){
+            jsonData = data.getStringExtra("data");
+            UserInfoDetialBean infoDetialBean = JSON.parseObject(jsonData, UserInfoDetialBean.class);
+            String nickname = infoDetialBean.getUser().getNickname();
+            tvName.setText(TextUtils.isEmpty(nickname)?"用户"+Constant.getMobile().substring(7):nickname);
+            if(!TextUtils.isEmpty(infoDetialBean.getUser().getAvatar())){
+                Glide.with(getContext()).load(Constant.BitmapBaseUrl+infoDetialBean.getUser().getAvatar()).into(ciHead);
+            }
+        }
     }
 }

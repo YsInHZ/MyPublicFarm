@@ -6,14 +6,21 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.ys.administrator.mydemo.R;
+import com.ys.administrator.mydemo.activity.IndexActivity;
+import com.ys.administrator.mydemo.activity.LoginActivity;
+import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
+import com.ys.administrator.mydemo.model.UserInfoBean;
+import com.ys.administrator.mydemo.util.Constant;
+import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,7 +43,7 @@ import butterknife.OnClick;
 //import com.example.administrator.mydemo.util.DB_Util;
 //import org.greenrobot.greendao.query.QueryBuilder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "DownLoad";
 
@@ -46,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     Button stop;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
+    List<String> localFileList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         String action = getIntent().getAction();
+        showUpingDialog();
+         localFileList = SPUtil.getLocalFileList();
         if (action != null && getIntent().ACTION_VIEW.equals(action)) {
             String dataString = getIntent().getDataString();
             Log.d(TAG, "onCreate: "+dataString);
@@ -60,7 +70,11 @@ public class MainActivity extends AppCompatActivity {
             //拿到真实路径
             //TODO 保存真实路径为历史打开记录
             String path = getPath(this, uri);
+            localFileList.add(path);
+            SPUtil.saveLocalFileList(localFileList);
             Log.d(TAG, "realPath: "+path);
+//            checkToken();
+            getToken();
         }
 //        readTxt(action);
 //        getNetData();
@@ -68,6 +82,15 @@ public class MainActivity extends AppCompatActivity {
 //        DbTest();
 
 
+    }
+
+    private void checkToken() {
+        long l = System.currentTimeMillis();//当前时间戳
+        if(TextUtils.isEmpty(Constant.getToken()) && true){//检查token失效时间
+
+        }else {
+
+        }
     }
 
     public static String getPath(Context context, Uri uri) {
@@ -87,7 +110,33 @@ public class MainActivity extends AppCompatActivity {
         }
         return null;
     }
+    private void getToken(){
+        MyModel.getNetData(MyModel.getRetrofitService().getUserToken(MyModel.getRequestHeaderMap("/user/token")), new ICallBack<UserInfoBean>() {
+            @Override
+            public void onSuccess(UserInfoBean data) {
+                SPUtil.saveUserToken(data.getUser());
+                showToast("请到我的文件中查看");
+                openActivity(IndexActivity.class);
+            }
 
+            @Override
+            public void onFailure(String msg) {
+                showToast("请登录后到我的文件中查看");
+                openActivity(LoginActivity.class);
+            }
+
+            @Override
+            public void onError() {
+                showToast("请登录后到我的文件中查看");
+                openActivity(LoginActivity.class);
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
     private void readTxt(String action) {
         if (action != null && getIntent().ACTION_VIEW.equals(action)) {
             String dataString = getIntent().getDataString();
@@ -214,5 +263,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.stop:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        closeUpingDialog();
+    }
+
+    @Override
+    public void showData(Object data) {
+
     }
 }

@@ -1,9 +1,11 @@
 package com.ys.administrator.mydemo.activity;
 
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -121,6 +123,7 @@ public class IndexActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivNewProject:
+                openActivityWithResult(ProjectCreatActivity.class,null,110);
                 break;
             case R.id.llMain:
 
@@ -154,5 +157,15 @@ public class IndexActivity extends BaseActivity {
         tvMain.setSelected(selected);
         ivCenter.setSelected(!selected);
         tvCenter.setSelected(!selected);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 110 && resultCode==200){
+            //TODO 刷新列表数据
+//            fragments.get(0).
+        }else if(requestCode == 550 ){//更换个人资料
+            fragments.get(1).onActivityResult(requestCode,resultCode,data);
+        }
     }
 }

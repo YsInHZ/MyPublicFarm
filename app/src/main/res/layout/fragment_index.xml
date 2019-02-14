@@ -62,7 +62,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="34dp"
             android:background="@null"
-            android:maxLength="1"
+            android:maxLines="1"
             android:textSize="15sp"
             android:padding="5dp"
             android:hint="搜索项目"
@@ -94,7 +94,7 @@
             android:textStyle="bold"
             android:includeFontPadding="false"
             android:layout_marginTop="10dp"
-            android:text="562"
+            android:text="0"
             android:textColor="#ffffffff"
             android:textSize="33sp"
             />
@@ -123,6 +123,7 @@
             android:layout_height="wrap_content"
             android:src="@mipmap/img_project_type"/>
         <TextView
+            android:id="@+id/tvType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
@@ -146,6 +147,7 @@
             android:layout_height="wrap_content"
             android:src="@mipmap/img_project_plan"/>
         <TextView
+            android:id="@+id/tvProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
@@ -155,14 +157,22 @@
             />
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvProject"
+    <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
         app:layout_constraintTop_toBottomOf="@id/llType"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/refreshLayout"
         android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
         android:background="#F6F6F6"
-        android:layout_height="0dp">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        >
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvProject"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
+    </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
 </android.support.constraint.ConstraintLayout>

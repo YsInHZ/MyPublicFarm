@@ -66,7 +66,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     protected void onDestroy() {
         super.onDestroy();
         // 从栈中移除当前activity
-        commonPresenter.dettachView();
+        if(commonPresenter!=null){
+            commonPresenter.dettachView();
+        }
+
         if (listActivity.contains(this)) {
             listActivity.remove(this);
         }
@@ -152,6 +155,13 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             intent.putExtras(bundle);
         }
         startActivity(intent);
+    }
+    public void openActivityWithResult(Class<?> targetActivityClass, Bundle bundle,int requestCode){
+        Intent intent = new Intent(this, targetActivityClass);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        startActivityForResult(intent,requestCode);
     }
     public void openActivity(Class<?> targetActivityClass) {
         openActivity(targetActivityClass, null);

@@ -9,6 +9,8 @@ import com.ys.administrator.mydemo.application.MyApplication;
 import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.model.UserInfoBean;
 
+import java.util.List;
+
 /**
  * 本地存储封装
  */
@@ -39,6 +41,19 @@ public class SPUtil {
         editor.commit();
     }
 
+    /**
+     * 保存用户token
+     * @param userBean
+     */
+    public static void saveUserToken(UserInfoBean.UserBean userBean){
+        if(userBean==null){
+            return;
+        }
+        SharedPreferences.Editor editor = initEditor("UserInfoBean");
+        editor.putString("token",userBean.getLoginToken());
+        editor.putLong("loginat",userBean.getLoginAt());
+        editor.commit();
+    }
     public static String getToken(){
         initSharedPreferences("UserInfoBean");
         String token = sharedPreferences.getString("token", "");
@@ -79,6 +94,28 @@ public class SPUtil {
         initSharedPreferences("StatusListBean");
         String data = sharedPreferences.getString("data", "");
         StatusListBean statusListBean = JSON.parseObject(data, StatusListBean.class);
+        return statusListBean;
+    }
+    /**
+     * 保存用本地打开文件列表
+     * @param lists
+     */
+    public static  void saveLocalFileList(List<String> lists){
+        if(lists==null || lists.size()==0){
+            return;
+        }
+        SharedPreferences.Editor editor = initEditor("LocalFileList");
+        editor.putString("data",JSON.toJSONString(lists));
+        editor.commit();
+    }
+    /**
+     * 获取用本地打开文件列表
+     * @return
+     */
+    public static  List<String> getLocalFileList( ){
+        initSharedPreferences("LocalFileList");
+        String data = sharedPreferences.getString("data", "");
+        List<String> statusListBean = JSON.parseArray(data, String.class);
         return statusListBean;
     }
 

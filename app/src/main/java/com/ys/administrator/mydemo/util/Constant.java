@@ -9,6 +9,7 @@ public class Constant {
     public static final String APP_SECRET =  "";
     public static  boolean WX_LGOIN =  false;
     public static  final String BaseUrl  =  "http://39.98.48.26/";
+    public static  final String BitmapBaseUrl  =  "http://39.98.48.26";
 
     private static int userid = -1;
     private static long loginAt = -1;

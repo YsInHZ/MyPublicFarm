@@ -108,7 +108,10 @@ public class MyModel  {
                             // 返回码判断请求结果
                             if(bb.getCode()==200){
                                 callback.onSuccess(o.body());
-                            }else {
+                            }else if(bb.getCode()==503){
+                                callback.onFailure("重新登录");
+                            }
+                            else {
                                 callback.onFailure(bb.getMsg());
                             }
                         }else {
