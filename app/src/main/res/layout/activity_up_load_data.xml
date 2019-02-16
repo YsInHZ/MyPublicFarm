@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundcolor"
+    tools:context=".activity.UpLoadDataActivity">
+
+    <include layout="@layout/toolbarlayout"/>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="105dp"
+            android:background="@color/white"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:gravity="center_vertical"
+                android:text="请选择上传项目资料分类"
+                android:background="@color/backgroundcolor"
+                android:paddingLeft="24dp"
+                android:textColor="#ffc3c3c3"
+                android:textSize="15sp"
+                />
+            <RelativeLayout
+                android:id="@+id/rlChoiseType"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="项目资料分类"
+                    android:paddingLeft="24dp"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/img_in_gray"
+                    android:layout_marginRight="22dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tvTypeName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:text="装修项目基础资料"
+                    android:layout_marginRight="53dp"
+                    android:textColor="#ff353535"
+                    android:textSize="15sp"
+                    />
+            </RelativeLayout>
+            <include layout="@layout/line_project_basemsg"
+                android:layout_marginLeft="22dp"
+                android:layout_height="1dp"
+                android:layout_width="match_parent" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:background="@color/backgroundcolor"
+        android:layout_height="105dp">
+        <TextView
+            android:id="@+id/tvNext"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:background="@drawable/button_next"
+            android:text="下一项"
+            android:textColor="#ffffffff"
+            android:textSize="15sp"
+            />
+    </RelativeLayout>
+</RelativeLayout>
