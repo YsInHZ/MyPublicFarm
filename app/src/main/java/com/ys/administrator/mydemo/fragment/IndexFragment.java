@@ -14,7 +14,9 @@ import android.widget.TextView;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.ys.administrator.mydemo.R;
+import com.ys.administrator.mydemo.activity.UpLoadDataActivity;
 import com.ys.administrator.mydemo.adapter.IndexAdapter;
+import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
 import com.ys.administrator.mydemo.custom_view.MyFillDialog;
@@ -53,6 +55,8 @@ public class IndexFragment extends Fragment {
 
     PickerView typePicker;
     PickerView progressPicker;
+    StatusListBean statuList;
+    StatusListBean typeList;
     /**
      * 判断刷新还是加载更多
      */
@@ -93,6 +97,12 @@ public class IndexFragment extends Fragment {
 
     private void initView() {
         adapter = new IndexAdapter(R.layout.item_indexproject, new ArrayList<>());
+        adapter.setOnItemEdit(new IndexAdapter.OnItemEdit() {
+            @Override
+            public void Edit(int id) {
+                ((BaseActivity)getActivity()).openActivity(UpLoadDataActivity.class);
+            }
+        });
         rvProject.setLayoutManager(new LinearLayoutManager(getContext()));
         rvProject.setAdapter(adapter);
 
@@ -172,8 +182,10 @@ public class IndexFragment extends Fragment {
             @Override
             public void onSuccess(StatusListBean data) {
 //                SPUtil.saveStatusList(data);
+                statuList = data;
                 progressPicker.setItems(data.getList(), item -> {
                 });
+                adapter.setStateList(data);
             }
 
             @Override
@@ -200,8 +212,10 @@ public class IndexFragment extends Fragment {
         MyModel.getNetData(MyModel.getRetrofitService().getTypeList(), new ICallBack<StatusListBean>() {
             @Override
             public void onSuccess(StatusListBean data) {
+                typeList = data;
                 typePicker.setItems(data.getList(), item -> {
                 });
+                adapter.setTypeList(data);
             }
 
             @Override

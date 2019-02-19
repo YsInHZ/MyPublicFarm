@@ -57,6 +57,7 @@
         android:textSize="12sp"
         />
     <TextView
+        android:id="@+id/tvC2"
         app:layout_constraintLeft_toRightOf="@id/tvC1"
         app:layout_constraintBaseline_toBaselineOf="@id/tvEdit"
         android:layout_marginLeft="15dp"

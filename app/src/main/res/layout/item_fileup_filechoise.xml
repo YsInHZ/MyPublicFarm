@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="50dp">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="23dp"
+        android:layout_height="wrap_content"
+        android:text="备注"
+        android:textColor="#ff000000"
+        android:textSize="15sp"
+        />
+    <TextView
+        android:id="@+id/tvChoise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="22dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/seletor_file_choise"
+        android:text="选择文件"
+        android:padding="9dp"
+        android:textColor="#ff4996ff"
+        android:textSize="14sp"
+        />
+
+</RelativeLayout>
