@@ -2,6 +2,7 @@ package com.ys.administrator.mydemo.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -71,6 +72,11 @@ import butterknife.OnClick;
  * --------其他资料----------
  * 其他资料
  */
+
+/**
+ * TODO 首先获取项目资料详情，
+ *      然后显示项目资料详情
+ */
 public class UpLoadDataActivity extends BaseActivity {
 
     @BindView(R.id.tvTypeName)
@@ -81,6 +87,7 @@ public class UpLoadDataActivity extends BaseActivity {
     MyFillDialog choiseWayDialog;
     int pos;
     List<FileListDataBean> lists;
+    String[] baseinfo,repotrinfo,buildinfo,fitmentinfo,otherinfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +106,12 @@ public class UpLoadDataActivity extends BaseActivity {
                 Glide.with(context).load(path).into(imageView);
             }
         });
+        Resources res=getResources();
+        baseinfo=res.getStringArray(R.array.baseinfo);
+        repotrinfo=res.getStringArray(R.array.repotrinfo);
+        buildinfo=res.getStringArray(R.array.buildinfo);
+        fitmentinfo=res.getStringArray(R.array.fitmentinfo);
+        otherinfo=res.getStringArray(R.array.otherinfo);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new RestaurantMenuRightAdapter(mContext,new ArrayList<>());
@@ -179,6 +192,7 @@ public class UpLoadDataActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rlChoiseType:
+                openActivityWithResult(ProgressChoiseActivity.class,null,200);
                 break;
             case R.id.tvNext:
                 break;
@@ -196,6 +210,9 @@ public class UpLoadDataActivity extends BaseActivity {
 //                path = pathList.get(0);拿到图片 加入选择的地方
 
             }
+        }else if(requestCode == 200 && resultCode == 200 && data!=null){
+            String name = data.getStringExtra("name");
+            tvTypeName.setText(name);
         }
     }
 }

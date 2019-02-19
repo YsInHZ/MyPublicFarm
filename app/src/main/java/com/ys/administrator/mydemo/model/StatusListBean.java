@@ -17,10 +17,18 @@ public class StatusListBean extends BaseBean {
     }
 
     public static class ListBean implements  PickerView.PickerItem{
+        public ListBean() {
+        }
+
+        public ListBean(String name) {
+            this.name = name;
+        }
+
         /**
          * id : 1
          * name : 开始设计
          */
+
 
         private int id;
         private String name;

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="baseinfo">
+        <item>营业执照名称或预核名</item>
+        <item>原始建筑图纸</item>
+        <item>租赁合同</item>
+        <item>建筑消防验收意见书</item>
+        <item>建筑合法性证明文件</item>
+        <item>建筑功能改变文件</item>
+        <item>现场照片或视频</item>
+    </string-array>
+    <string-array name="repotrinfo">
+        <item>装修设计合同</item>
+        <item>授权委托书</item>
+        <item>委托人身份证复印件</item>
+        <item>项目技术复核表</item>
+        <item>项目投资金额</item>
+        <item>项目立项文件、批文或备案文件</item>
+        <item>建设用地规划许可证</item>
+        <item>规划红线图及规划部门盖章的总平面图</item>
+        <item>建设项目规划条件及面积预测绘报告</item>
+        <item>初步设计批复或会议纪要</item>
+        <item>建筑节能审查意见书及附节能评估报告书（表）或节能登记表</item>
+        <item>工程地址勘察报告及外业见证报告</item>
+        <item>勘察和设计资质证书复印件（非本省勘察设计单位提供进浙备案）</item>
+        <item>勘察和设计合同复印件</item>
+        <item>建筑设计合同</item>
+        <item>项目投资金额</item>
+    </string-array>
+    <string-array name="buildinfo">
+        <item>建筑</item>
+        <item>给排水</item>
+        <item>电气</item>
+        <item>暖通</item>
+        <item>结构（含计算书）</item>
+        <item>节能（含设计表、自评表）</item>
+    </string-array>
+    <string-array name="fitmentinfo">
+        <item>装饰</item>
+        <item>给排水</item>
+        <item>电气</item>
+        <item>暖通</item>
+        <item>结构（含计算书）</item>
+    </string-array>
+    <string-array name="otherinfo">
+        <item>其他资料</item>
+    </string-array>
+</resources>
