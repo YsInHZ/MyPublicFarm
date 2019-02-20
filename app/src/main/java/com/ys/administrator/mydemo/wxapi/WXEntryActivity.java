@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -55,6 +56,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 
                     //请求成功
                     Constant.WX_LGOIN = true;
+                    Log.d("wwx", "requestsuccess ");
                     Intent intent = new Intent(this,LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("code",code);
                     startActivity(intent);

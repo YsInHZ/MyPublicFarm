@@ -14,10 +14,28 @@ android {
 //        daoPackage 'com.example.administrator.mydemo.db'// 设置DaoMaster、DaoSession、Dao 包名
 //        targetGenDir 'src/main/java'
 //    }
+    signingConfigs {
+        release {
+            storeFile file("E:/asWorkspeace/MyPublicFarm/mykey.jks")
+            storePassword '123456'
+            keyAlias 'yskey'
+            keyPassword '123456'
+        }
+        debugConfig {
+            storeFile file("E:/asWorkspeace/MyPublicFarm/mykey.jks")
+            storePassword '123456'
+            keyAlias 'yskey'
+            keyPassword '123456'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.debugConfig
         }
     }
     compileOptions {

@@ -44,17 +44,19 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.RetrieveActivity" />
-        <activity
-            android:name=".activity.IndexActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden">
+        <activity android:name=".activity.LoginActivity" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.RetrieveActivity" />
+        <activity
+            android:name=".activity.IndexActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+
         </activity>
         <activity android:name=".activity.MinePersonalDataActivity" />
         <activity android:name=".activity.MinePersonalPhoneChangeActivity" />
@@ -63,6 +65,12 @@
         <activity android:name=".activity.MineFileActivity" />
         <activity android:name=".activity.MineFileListActivity" />
         <activity android:name=".activity.ProgressChoiseActivity" />
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent" />
     </application>
 
 </manifest>

@@ -68,6 +68,7 @@ public class LoginActivity extends BaseActivity  {
         ButterKnife.bind(this);
         commonPresenter = new CommonPresenter();
         commonPresenter.attachView(this);
+        Log.d("wwx", "onCreate ");
         interceptKeyBack = true;
         finishAllWithOut(LoginActivity.class);
         /**
@@ -84,6 +85,12 @@ public class LoginActivity extends BaseActivity  {
         Log.d(TAG, "微信下载文件");
         path = s+"/tencent/MicroMsg/Download";
 //        readFiles(path);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("wwx", "onResume ");
     }
 
     private void readFiles(String path) {
@@ -204,8 +211,10 @@ public class LoginActivity extends BaseActivity  {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+
         setIntent(intent);
         String code = getIntent().getStringExtra("code");
+        Log.d("wwx", "onNewIntent code"+code);
         if(code!=null && Constant.WX_LGOIN){
 //            getAccteeToken(code);
             wxLogin(code);
@@ -217,6 +226,7 @@ public class LoginActivity extends BaseActivity  {
      * @param code
      */
     private void wxLogin(String code){
+        showUpingDialog();
         Map<String,String> map = new HashMap<>();
         map.put("wx",code);
         MyModel.getNetData(MyModel.getRetrofitService().getWXLogin(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
