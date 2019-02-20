@@ -100,7 +100,9 @@ public class IndexFragment extends Fragment {
         adapter.setOnItemEdit(new IndexAdapter.OnItemEdit() {
             @Override
             public void Edit(int id) {
-                ((BaseActivity)getActivity()).openActivity(UpLoadDataActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("id",id);
+                ((BaseActivity)getActivity()).openActivity(UpLoadDataActivity.class,bundle);
             }
         });
         rvProject.setLayoutManager(new LinearLayoutManager(getContext()));

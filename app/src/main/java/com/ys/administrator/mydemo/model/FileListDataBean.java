@@ -10,7 +10,7 @@ public class FileListDataBean {
     }
 
     private String itemName;
-    private List<String> filePath;
+    private List<FileInfoModel> filePath;
 
     public String getItemName() {
         return itemName;
@@ -20,11 +20,14 @@ public class FileListDataBean {
         this.itemName = itemName;
     }
 
-    public List<String> getFilePath() {
+    public List<FileInfoModel> getFilePath() {
         return filePath;
     }
 
-    public void setFilePath(List<String> filePath) {
+    public void setFilePath(List<FileInfoModel> filePath) {
         this.filePath = filePath;
+    }
+    public void addFilePath(List<FileInfoModel> filePath) {
+        this.filePath .addAll(filePath) ;
     }
 }

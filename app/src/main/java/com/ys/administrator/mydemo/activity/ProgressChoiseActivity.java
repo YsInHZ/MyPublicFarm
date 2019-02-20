@@ -27,7 +27,6 @@ public class ProgressChoiseActivity extends BaseActivity {
     RecyclerView recycler;
 
     ItemChoiseAdapter adapter;
-    StatusListBean data;
     List<StatusListBean.ListBean> lists;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +51,6 @@ public class ProgressChoiseActivity extends BaseActivity {
         }
         lists.add(new StatusListBean.ListBean("装修图纸"));
         lists.add(new StatusListBean.ListBean("其他资料"));
-        lists.add(new StatusListBean.ListBean("装修项目基础资料"));
     }
 
     private void initRecycler() {
@@ -63,7 +61,7 @@ public class ProgressChoiseActivity extends BaseActivity {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent i = new Intent();
-                i.putExtra("name",data.getList().get(position).getName());
+                i.putExtra("name",lists.get(position).getName());
                 setResult(200,i);
                 finish();
             }

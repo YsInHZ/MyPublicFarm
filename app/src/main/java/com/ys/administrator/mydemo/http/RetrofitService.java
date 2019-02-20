@@ -3,6 +3,7 @@ package com.ys.administrator.mydemo.http;
 import com.ys.administrator.mydemo.model.BaseBean;
 import com.ys.administrator.mydemo.model.ConnectBean;
 import com.ys.administrator.mydemo.model.FileUpBean;
+import com.ys.administrator.mydemo.model.ProjectInfoBean;
 import com.ys.administrator.mydemo.model.ProjectListBean;
 import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.model.UserInfoBean;
@@ -98,7 +99,12 @@ public interface RetrofitService {
      */
     @GET("/project/type/list")
     Observable<Response<StatusListBean>> getTypeList();
-
+    /**
+     * 获取项目详情
+     * @return
+     */
+    @GET("/project/info")
+    Observable<Response<ProjectInfoBean>> getPeojectDetail(@HeaderMap Map<String,String> map, @Query("id") int key);
     /**
      * 获取客服咨询
      * @return
@@ -140,6 +146,13 @@ public interface RetrofitService {
 
     @POST("/project")
     Observable<Response<BaseBean>> creatProject(@HeaderMap Map<String,String> map,@Body RequestBody body);
+    /**
+     * 上传资料
+     * @return
+     */
+    @Multipart
+    @POST("/upload/project/data")
+    Observable<Response<FileUpBean>> uploadFile(@HeaderMap Map<String,String> map,@Query("projectId") int projectId,@Query("dir") String dir, @Part MultipartBody.Part file);
 
     @GET("/oauth2/access_token")
     Observable<String> getWXAccessToken(@QueryMap Map<String,String> map);

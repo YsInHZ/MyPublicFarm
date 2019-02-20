@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 
 import com.ys.administrator.mydemo.R;
+import com.ys.administrator.mydemo.model.FileInfoModel;
 import com.ys.administrator.mydemo.model.FileListDataBean;
 
 import java.io.File;
@@ -74,17 +75,27 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
             });
         }else {
             DishViewHolder dishholder = (DishViewHolder) holder;
-            String item = getDishByPosition(position);
-            File file = new File(item);
-            ((DishViewHolder) holder).name.setText(file.getName());
-            file=null;
-            final int[] tresPosition = getTresPosition(position);
-            ((DishViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mItemClickListener.onDeleteClick(tresPosition[0],tresPosition[1]);
-                }
-            });
+            FileInfoModel item = getDishByPosition(position);
+            if(item.isWaitingForUp()){
+                ((DishViewHolder) holder).delete.setText("上传中");
+                ((DishViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                });
+            }else {
+                ((DishViewHolder) holder).delete.setText("删除");
+                final int[] tresPosition = getTresPosition(position);
+                ((DishViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mItemClickListener.onDeleteClick(tresPosition[0],tresPosition[1]);
+                    }
+                });
+            }
+            ((DishViewHolder) holder).name.setText(item.getName());
+
+
 
         }
     }
@@ -188,7 +199,7 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
      * @param position
      * @return
      */
-    public String getDishByPosition(int position){
+    public FileInfoModel getDishByPosition(int position){
         for(FileListDataBean menu:listBeans){
             if(position>0 && position<=menu.getFilePath().size()){
                 return menu.getFilePath().get(position-1);

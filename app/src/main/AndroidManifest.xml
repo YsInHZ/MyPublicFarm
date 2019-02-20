@@ -62,6 +62,7 @@
         <activity android:name=".activity.ProjectCreatActivity" />
         <activity android:name=".activity.MineFileActivity" />
         <activity android:name=".activity.MineFileListActivity" />
+        <activity android:name=".activity.ProgressChoiseActivity" />
     </application>
 
 </manifest>
