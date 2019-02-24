@@ -134,4 +134,23 @@ public class SPUtil {
         editor.clear();
         editor.commit();
     }
+
+    public static void saveTypeList(StatusListBean statusListBean) {
+        if(statusListBean==null){
+            return;
+        }
+        SharedPreferences.Editor editor = initEditor("StatusListBeanType");
+        editor.putString("data",JSON.toJSONString(statusListBean));
+        editor.commit();
+    }
+    /**
+     * 获取类型列表
+     * @return
+     */
+    public static  StatusListBean getTypeList( ){
+        initSharedPreferences("StatusListBeanType");
+        String data = sharedPreferences.getString("data", "");
+        StatusListBean statusListBean = JSON.parseObject(data, StatusListBean.class);
+        return statusListBean;
+    }
 }

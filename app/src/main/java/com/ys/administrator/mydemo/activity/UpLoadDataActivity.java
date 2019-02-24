@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.bumptech.glide.Glide;
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.adapter.RestaurantMenuRightAdapter;
@@ -31,6 +33,7 @@ import com.yuyh.library.imgsel.config.ISListConfig;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -161,8 +164,35 @@ public class UpLoadDataActivity extends BaseActivity {
         buildinfolists = setListFile(buildinfo,tjtz);
         fitmentinfolists = setListFile(fitmentinfo,zxtz);
         otherinfolists = setListFile(otherinfo,qtzl);
-        adapter.setData(baseinfolists);
-        tvTypeName.setText("装修项目基础资料");
+
+        if(tvTypeName.getText().toString().trim().isEmpty()){
+            tvTypeName.setText("装修项目基础资料");
+        }
+        try {
+            String trim = tvTypeName.getText().toString().trim();
+            switch (trim){
+                case "装修项目基础资料":
+                    adapter.setData(baseinfolists);
+                    break;
+                case "图审上报资料":
+                    adapter.setData(repotrinfolists);
+                    break;
+                case "土建图纸":
+                    adapter.setData(buildinfolists);
+                    break;
+                case "装修图纸":
+                    adapter.setData(fitmentinfolists);
+                    break;
+                case "其他资料":
+                    adapter.setData(otherinfolists);
+                    break;
+            }
+
+        }catch (Exception e){
+            Log.d(TAG, "setDataInfo: ");
+        }
+        
+
 //        baseinfolists = new ArrayList<>();
 //        for (String name:baseinfo) {
 //            FileListDataBean fileListDataBean = new FileListDataBean(name);
@@ -202,7 +232,8 @@ public class UpLoadDataActivity extends BaseActivity {
         if(o==null){
             return new ArrayList<>();
         }
-        List<FileInfoModel> list = (List<FileInfoModel>) o;
+        List<FileInfoModel> list = JSON.parseArray(JSONArray.toJSONString(o), FileInfoModel.class);
+//        `
         return list;
     }
 
@@ -256,8 +287,9 @@ public class UpLoadDataActivity extends BaseActivity {
             }
 
             @Override
-            public void onDeleteClick(int x, int y) {
-                showToast("删除该文件");
+            public void onDeleteClick(String name, String dir) {
+                deleteProjectFile(tvTypeName.getText().toString().trim()+"/"+dir,name);
+                
             }
         });
         recycler.setAdapter(adapter);
@@ -272,7 +304,11 @@ public class UpLoadDataActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             if(v.getId() ==R.id.tvFile ){
-                //TODO 选择文件
+                // 选择文件
+                choiseWayDialog.dismiss();
+                Bundle bundle = new Bundle();
+                bundle.putString("data","file");
+                openActivityWithResult(MineFileActivity.class,bundle,400);
             }  else if(v.getId() == R.id.tvPic){
                 // 选择照片
                 // 自由配置选项
@@ -369,6 +405,35 @@ public class UpLoadDataActivity extends BaseActivity {
         }
         return true;
     }
+    private void deleteProjectFile(String dir,String name ){
+        Map<String,String> map = new HashMap<>();
+        map.put("projectId",id+"");
+        map.put("dir", dir);
+        map.put("name", name);
+        MyModel.getNetData(MyModel.getRetrofitService().deleteFile(MyModel.getRequestHeaderMap("/upload/project/data"), map), new ICallBack() {
+            @Override
+            public void onSuccess(Object data) {
+                showToast("删除文件成功");
+                getData();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                Log.d(TAG, "onFailure: ");
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+        
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -376,7 +441,7 @@ public class UpLoadDataActivity extends BaseActivity {
             List<String> pathList = data.getStringArrayListExtra("result");
             if(pathList!=null && pathList.size()>0){
 //               lists.get(pos).getFilePath().add(pathList.get(0));
-               //TODO 上传图片
+               // 上传图片
 //               adapter.setData(lists);
 //                path = pathList.get(0);拿到图片 加入选择的地方
                 //拿到图片的文件名
@@ -440,6 +505,48 @@ public class UpLoadDataActivity extends BaseActivity {
                     break;
 
             }
+        }else if(requestCode == 400 && resultCode == 200 && data!=null){
+            String filepath = data.getStringExtra("data");
+            File file = new File(filepath);
+            if(!file.exists()){
+                return;
+            }
+            String filename = file.getName();
+            //拿到当前选中的文件夹档案
+            String name = tvTypeName.getText().toString().trim();
+            String dir = "";
+            //1.根据当前的文件夹档案、点击选择文件位置pos 将未上传完成的图片放入adapter 2.获取点击位置的子文件夹名称
+            switch (name){
+                case "装修项目基础资料":
+                    dir = baseinfolists.get(pos).getItemName();
+                    baseinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+                    adapter.setData(baseinfolists);
+                    break;
+                case "图审上报资料":
+                    dir = repotrinfolists.get(pos).getItemName();
+                    repotrinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+                    adapter.setData(repotrinfolists);
+                    break;
+                case "土建图纸":
+                    dir = buildinfolists.get(pos).getItemName();
+                    buildinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+                    adapter.setData(buildinfolists);
+                    break;
+                case "装修图纸":
+                    dir = fitmentinfolists.get(pos).getItemName();
+                    fitmentinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+                    adapter.setData(fitmentinfolists);
+                    break;
+                case "其他资料":
+                    dir = otherinfolists.get(pos).getItemName();
+                    otherinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+                    adapter.setData(otherinfolists);
+                    break;
+            }
+            //拼接出路径
+            dir = name+File.separator+dir;
+            upLoadFile(filepath,dir);
+
         }
     }
 
@@ -456,10 +563,11 @@ public class UpLoadDataActivity extends BaseActivity {
         String nameSuffix = filename.substring(filename.lastIndexOf(".")+1);
         RequestBody requestFile = RequestBody.create(MediaType.parse(MediaTypeUtil.guessMimeTypeFromExtension(nameSuffix)), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-        MyModel.getNetData(MyModel.getRetrofitService().uploadFile(MyModel.getRequestHeaderMap("/upload/project/data"), id, dir, body), new ICallBack() {
+        MyModel.getNetData(MyModel.getRetrofitService().uploadFile(MyModel.getRequestHeaderMap("/upload/project/data"), id, dir, body), new ICallBack<Map>() {
             @Override
-            public void onSuccess(Object data) {
+            public void onSuccess(Map data) {
                 //TODO 刷新上传文件对应的数据列表，判断当前显示的数据列表是否为此列表，刷新/不刷新
+                getData();
                 Log.d(TAG, "onSuccess: ");
             }
 

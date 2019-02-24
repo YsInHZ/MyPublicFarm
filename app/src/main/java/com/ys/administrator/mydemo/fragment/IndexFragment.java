@@ -11,9 +11,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.ys.administrator.mydemo.R;
+import com.ys.administrator.mydemo.activity.ProjectDetialActivity;
 import com.ys.administrator.mydemo.activity.UpLoadDataActivity;
 import com.ys.administrator.mydemo.adapter.IndexAdapter;
 import com.ys.administrator.mydemo.base.BaseActivity;
@@ -23,6 +25,7 @@ import com.ys.administrator.mydemo.custom_view.MyFillDialog;
 import com.ys.administrator.mydemo.model.ProjectListBean;
 import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.util.RefreshUtil;
+import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,13 +100,16 @@ public class IndexFragment extends Fragment {
 
     private void initView() {
         adapter = new IndexAdapter(R.layout.item_indexproject, new ArrayList<>());
-        adapter.setOnItemEdit(new IndexAdapter.OnItemEdit() {
-            @Override
-            public void Edit(int id) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("id",id);
-                ((BaseActivity)getActivity()).openActivity(UpLoadDataActivity.class,bundle);
-            }
+        adapter.setOnItemEdit(id -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("id",id);
+            ((BaseActivity)getActivity()).openActivity(UpLoadDataActivity.class,bundle);
+        });
+        adapter.setOnItemClickListener((adapter, view, position) -> {
+            Bundle bundle = new Bundle();
+            ProjectListBean.PageBean ib = (ProjectListBean.PageBean) adapter.getItem(position);
+            bundle.putInt("id",ib.getId());
+            ((BaseActivity)getActivity()).openActivity(ProjectDetialActivity.class,bundle);
         });
         rvProject.setLayoutManager(new LinearLayoutManager(getContext()));
         rvProject.setAdapter(adapter);
@@ -183,7 +189,7 @@ public class IndexFragment extends Fragment {
         MyModel.getNetData(MyModel.getRetrofitService().getStatusList(), new ICallBack<StatusListBean>() {
             @Override
             public void onSuccess(StatusListBean data) {
-//                SPUtil.saveStatusList(data);
+                SPUtil.saveStatusList(data);
                 statuList = data;
                 progressPicker.setItems(data.getList(), item -> {
                 });
@@ -214,6 +220,7 @@ public class IndexFragment extends Fragment {
         MyModel.getNetData(MyModel.getRetrofitService().getTypeList(), new ICallBack<StatusListBean>() {
             @Override
             public void onSuccess(StatusListBean data) {
+                SPUtil.saveTypeList(data);
                 typeList = data;
                 typePicker.setItems(data.getList(), item -> {
                 });

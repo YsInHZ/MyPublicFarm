@@ -1,11 +1,14 @@
 package com.ys.administrator.mydemo.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.View;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.adapter.FileListAdapter;
 import com.ys.administrator.mydemo.base.BaseActivity;
@@ -32,6 +35,7 @@ public class MineFileListActivity extends BaseActivity {
     private String title = "";
     private List<File> files;
     FileListAdapter adapter;
+    String data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,20 @@ public class MineFileListActivity extends BaseActivity {
         recycler.setLayoutManager(new LinearLayoutManager(this));
         adapter = new FileListAdapter(R.layout.item_mine_list_file,files);
         recycler.setAdapter(adapter);
+        if(!TextUtils.isEmpty(data)){
+            adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                    if(!TextUtils.isEmpty(data)){
+                        Intent intent= new Intent();
+                        intent.putExtra("data",((File) adapter.getItem(position)).getAbsolutePath());
+                        setResult(200,intent);
+                        finish();
+                    }
+                }
+            });
+        }
+
     }
 
     private void initData() {
@@ -88,6 +106,7 @@ public class MineFileListActivity extends BaseActivity {
         } else {
             finish();
         }
+         data = getIntent().getStringExtra("data");
     }
 
     @Override

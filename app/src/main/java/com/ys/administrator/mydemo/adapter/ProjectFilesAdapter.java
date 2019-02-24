@@ -7,21 +7,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.model.FileInfoModel;
 import com.ys.administrator.mydemo.model.FileListDataBean;
+import com.ys.administrator.mydemo.model.FileLocalListBean;
 
+import java.io.File;
 import java.util.List;
 
-public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
+public class ProjectFilesAdapter extends RecyclerView.Adapter {
     Context mContext;
-    List<FileListDataBean> listBeans;
+    List<FileLocalListBean> listBeans;
     int mItemCount;
     private final int MENU_TYPE = 0;
     private final int DISH_TYPE = 1;
     OnItemClickListener mItemClickListener;
-    public RestaurantMenuRightAdapter(Context mContext, List<FileListDataBean> listBeans) {
+    public ProjectFilesAdapter(Context mContext, List<FileLocalListBean> listBeans) {
         this.mContext = mContext;
         this.listBeans = listBeans;
         getItemNum();
@@ -29,18 +30,18 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
 
     private void getItemNum(){
         mItemCount = 0;
-        for (FileListDataBean lb:listBeans) {
-            mItemCount += lb.getFilePath().size()+1;
+        for (FileLocalListBean lb:listBeans) {
+            mItemCount += lb.localFiles.size()+1;
         }
     }
     @Override
     public int getItemViewType(int position) {
         int sum=0;
-        for(FileListDataBean menu:listBeans){
+        for(FileLocalListBean menu:listBeans){
             if(position==sum){
                 return MENU_TYPE;
             }
-            sum+=menu.getFilePath().size()+1;
+            sum+=menu.localFiles.size()+1;
             if(position<sum){
                 break;
             }
@@ -51,11 +52,11 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType==MENU_TYPE){
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fileup_filechoise, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_files_title, parent, false);
             MenuViewHolder viewHolder = new MenuViewHolder(view);
             return viewHolder;
         }else{
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fileup_file, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file, parent, false);
             DishViewHolder viewHolder = new DishViewHolder(view);
             return viewHolder;
         }
@@ -65,36 +66,35 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if(getItemViewType(position) == MENU_TYPE){//当前是菜单类型
             MenuViewHolder menuholder = (MenuViewHolder)holder;
-            menuholder.name.setText(getMenuByPosition(position).getItemName());
-            menuholder.choise.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mItemClickListener.onChoiseClick(getMenuIndexByPosition(position));
-                }
-            });
+            menuholder.tvTitle.setText(getMenuByPosition(position).titleName);
         }else {
             DishViewHolder dishholder = (DishViewHolder) holder;
-            FileInfoModel item = getDishByPosition(position);
+            FileLocalListBean.LocalFile item = getDishByPosition(position);
+
+            File f = new File(item.getLocalPath());
+            if(f.exists()){
+                ((DishViewHolder) holder).tvDown.setText("打开");
+            }else {
+                ((DishViewHolder) holder).tvDown.setText("下载");
+            }
             if(item.isWaitingForUp()){
-                ((DishViewHolder) holder).delete.setText("上传中");
-                ((DishViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
+                ((DishViewHolder) holder).tvDown.setVisibility(View.GONE);
+                ((DishViewHolder) holder).tvDown.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                     }
                 });
             }else {
-                ((DishViewHolder) holder).delete.setText("删除");
+                ((DishViewHolder) holder).tvDown.setVisibility(View.VISIBLE);
                 final int[] tresPosition = getTresPosition(position);
-                ((DishViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
+                ((DishViewHolder) holder).tvDown.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String itemName = listBeans.get(tresPosition[0]).getItemName();
-                        String name = item.getName();
-                        mItemClickListener.onDeleteClick(name,itemName);
+                        mItemClickListener.onDownClick(tresPosition[0],tresPosition[1]);
                     }
                 });
             }
-            ((DishViewHolder) holder).name.setText(item.getName());
+            ((DishViewHolder) holder).tvName.setText(item.getName());
 
 
 
@@ -105,26 +105,26 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
      * 类别的viewHolder
      */
     private class MenuViewHolder extends RecyclerView.ViewHolder{
-        private TextView name;
-        private TextView choise;
+        private TextView tvTitle;
+
         public MenuViewHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.tvName);
-            choise = itemView.findViewById(R.id.tvChoise);
+
+            tvTitle = itemView.findViewById(R.id.tvTitle);
         }
     }
     /**
      * 文件的viewHolder
      */
     private class DishViewHolder extends RecyclerView.ViewHolder{
-        private TextView name;
-        private TextView delete;
+        private TextView tvName;
+        private TextView tvDown;
 
 
         public DishViewHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.tvName);
-            delete = itemView.findViewById(R.id.tvDelete);
+            tvName = itemView.findViewById(R.id.tvName);
+            tvDown = itemView.findViewById(R.id.tvDown);
         }
 
     }
@@ -138,13 +138,13 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
      * @param position
      * @return
      */
-    public FileListDataBean getMenuByPosition(int position){
+    public FileLocalListBean getMenuByPosition(int position){
         int sum =0;
-        for(FileListDataBean menu:listBeans){
+        for(FileLocalListBean menu:listBeans){
             if(position==sum){
                 return menu;
             }
-            sum+=menu.getFilePath().size()+1;
+            sum+=menu.localFiles.size()+1;
         }
         return null;
     }
@@ -154,7 +154,7 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
             if(position==sum){
                 return i;
             }
-            sum+=listBeans.get(i).getFilePath().size()+1;
+            sum+=listBeans.get(i).localFiles.size()+1;
         }
 
         return 0;
@@ -169,14 +169,14 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
         int [] result = new int[2];
         result[0] = 0;
         result[1] = -1;
-        for(FileListDataBean menu:listBeans){
-            if(position>0 && position<=menu.getFilePath().size()){
+        for(FileLocalListBean menu:listBeans){
+            if(position>0 && position<=menu.localFiles.size()){
                 result[1] = position-1;
                 return result;
             }
             else{
                 result[0]++;
-                position-=menu.getFilePath().size()+1;
+                position-=menu.localFiles.size()+1;
             }
         }
 
@@ -188,7 +188,7 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
            return 0;
        }
         for (int i = 0; i < position; i++) {
-            pos += listBeans.get(i).getFilePath().size()+1;
+            pos += listBeans.get(i).localFiles.size()+1;
         }
 
        return pos;
@@ -200,25 +200,24 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
      * @param position
      * @return
      */
-    public FileInfoModel getDishByPosition(int position){
-        for(FileListDataBean menu:listBeans){
-            if(position>0 && position<=menu.getFilePath().size()){
-                return menu.getFilePath().get(position-1);
+    public FileLocalListBean.LocalFile getDishByPosition(int position){
+        for(FileLocalListBean menu:listBeans){
+            if(position>0 && position<=menu.localFiles.size()){
+                return menu.localFiles.get(position-1);
             }
             else{
-                position-=menu.getFilePath().size()+1;
+                position-=menu.localFiles.size()+1;
             }
         }
         return null;
     }
-    public void setData(List<FileListDataBean> listBeans){
+    public void setData(List<FileLocalListBean> listBeans){
         this.listBeans = listBeans;
         getItemNum();
         notifyDataSetChanged();
     }
     public static interface OnItemClickListener {
-        void onChoiseClick(int pos);
-        void onDeleteClick(String itemName, String dir);
+        void onDownClick(int x, int y);
     }
 
     public void setmItemClickListener(OnItemClickListener mItemClickListener) {

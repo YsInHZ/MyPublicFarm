@@ -1,5 +1,6 @@
 package com.ys.administrator.mydemo.model;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -33,7 +34,8 @@ public class ProjectInfoBean extends BaseBean {
          */
 
         private double at;
-        private Map<String,Object> data;
+//        private Map<String,Object> data;
+        private JSONObject data;
         private int id;
         private InfoBean info;
         private String name;
@@ -48,13 +50,17 @@ public class ProjectInfoBean extends BaseBean {
             this.at = at;
         }
 
-        public Map<String,Object> getData() {
+        public JSONObject getData() {
             return data;
         }
 
-        public void setData(Map<String,Object> data) {
+        public void setData(JSONObject data) {
             this.data = data;
         }
+        //        public void setData(Map<String,Object> data) {
+//            this.data = data;
+//        }
+
 
         public int getId() {
             return id;

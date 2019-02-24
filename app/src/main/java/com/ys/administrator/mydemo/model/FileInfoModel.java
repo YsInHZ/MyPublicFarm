@@ -13,6 +13,10 @@ public class FileInfoModel {
         this.name = name;
         this.waitingForUp = waitingForUp;
     }
+    public FileInfoModel(String name, String url) {
+        this.name = name;
+        this.url = url;
+    }
 
     /**
      * name : xxx.doc

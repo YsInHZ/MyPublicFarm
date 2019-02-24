@@ -1,9 +1,12 @@
 package com.ys.administrator.mydemo.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,12 +20,14 @@ import butterknife.OnClick;
 
 public class MineFileActivity extends BaseActivity {
     RxPermissions rxPermissions;
+    String data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mine_file);
         ButterKnife.bind(this);
         initToolbar("我的文件");
+        initData();
         commonPresenter = new CommonPresenter();
         commonPresenter.attachView(this);
           rxPermissions = new RxPermissions(this);
@@ -38,6 +43,10 @@ public class MineFileActivity extends BaseActivity {
                         // Need to go to the settings
                     }
                 });
+    }
+
+    private void initData() {
+         data = getIntent().getStringExtra("data");
     }
 
     @Override
@@ -78,6 +87,20 @@ public class MineFileActivity extends BaseActivity {
                     bundle.putString("type",MineFileListActivity.FILE_DOWN_LOAD);
                 break;
         }
-        openActivity(MineFileListActivity.class,bundle);
+        if(!TextUtils.isEmpty(data)){
+            bundle.putString("data",data);
+            openActivityWithResult(MineFileListActivity.class,bundle,101);
+        }else {
+            openActivity(MineFileListActivity.class,bundle);
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==101 &&resultCode==200 && data!=null ){
+            setResult(200,data);
+            finish();
+        }
     }
 }

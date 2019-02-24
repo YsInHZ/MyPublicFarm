@@ -102,9 +102,9 @@ public class MyModel  {
                     @Override
                     public void onNext(Response<Object> o) {
                         String s = JSON.toJSONString(o.body());
-                        boolean b = o.body() instanceof BaseBean;
-                        if(o.isSuccessful() && o.body()!=null && b){
-                            BaseBean bb = (BaseBean) o.body();
+//                        boolean b = o.body() instanceof BaseBean;
+                        if(o.isSuccessful() && o.body()!=null /*&& b*/){
+                            BaseBean bb = JSON.parseObject(s,BaseBean.class);
                             // 返回码判断请求结果
                             if(bb.getCode()==200){
                                 callback.onSuccess(o.body());

@@ -19,10 +19,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.UpLoadDataActivity"></activity>
+        <activity android:name=".activity.ProjectDetialActivity"></activity>
+        <activity android:name=".activity.UpLoadDataActivity" />
         <activity
             android:name=".activity.WelcomeActivity"
-            android:theme="@style/StartTheme"></activity>
+            android:theme="@style/StartTheme" />
         <activity android:name=".activity.ItemChoiseActivity" />
         <activity android:name=".MainActivity">
             <intent-filter tools:ignore="AppLinkUrlError">
@@ -44,19 +45,19 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity" android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:launchMode="singleTask"></activity>
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.RetrieveActivity" />
         <activity
             android:name=".activity.IndexActivity"
             android:windowSoftInputMode="adjustPan|stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".activity.MinePersonalDataActivity" />
         <activity android:name=".activity.MinePersonalPhoneChangeActivity" />

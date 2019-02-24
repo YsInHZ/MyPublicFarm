@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/backgroundcolor"
+    tools:context=".activity.ProjectDetialActivity">
+    <include layout="@layout/toolbarlayout"/>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include layout="@layout/item_indexproject"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:layout_marginBottom="19dp"
+            android:layout_marginLeft="24dp"
+            android:text="项目资料"
+            android:textColor="#ffc3c3c3"
+            android:textSize="15sp"
+            />
+        <!--基础项目资料-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/index_dialog_bg"
+            android:layout_marginLeft="11dp"
+            android:layout_marginRight="11dp"
+            android:orientation="vertical"
+            >
+            <RelativeLayout
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="50dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="联系人"
+                android:textColor="#ff000000"
+                android:textSize="15sp"
+                />
+
+                <TextView
+                    android:id="@+id/tvLxr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="110dp"
+                    android:text="联系人"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp" />
+        </RelativeLayout>
+            <include layout="@layout/line_project_basemsg"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="11dp"/>
+            <RelativeLayout
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="50dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="电话"
+                android:textColor="#ff000000"
+                android:textSize="15sp"
+                />
+
+                <TextView
+                    android:id="@+id/tvPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="110dp"
+                    android:text="联系人"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp" />
+        </RelativeLayout>
+            <include layout="@layout/line_project_basemsg"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="11dp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:layout_height="50dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="功能"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/tvGn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="110dp"
+                    android:text="联系人"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+            <include layout="@layout/line_project_basemsg"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="11dp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:layout_height="50dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="建筑面积"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/tvJzmj"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="110dp"
+                    android:text="联系人"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="m²"
+                    android:layout_marginRight="21dp"
+                    android:layout_alignParentRight="true"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+            <include layout="@layout/line_project_basemsg"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="11dp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:layout_height="50dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="地址"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/tvAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="110dp"
+                    android:text="联系人"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

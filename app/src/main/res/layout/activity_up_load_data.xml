@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    android:text="装修项目基础资料"
+                    android:text=""
                     android:layout_marginRight="53dp"
                     android:textColor="#ff353535"
                     android:textSize="15sp"

@@ -20,6 +20,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.adapter.rxjava2.Result;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -147,12 +148,18 @@ public interface RetrofitService {
     @POST("/project")
     Observable<Response<BaseBean>> creatProject(@HeaderMap Map<String,String> map,@Body RequestBody body);
     /**
+     * 新建项目
+     * @return
+     */
+    @DELETE("/upload/project/data")
+    Observable<Response<BaseBean>> deleteFile(@HeaderMap Map<String,String> map,@QueryMap Map<String,String> quremap);
+    /**
      * 上传资料
      * @return
      */
     @Multipart
     @POST("/upload/project/data")
-    Observable<Response<FileUpBean>> uploadFile(@HeaderMap Map<String,String> map,@Query("projectId") int projectId,@Query("dir") String dir, @Part MultipartBody.Part file);
+    Observable<Response<Map>> uploadFile(@HeaderMap Map<String,String> map,@Query("projectId") int projectId,@Query("dir") String dir, @Part MultipartBody.Part file);
 
     @GET("/oauth2/access_token")
     Observable<String> getWXAccessToken(@QueryMap Map<String,String> map);

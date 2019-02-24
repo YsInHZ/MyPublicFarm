@@ -35,7 +35,11 @@ public class FilePathUtil {
         }
         return file;
     }
-
+    public static String getFilePath(){
+        String absolutePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        absolutePath = absolutePath +"/MyProjece/";
+        return absolutePath;
+    }
     /**
      * 根据传入的文件夹路径 获取子文件（不包含子文件夹）
      * @param path 文件夹路径
