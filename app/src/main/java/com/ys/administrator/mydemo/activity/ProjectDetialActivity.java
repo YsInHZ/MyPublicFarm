@@ -15,6 +15,7 @@ import com.ys.administrator.mydemo.adapter.ProjectFilesAdapter;
 import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
+import com.ys.administrator.mydemo.http.DownLoadUtils;
 import com.ys.administrator.mydemo.http.DownloadService;
 import com.ys.administrator.mydemo.model.FileInfoModel;
 import com.ys.administrator.mydemo.model.FileListDataBean;
@@ -65,6 +66,7 @@ public class ProjectDetialActivity extends BaseActivity {
     List<FileListDataBean> baseinfolists,repotrinfolists,buildinfolists,fitmentinfolists,otherinfolists;
     String[] baseinfo,repotrinfo,buildinfo,fitmentinfo,otherinfo;
     ProjectFilesAdapter adapter;
+    List<FileLocalListBean> fileList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +98,7 @@ public class ProjectDetialActivity extends BaseActivity {
         adapter.setmItemClickListener(new ProjectFilesAdapter.OnItemClickListener() {
             @Override
             public void onDownClick(int x, int y) {
-
+                downLoadFile(fileList.get(x).localFiles.get(y).getUrl());
             }
         });
     }
@@ -170,8 +172,8 @@ public class ProjectDetialActivity extends BaseActivity {
         buildinfolists = setListFile(buildinfo,tjtz);
         fitmentinfolists = setListFile(fitmentinfo,zxtz);
         otherinfolists = setListFile(otherinfo,qtzl);
-        //TODO 设置数据到adapter
-        List<FileLocalListBean> fileList = new ArrayList<>();
+        // 设置数据到adapter
+        fileList = new ArrayList<>();
         fileList.addAll(setAdapterList(baseinfolists,projectInfoBean.getProject().getName()+ "/装修项目基础资料"));
         fileList.addAll(setAdapterList(repotrinfolists,projectInfoBean.getProject().getName()+ "/图审上报资料"));
         fileList.addAll(setAdapterList(buildinfolists,projectInfoBean.getProject().getName()+ "/土建图纸"));
@@ -247,6 +249,35 @@ public class ProjectDetialActivity extends BaseActivity {
             infolist.add(fileListDataBean);
         }
         return infolist;
+    }
+    private void downLoadFile(String url){
+        DownLoadUtils instance = DownLoadUtils.getInstance();
+        instance.downloadFile(url, new DownLoadUtils.DownloadListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onProgress(int currentLength) {
+
+            }
+
+            @Override
+            public void onFinish(String localPath) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getData();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String msg) {
+
+            }
+        });
     }
     @Override
     public void showData(Object data) {
