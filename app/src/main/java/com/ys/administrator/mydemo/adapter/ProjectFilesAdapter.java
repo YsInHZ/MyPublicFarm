@@ -11,6 +11,7 @@ import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.model.FileInfoModel;
 import com.ys.administrator.mydemo.model.FileListDataBean;
 import com.ys.administrator.mydemo.model.FileLocalListBean;
+import com.ys.administrator.mydemo.util.FilePathUtil;
 
 import java.io.File;
 import java.util.List;
@@ -71,8 +72,9 @@ public class ProjectFilesAdapter extends RecyclerView.Adapter {
             DishViewHolder dishholder = (DishViewHolder) holder;
             FileLocalListBean.LocalFile item = getDishByPosition(position);
 
-            File f = new File(item.getLocalPath());
-            if(f.exists()){
+            String name = item.getUrl();
+            File mFile = new File(FilePathUtil.getFilePathWithOutEnd()+name);
+            if(mFile.exists()){
                 ((DishViewHolder) holder).tvDown.setText("打开");
             }else {
                 ((DishViewHolder) holder).tvDown.setText("下载");
@@ -90,7 +92,13 @@ public class ProjectFilesAdapter extends RecyclerView.Adapter {
                 ((DishViewHolder) holder).tvDown.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mItemClickListener.onDownClick(tresPosition[0],tresPosition[1]);
+                        String trim = ((DishViewHolder) holder).tvDown.getText().toString().trim();
+                        if("下载".equals(trim)){
+                            mItemClickListener.onDownClick(tresPosition[0],tresPosition[1]);
+                        }else {
+                            mItemClickListener.onOpenClick(tresPosition[0],tresPosition[1]);
+                        }
+
                     }
                 });
             }
@@ -218,6 +226,7 @@ public class ProjectFilesAdapter extends RecyclerView.Adapter {
     }
     public static interface OnItemClickListener {
         void onDownClick(int x, int y);
+        void onOpenClick(int x, int y);
     }
 
     public void setmItemClickListener(OnItemClickListener mItemClickListener) {

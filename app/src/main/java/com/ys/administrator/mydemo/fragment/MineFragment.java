@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.activity.IndexActivity;
 import com.ys.administrator.mydemo.activity.LoginActivity;
@@ -30,8 +31,10 @@ import com.ys.administrator.mydemo.model.BaseBean;
 import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.model.UserInfoDetialBean;
 import com.ys.administrator.mydemo.util.Constant;
+import com.ys.administrator.mydemo.util.DialogUtil;
 import com.ys.administrator.mydemo.util.MD5;
 import com.ys.administrator.mydemo.util.SPUtil;
+import com.ys.administrator.mydemo.util.WeiXinUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +58,7 @@ public class MineFragment extends Fragment {
 
     RecyclerView df;
     MyFillDialog outDialog;
+    MyFillDialog shareDialog;
     String jsonData ;
     public MineFragment() {
     }
@@ -89,6 +93,25 @@ public class MineFragment extends Fragment {
 
     private void initData() {
         tvPhone.setText(Constant.getMobile());
+        shareDialog = new MyFillDialog(getContext(),R.layout.dialog_share);
+        View view = shareDialog.getView();
+        DialogUtil.setFilleDialog(shareDialog);
+        View hy = view.findViewById(R.id.hy);
+        View pyq = view.findViewById(R.id.pyq);
+        hy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareDialog.dismiss();
+                WeiXinUtil.share(SendMessageToWX.Req.WXSceneSession);
+            }
+        });
+        pyq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareDialog.dismiss();
+                WeiXinUtil.share(SendMessageToWX.Req.WXSceneTimeline);
+            }
+        });
     }
 
     /**
@@ -147,7 +170,7 @@ public class MineFragment extends Fragment {
             case R.id.wdmb:
                 break;
             case R.id.fxyy:
-
+                shareDialog.show();
                 break;
             case R.id.qchc:
                 new Handler().postDelayed(new Runnable() {

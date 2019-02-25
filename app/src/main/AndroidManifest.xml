@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.ProjectDetialActivity"></activity>
+        <activity android:name=".activity.MsgActivity"></activity>
+        <activity android:name=".activity.ProjectDetialActivity" />
         <activity android:name=".activity.UpLoadDataActivity" />
         <activity
             android:name=".activity.WelcomeActivity"
@@ -47,7 +48,7 @@
         </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.RetrieveActivity" />
         <activity

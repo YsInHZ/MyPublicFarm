@@ -3,6 +3,7 @@ package com.ys.administrator.mydemo.http;
 import com.ys.administrator.mydemo.model.BaseBean;
 import com.ys.administrator.mydemo.model.ConnectBean;
 import com.ys.administrator.mydemo.model.FileUpBean;
+import com.ys.administrator.mydemo.model.MsgListBean;
 import com.ys.administrator.mydemo.model.ProjectInfoBean;
 import com.ys.administrator.mydemo.model.ProjectListBean;
 import com.ys.administrator.mydemo.model.StatusListBean;
@@ -140,6 +141,16 @@ public interface RetrofitService {
     Observable<Response<ProjectListBean>> getProjectSearch(@HeaderMap Map<String,String> map, @QueryMap Map<String,String> quremap);
     @GET("/project/search")
     Observable<Response<ProjectListBean>> getProjectSearch(@HeaderMap Map<String,String> map);
+
+    /**
+     * 消息中心 (分页)
+     * @param map
+     * @return
+     */
+    @GET("/user/msg")
+    Observable<Response<MsgListBean>> getMsg(@HeaderMap Map<String,String> map, @Query("lastId") int id);
+    @GET("/user/msg")
+    Observable<Response<MsgListBean>> getMsg(@HeaderMap Map<String,String> map);
     /**
      * 新建项目
      * @return

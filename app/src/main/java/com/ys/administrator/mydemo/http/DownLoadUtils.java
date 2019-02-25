@@ -147,6 +147,9 @@ public class DownLoadUtils {
         Log.d(TAG,"writeFileSDcard");
         long currentLength = 0;
         OutputStream os = null;
+        if(responseBody == null){
+            return;
+        }
         InputStream is = responseBody.byteStream();
         long totalLength = responseBody.contentLength();
         Log.d(TAG,"totalLength=" + totalLength);

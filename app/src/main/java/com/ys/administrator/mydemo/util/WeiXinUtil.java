@@ -52,11 +52,11 @@ public class WeiXinUtil {
             getIWXAPI();
         }
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = "http://jk.chic-cloud.com";
+        webpage.webpageUrl = "http://www.baidu.com/";
 
         WXMediaMessage msg = new WXMediaMessage(webpage);
-        msg.title = "极客耘耕";
-        msg.description = "加入极客耘耕，开启智慧农业";
+        msg.title = "名邑消防";
+        msg.description = "加入名邑消防，开启智慧管理";
 
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.message = msg;

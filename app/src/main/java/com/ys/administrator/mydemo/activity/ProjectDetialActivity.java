@@ -100,6 +100,13 @@ public class ProjectDetialActivity extends BaseActivity {
             public void onDownClick(int x, int y) {
                 downLoadFile(fileList.get(x).localFiles.get(y).getUrl());
             }
+
+            @Override
+            public void onOpenClick(int x, int y) {
+                String url = fileList.get(x).localFiles.get(y).getUrl();
+                String s = FilePathUtil.getFilePathWithOutEnd() + url;
+                showToast("请到\n"+s+"下查看文件");
+            }
         });
     }
     /**
@@ -268,6 +275,7 @@ public class ProjectDetialActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        showToast("文件已下载到"+localPath);
                         getData();
                     }
                 });

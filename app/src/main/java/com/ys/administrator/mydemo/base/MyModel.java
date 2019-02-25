@@ -18,6 +18,8 @@ import com.ys.administrator.mydemo.util.SPUtil;
 
 import org.json.JSONException;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +28,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -300,7 +303,14 @@ public class MyModel  {
         Map<String,String> map = new HashMap<>();
         map.put("userId",SPUtil.getId()+"");
         map.put("ts", ts +"");
-        map.put("sign",MD5.encodeMd5(Constant.getUserId()+url+ ts +Constant.getToken()+Constant.getLoginAt()));
+        try {
+            String encode = URLEncoder.encode(url, "UTF-8");
+            String replace = encode.replace("%2F", "/");
+            replace = replace.replace("+", "%20");
+            map.put("sign",MD5.encodeMd5(Constant.getUserId()+ replace + ts +Constant.getToken()+Constant.getLoginAt()));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return map;
     }
 }

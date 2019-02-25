@@ -15,6 +15,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.ys.administrator.mydemo.R;
+import com.ys.administrator.mydemo.activity.MsgActivity;
 import com.ys.administrator.mydemo.activity.ProjectDetialActivity;
 import com.ys.administrator.mydemo.activity.UpLoadDataActivity;
 import com.ys.administrator.mydemo.adapter.IndexAdapter;
@@ -292,7 +293,8 @@ public class IndexFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rlMsg:
-                //TODO 消息中心
+                // 消息中心
+                ((BaseActivity)getActivity()).openActivity(MsgActivity.class);
                 break;
             case R.id.ivSearch:
                 Map<String, String> map = new HashMap<>();
