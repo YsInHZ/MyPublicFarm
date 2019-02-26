@@ -7,6 +7,29 @@
     android:orientation="vertical"
     tools:context=".activity.MineFileListActivity">
     <include layout="@layout/toolbarlayout"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/llLocal"
+        android:layout_height="40dp">
+        <TextView
+            android:id="@+id/tvBack"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/colorAccent"
+            android:gravity="center"
+            android:text="返回"/>
+        <TextView
+            android:id="@+id/tvLocalPath"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingRight="5dp"
+            android:textColor="@color/index_text_color"
+            android:gravity="center_vertical"
+            android:textSize="12sp" />
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"

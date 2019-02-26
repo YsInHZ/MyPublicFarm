@@ -77,4 +77,35 @@ public class FilePathUtil {
         }
 
     }
+    /**
+     * 根据传入的文件夹路径 获取子文件（含子文件夹）
+     * @param path 文件夹路径
+     * @return
+     */
+    public static List<File> readFilesWithDirectory(String path) {
+        //根据路径拿到文件
+        File file = new File(path);
+        //判断 文件已存在并且为文件夹
+        if(file.exists() && file.isDirectory()){
+            //获取文件列表
+            File[] files = file.listFiles();
+            //如果文件为空返回空数组
+            if(files ==null || files.length==0){
+                return new ArrayList<>();
+            }
+            //转换为list
+            List<File> fileList = new ArrayList<>();
+            for (int i = 0; i <files.length ; i++) {
+               fileList.add(files[i]);
+
+            }
+
+            //一切顺利返回数组
+            return fileList;
+
+        }else {
+            return new ArrayList<>();
+        }
+
+    }
 }

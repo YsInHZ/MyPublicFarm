@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.ys.administrator.mydemo.R;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MineFileListActivity extends BaseActivity {
     public static final String FILE_QQ = "FILE_QQ";//
@@ -30,12 +33,17 @@ public class MineFileListActivity extends BaseActivity {
     public static final String FILE_DOWN_LOAD = "FILE_DOWN_LOAD";
     @BindView(R.id.recycler)
     RecyclerView recycler;
+    @BindView(R.id.tvLocalPath)
+    TextView tvLocalPath;
+    @BindView(R.id.llLocal)
+    LinearLayout llLocal;
 
     private String fileType = null;
     private String title = "";
     private List<File> files;
     FileListAdapter adapter;
     String data;
+    String currentPath;//当前点击的文件夹路径（只有当FILE_DOWN_LOAD时用到）
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +59,28 @@ public class MineFileListActivity extends BaseActivity {
 
     private void initView() {
         recycler.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new FileListAdapter(R.layout.item_mine_list_file,files);
+        adapter = new FileListAdapter(R.layout.item_mine_list_file, files);
         recycler.setAdapter(adapter);
-        if(!TextUtils.isEmpty(data)){
-            adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                    if(!TextUtils.isEmpty(data)){
-                        Intent intent= new Intent();
-                        intent.putExtra("data",((File) adapter.getItem(position)).getAbsolutePath());
-                        setResult(200,intent);
-                        finish();
-                    }
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                File item = (File) adapter.getItem(position);
+                if (FILE_DOWN_LOAD.equals(fileType) && item.isDirectory()) {//当前为已下载文件浏览  且 当前文件为文件夹
+                    currentPath = item.getAbsolutePath();
+                    String substring = currentPath.substring(FilePathUtil.getFilePath().length());
+                    String replace = substring.replace("/", ">");
+                    tvLocalPath.setText("根目录>MyProjece>"+replace);
+                    files = FilePathUtil.readFilesWithDirectory(item.getAbsolutePath());
+                    MineFileListActivity.this.adapter.setNewData(files);
+                } else if (!TextUtils.isEmpty(data)) {
+                    Intent intent = new Intent();
+                    intent.putExtra("data", (item).getAbsolutePath());
+                    setResult(200, intent);
+                    finish();
                 }
-            });
-        }
+            }
+        });
+
 
     }
 
@@ -77,7 +92,7 @@ public class MineFileListActivity extends BaseActivity {
         }
         String s = Environment.getExternalStorageDirectory().toString();
         String path = "";
-
+        llLocal.setVisibility(View.GONE);
         if (FILE_QQ.equals(fileType)) {
             title = "QQ下载文件";
             path = s + "/tencent/QQfile_recv";
@@ -90,27 +105,45 @@ public class MineFileListActivity extends BaseActivity {
             title = "其他文件";
             files = new ArrayList<>();
             List<String> localFileList = SPUtil.getLocalFileList();
-            if(localFileList!=null){
-                for (int i = 0; i <localFileList.size() ; i++) {
-                    if(!TextUtils.isEmpty(localFileList.get(i))){
+            if (localFileList != null) {
+                for (int i = 0; i < localFileList.size(); i++) {
+                    if (!TextUtils.isEmpty(localFileList.get(i))) {
                         files.add(new File(localFileList.get(i)));
                     }
 
                 }
             }
 
-        }else if(FILE_DOWN_LOAD.equals(fileType)){
+        } else if (FILE_DOWN_LOAD.equals(fileType)) {
+            llLocal.setVisibility(View.VISIBLE);
             title = "项目下载文件";
-            //TODO 已下载的项目列表遍历
+            // 已下载的项目列表遍历
             //需要以文件为item的适配器，每点击item如果为文件夹则遍历文件夹更新列表
+            files = FilePathUtil.readFilesWithDirectory(FilePathUtil.getFilePath() + "project");
+            currentPath = FilePathUtil.getFilePath() + "project";
+            tvLocalPath.setText("根目录>MyProjece>projcet>");
         } else {
             finish();
         }
-         data = getIntent().getStringExtra("data");
+        data = getIntent().getStringExtra("data");
     }
 
     @Override
     public void showData(Object data) {
 
+    }
+
+    @OnClick(R.id.tvBack)
+    public void onViewClicked() {
+        if(currentPath.equals(FilePathUtil.getFilePath() + "project")){
+            return;
+        }
+        File file = new File(currentPath);
+        currentPath = file.getParent();
+        String substring = currentPath.substring(FilePathUtil.getFilePath().length());
+        String replace = substring.replace("/", ">");
+        tvLocalPath.setText("根目录>MyProjece>"+replace);
+        files = FilePathUtil.readFilesWithDirectory(currentPath);
+        MineFileListActivity.this.adapter.setNewData(files);
     }
 }

@@ -1,5 +1,6 @@
 package com.ys.administrator.mydemo.adapter;
 
+import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -16,6 +17,11 @@ public class FileListAdapter extends BaseQuickAdapter<File,BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder helper, File item) {
+        if(item.isDirectory()){
+            helper.setImageResource(R.id.img,R.mipmap.img_filedirectory);
+        }else {
+            helper.setImageBitmap(R.id.img,BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.img_file));
+        }
         helper.setText(R.id.tvName,item.getName());
     }
 }
