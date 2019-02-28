@@ -46,9 +46,9 @@ public class ProgressChoiseActivity extends BaseActivity {
         lists = new ArrayList<>();
         lists.add(new StatusListBean.ListBean("装修项目基础资料"));
         if(!isSmall){
-            lists.add(new StatusListBean.ListBean("图审上报资料"));
-            lists.add(new StatusListBean.ListBean("土建图纸"));
+            lists.add(new StatusListBean.ListBean("图审合格资料"));
         }
+        lists.add(new StatusListBean.ListBean("工程基本信息"));
         lists.add(new StatusListBean.ListBean("装修图纸"));
         lists.add(new StatusListBean.ListBean("其他资料"));
     }

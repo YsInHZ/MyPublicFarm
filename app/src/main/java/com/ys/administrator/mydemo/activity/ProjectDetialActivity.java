@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.adapter.ProjectFilesAdapter;
 import com.ys.administrator.mydemo.base.BaseActivity;
@@ -29,8 +30,10 @@ import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -123,7 +126,14 @@ public class ProjectDetialActivity extends BaseActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("id",id);
         bundle.putString("name",projectInfoBean.getProject().getName());
-        bundle.putString("data",JSON.toJSONString(projectInfoBean.getProject().getInfo()));
+        String s1 = JSONObject.toJSONString(projectInfoBean);
+        ProjectInfoBean.ProjectBean.InfoBean info = projectInfoBean.getProject().getInfo();
+        String s = info.toString();
+        bundle.putString("gn", info.get功能());
+        bundle.putString("dz", info.get地址());
+        bundle.putString("jzmj", info.get建筑面积());
+        bundle.putString("dh", info.get电话());
+        bundle.putString("lxr", info.get联系人());
         openActivity(ProjectEditActivity.class,bundle);
         return false;
     }
@@ -188,21 +198,21 @@ public class ProjectDetialActivity extends BaseActivity {
         Map<String, Object> data = projectInfoBean.getProject().getData();
 //        data.get("工程基本信息");
         Map<String, Object> zxxm = getMapObject(data, "装修项目基础资料");
-        Map<String, Object> tssb = getMapObject(data, "图审上报资料");
-        Map<String, Object> tjtz = getMapObject(data, "土建图纸");
+        Map<String, Object> tssb = getMapObject(data, "图审合格资料");
+        Map<String, Object> tjtz = getMapObject(data, "工程基本信息");
         Map<String, Object> zxtz = getMapObject(data, "装修图纸");
         Map<String, Object> qtzl = getMapObject(data, "其他资料");
 
-        baseinfolists = setListFile(baseinfo,zxxm);
-        repotrinfolists = setListFile(repotrinfo,tssb);
-        buildinfolists = setListFile(buildinfo,tjtz);
-        fitmentinfolists = setListFile(fitmentinfo,zxtz);
-        otherinfolists = setListFile(otherinfo,qtzl);
+        baseinfolists = setListFile(zxxm);
+        repotrinfolists = setListFile(tssb);
+        buildinfolists = setListFile(tjtz);
+        fitmentinfolists = setListFile(zxtz);
+        otherinfolists = setListFile(qtzl);
         // 设置数据到adapter
         fileList = new ArrayList<>();
         fileList.addAll(setAdapterList(baseinfolists,projectInfoBean.getProject().getName()+ "/装修项目基础资料"));
-        fileList.addAll(setAdapterList(repotrinfolists,projectInfoBean.getProject().getName()+ "/图审上报资料"));
-        fileList.addAll(setAdapterList(buildinfolists,projectInfoBean.getProject().getName()+ "/土建图纸"));
+        fileList.addAll(setAdapterList(repotrinfolists,projectInfoBean.getProject().getName()+ "/图审合格资料"));
+        fileList.addAll(setAdapterList(buildinfolists,projectInfoBean.getProject().getName()+ "/工程基本信息"));
         fileList.addAll(setAdapterList(fitmentinfolists,projectInfoBean.getProject().getName()+ "/装修图纸"));
         fileList.addAll(setAdapterList(otherinfolists,projectInfoBean.getProject().getName()+ "/其他资料"));
         adapter.setData(fileList);
@@ -259,14 +269,17 @@ public class ProjectDetialActivity extends BaseActivity {
     }
 
     /**
-     * 根据文件分类数组  和 源数据map  填充生成好Adapter需要的List<FileListDataBean>
-     * @param info
+     * 根据源数据map  填充生成好Adapter需要的List<FileListDataBean>
+     * @param
      * @param data
      * @return
      */
-    private List<FileListDataBean> setListFile(String[] info, Map<String, Object> data){
+    private List<FileListDataBean> setListFile( Map<String, Object> data){
         List<FileListDataBean> infolist = new ArrayList<>();
-        for (String name:info) {
+        Set<String> strings = data.keySet();
+        Iterator<String> iterator = strings.iterator();
+        while(iterator.hasNext()){
+            String name = iterator.next();
             FileListDataBean fileListDataBean = new FileListDataBean(name);
             List<FileInfoModel> files = getFiles(data, name);
             if(files!=null&& files.size()>0){

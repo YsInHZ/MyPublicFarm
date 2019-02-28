@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:background="#000"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@drawable/index_dialog_bg"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/nm"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:padding="20dp"
+            android:text="重命名"
+            android:textSize="17sp"
+            android:textColor="@color/color333"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_below="@id/nm"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="25dp"
+            android:gravity="center"
+            android:background="@drawable/index_item_white_text_bg"
+            android:layout_height="35dp" />
+        <LinearLayout
+            android:id="@+id/ll"
+            android:layout_below="@id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <TextView
+                android:id="@+id/tvCancel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="取消"
+                android:layout_height="match_parent" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/color999"/>
+            <TextView
+                android:id="@+id/tvSure"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/color_fc6449"
+                android:text="确定"
+                android:gravity="center"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@id/ll"
+            android:background="@color/color999"/>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -410,6 +410,17 @@ public class ProjectInfoBean extends BaseBean {
 //        }
 
         public static class InfoBean {
+            @Override
+            public String toString() {
+                return "{" +
+                        "\"功能\":\"" + 功能 + '\"' +
+                        ",\"地址\":\"" + 地址 + '"' +
+                        ",\"建筑面积\":\"" + 建筑面积 + '\"' +
+                        ",\"电话\":\"" + 电话 + '\"' +
+                        ",\"联系人\":\"" + 联系人 + '\"' +
+                        '}';
+            }
+
             /**
              * 功能 : 11111
              * 地址 : 33333

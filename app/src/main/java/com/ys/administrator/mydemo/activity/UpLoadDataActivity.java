@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,8 +35,10 @@ import com.yuyh.library.imgsel.config.ISListConfig;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,7 +57,7 @@ import okhttp3.RequestBody;
  * 建筑合法性证明文件
  * 建筑功能改变文件
  * 现场照片或视频
- * --------------------图审上报资料---------
+ * --------------------图审合格资料---------
  * 装修设计合同
  * 授权委托书
  * 委托人身份证复印件
@@ -71,7 +74,7 @@ import okhttp3.RequestBody;
  * 勘察和设计合同复印件
  * 建筑设计合同
  * 项目投资金额
- * ---------------------土建图纸--------------
+ * ---------------------工程基本信息--------------
  * 建筑
  * 给排水
  * 电气
@@ -100,12 +103,14 @@ public class UpLoadDataActivity extends BaseActivity {
     RecyclerView recycler;
     RestaurantMenuRightAdapter adapter;
     MyFillDialog choiseWayDialog;
+    MyFillDialog reNameDialog;
     int pos;
     List<FileListDataBean> baseinfolists,repotrinfolists,buildinfolists,fitmentinfolists,otherinfolists;
     String[] baseinfo,repotrinfo,buildinfo,fitmentinfo,otherinfo;
     int id;
     ProjectInfoBean projectInfoBean;
     Disposable disposable;
+    EditText etName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,7 +132,7 @@ public class UpLoadDataActivity extends BaseActivity {
         MyModel.getNetData(MyModel.getRetrofitService().getPeojectDetail(MyModel.getRequestHeaderMap("/project/info"), id), new ICallBack<ProjectInfoBean>() {
             @Override
             public void onSuccess(ProjectInfoBean data) {
-                projectInfoBean = data;
+                projectInfoBean = (ProjectInfoBean) data;
                 Log.d(TAG, "onSuccess: ");
                 setDataInfo();
             }
@@ -154,16 +159,16 @@ public class UpLoadDataActivity extends BaseActivity {
         Map<String, Object> data = projectInfoBean.getProject().getData();
 //        data.get("工程基本信息");
         Map<String, Object> zxxm = getMapObject(data, "装修项目基础资料");
-        Map<String, Object> tssb = getMapObject(data, "图审上报资料");
-        Map<String, Object> tjtz = getMapObject(data, "土建图纸");
+        Map<String, Object> tssb = getMapObject(data, "图审合格资料");
+        Map<String, Object> tjtz = getMapObject(data, "工程基本信息");
         Map<String, Object> zxtz = getMapObject(data, "装修图纸");
         Map<String, Object> qtzl = getMapObject(data, "其他资料");
 
-        baseinfolists = setListFile(baseinfo,zxxm);
-        repotrinfolists = setListFile(repotrinfo,tssb);
-        buildinfolists = setListFile(buildinfo,tjtz);
-        fitmentinfolists = setListFile(fitmentinfo,zxtz);
-        otherinfolists = setListFile(otherinfo,qtzl);
+        baseinfolists = setListFile(zxxm);
+        repotrinfolists = setListFile(tssb);
+        buildinfolists = setListFile(tjtz);
+        fitmentinfolists = setListFile(zxtz);
+        otherinfolists = setListFile(qtzl);
 
         if(tvTypeName.getText().toString().trim().isEmpty()){
             tvTypeName.setText("装修项目基础资料");
@@ -174,10 +179,10 @@ public class UpLoadDataActivity extends BaseActivity {
                 case "装修项目基础资料":
                     adapter.setData(baseinfolists);
                     break;
-                case "图审上报资料":
+                case "图审合格资料":
                     adapter.setData(repotrinfolists);
                     break;
-                case "土建图纸":
+                case "工程基本信息":
                     adapter.setData(buildinfolists);
                     break;
                 case "装修图纸":
@@ -228,13 +233,16 @@ public class UpLoadDataActivity extends BaseActivity {
 
     /**
      * 根据文件分类数组  和 源数据map  填充生成好Adapter需要的List<FileListDataBean>
-     * @param info
+     * @param
      * @param data
      * @return
      */
-    private List<FileListDataBean> setListFile(String[] info, Map<String, Object> data){
+    private List<FileListDataBean> setListFile( Map<String, Object> data){
         List<FileListDataBean> infolist = new ArrayList<>();
-        for (String name:info) {
+        Set<String> strings = data.keySet();
+        Iterator<String> iterator = strings.iterator();
+        while(iterator.hasNext()){
+            String name = iterator.next();
             FileListDataBean fileListDataBean = new FileListDataBean(name);
             List<FileInfoModel> files = getFiles(data, name);
             if(files!=null&& files.size()>0){
@@ -285,6 +293,13 @@ public class UpLoadDataActivity extends BaseActivity {
             }
 
             @Override
+            public void onRenameClick(String itemName, String dir) {
+                // 重命名
+                etName.setText(itemName);
+                reNameDialog.show();
+            }
+
+            @Override
             public void onCancelClick() {
                 if(disposable!=null && !disposable.isDisposed()){
                     disposable.dispose();
@@ -299,6 +314,15 @@ public class UpLoadDataActivity extends BaseActivity {
         View tvFile = choiseWayDialog.findViewById(R.id.tvFile);
         tvPic.setOnClickListener(dialogClick);
         tvFile.setOnClickListener(dialogClick);
+
+        reNameDialog = new MyFillDialog(this,R.layout.dialog_rename);
+        reNameDialog.setCancelable(true);
+         etName = (EditText) reNameDialog.findViewById(R.id.etName);
+        View tvSure = reNameDialog.findViewById(R.id.tvSure);
+        View tvCancel = reNameDialog.findViewById(R.id.tvCancel);
+        tvSure.setOnClickListener(renameClick);
+        tvCancel.setOnClickListener(renameClick);
+
     }
     View.OnClickListener dialogClick = new View.OnClickListener() {
         @Override
@@ -346,12 +370,25 @@ public class UpLoadDataActivity extends BaseActivity {
             }
         }
     };
+    View.OnClickListener renameClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.tvCancel:
+                    reNameDialog.dismiss();
+                    break;
+                case R.id.tvSure:
+                    //TODO 上传更名请求
+                    break;
+            }
+        }
+    };
     @Override
     public void showData(Object data) {
 
     }
 
-    @OnClick({R.id.rlChoiseType, R.id.tvNext})
+    @OnClick({R.id.rlChoiseType, /*R.id.tvNext*/})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rlChoiseType:
@@ -363,8 +400,8 @@ public class UpLoadDataActivity extends BaseActivity {
                     openActivityWithResult(ProgressChoiseActivity.class,bundle,200);
                 }
                 break;
-            case R.id.tvNext:
-                break;
+//            case R.id.tvNext:
+//                break;
         }
     }
 
@@ -379,10 +416,10 @@ public class UpLoadDataActivity extends BaseActivity {
             case "装修项目基础资料":
                 list = baseinfolists;
                 break;
-            case "图审上报资料":
+            case "图审合格资料":
                 list = repotrinfolists;
                 break;
-            case "土建图纸":
+            case "工程基本信息":
                 list = buildinfolists;
                 break;
             case "装修图纸":
@@ -457,12 +494,12 @@ public class UpLoadDataActivity extends BaseActivity {
                         baseinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
                         adapter.setData(baseinfolists);
                         break;
-                    case "图审上报资料":
+                    case "图审合格资料":
                         dir = repotrinfolists.get(pos).getItemName();
                         repotrinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
                         adapter.setData(repotrinfolists);
                         break;
-                    case "土建图纸":
+                    case "工程基本信息":
                         dir = buildinfolists.get(pos).getItemName();
                         buildinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
                         adapter.setData(buildinfolists);
@@ -491,10 +528,10 @@ public class UpLoadDataActivity extends BaseActivity {
                 case "装修项目基础资料":
                     adapter.setData(baseinfolists);
                     break;
-                case "图审上报资料":
+                case "图审合格资料":
                     adapter.setData(repotrinfolists);
                     break;
-                case "土建图纸":
+                case "工程基本信息":
                     adapter.setData(buildinfolists);
                     break;
                 case "装修图纸":
@@ -522,12 +559,12 @@ public class UpLoadDataActivity extends BaseActivity {
                     baseinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
                     adapter.setData(baseinfolists);
                     break;
-                case "图审上报资料":
+                case "图审合格资料":
                     dir = repotrinfolists.get(pos).getItemName();
                     repotrinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
                     adapter.setData(repotrinfolists);
                     break;
-                case "土建图纸":
+                case "工程基本信息":
                     dir = buildinfolists.get(pos).getItemName();
                     buildinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
                     adapter.setData(buildinfolists);

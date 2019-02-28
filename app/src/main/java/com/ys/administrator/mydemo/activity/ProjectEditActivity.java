@@ -68,14 +68,15 @@ public class ProjectEditActivity extends BaseActivity {
              showToast("未获取到项目id");
              finish();
          }
-        String data = getIntent().getStringExtra("data");
-        ProjectInfoBean.ProjectBean.InfoBean infoBean = JSON.parseObject(data, ProjectInfoBean.ProjectBean.InfoBean.class);
-        etGn.setText(infoBean.get功能());
+//        String data = getIntent().getStringExtra("data");
+//        ProjectInfoBean projectInfoBean = JSON.parseObject(data,ProjectInfoBean.class);
+//        ProjectInfoBean.ProjectBean.InfoBean infoBean = projectInfoBean.getProject().getInfo();
+        etGn.setText(getIntent().getStringExtra("gn"));
         etPjName.setText( getIntent().getStringExtra("name"));
-        etPjLeader.setText(infoBean.get联系人());
-        etPhone.setText(infoBean.get电话());
-        etPjarea.setText(infoBean.get建筑面积());
-        etPjAddress.setText(infoBean.get地址());
+        etPjLeader.setText(getIntent().getStringExtra("lxr"));
+        etPhone.setText(getIntent().getStringExtra("dh"));
+        etPjarea.setText(getIntent().getStringExtra("jzmj"));
+        etPjAddress.setText(getIntent().getStringExtra("dz"));
     }
 
     @Override

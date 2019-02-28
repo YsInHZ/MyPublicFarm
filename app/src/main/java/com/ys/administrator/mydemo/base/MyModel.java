@@ -1,6 +1,7 @@
 package com.ys.administrator.mydemo.base;
 
 import android.os.Handler;
+import android.util.Log;
 
 //import com.example.administrator.mydemo.download_util.DownLoadManager;
 import com.alibaba.fastjson.JSON;
@@ -93,6 +94,7 @@ public class MyModel  {
      * @param callback ICallBack
      */
     public static void getNetData (Observable observable,ICallBack callback){
+//        Log.d("httppost", observable.);
         initRetrofit();
         observable.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -105,6 +107,7 @@ public class MyModel  {
 
                     @Override
                     public void onNext(Response<Object> o) {
+                        Log.d("httppost", o.raw().networkResponse().request().url().toString());
                         String s = JSON.toJSONString(o.body());
 //                        boolean b = o.body() instanceof BaseBean;
                         if(o.isSuccessful() && o.body()!=null /*&& b*/){
@@ -125,6 +128,7 @@ public class MyModel  {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.d("httppost", e.getLocalizedMessage()+"'");
                         callback.onFailure(e.getLocalizedMessage()+"");
                     }
 

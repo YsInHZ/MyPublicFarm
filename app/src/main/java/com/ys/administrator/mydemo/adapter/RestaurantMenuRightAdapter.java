@@ -75,24 +75,24 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
         }else {
             DishViewHolder dishholder = (DishViewHolder) holder;
             FileInfoModel item = getDishByPosition(position);
+
             if(item.isWaitingForUp()){
                 ((DishViewHolder) holder).delete.setText("上传中");
-                ((DishViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mItemClickListener.onCancelClick();
-                    }
-                });
+                ((DishViewHolder) holder).delete.setOnClickListener(v -> mItemClickListener.onCancelClick());
+                ((DishViewHolder) holder).rename.setVisibility(View.GONE);
             }else {
+                ((DishViewHolder) holder).rename.setVisibility(View.VISIBLE);
                 ((DishViewHolder) holder).delete.setText("删除");
                 final int[] tresPosition = getTresPosition(position);
-                ((DishViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String itemName = listBeans.get(tresPosition[0]).getItemName();
-                        String name = item.getName();
-                        mItemClickListener.onDeleteClick(name,itemName);
-                    }
+                ((DishViewHolder) holder).rename.setOnClickListener(v -> {
+                    String itemName = listBeans.get(tresPosition[0]).getItemName();
+                    String name = item.getName();
+                    mItemClickListener.onRenameClick(name,itemName);
+                });
+                ((DishViewHolder) holder).delete.setOnClickListener(v -> {
+                    String itemName = listBeans.get(tresPosition[0]).getItemName();
+                    String name = item.getName();
+                    mItemClickListener.onDeleteClick(name,itemName);
                 });
             }
             ((DishViewHolder) holder).name.setText(item.getName());
@@ -120,12 +120,14 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
     private class DishViewHolder extends RecyclerView.ViewHolder{
         private TextView name;
         private TextView delete;
+        private TextView rename;
 
 
         public DishViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.tvName);
             delete = itemView.findViewById(R.id.tvDelete);
+            rename = itemView.findViewById(R.id.tvRename);
         }
 
     }
@@ -220,6 +222,7 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
     public static interface OnItemClickListener {
         void onChoiseClick(int pos);
         void onDeleteClick(String itemName, String dir);
+        void onRenameClick(String itemName, String dir);
         void onCancelClick();
     }
 
