@@ -1,7 +1,9 @@
 package com.ys.administrator.mydemo.activity;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -134,7 +136,7 @@ public class ProjectDetialActivity extends BaseActivity {
         bundle.putString("jzmj", info.get建筑面积());
         bundle.putString("dh", info.get电话());
         bundle.putString("lxr", info.get联系人());
-        openActivity(ProjectEditActivity.class,bundle);
+        openActivityWithResult(ProjectEditActivity.class,bundle,111);
         return false;
     }
     /**
@@ -322,5 +324,12 @@ public class ProjectDetialActivity extends BaseActivity {
     @Override
     public void showData(Object data) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==111 && requestCode == 200){
+            getData();
+        }
     }
 }
