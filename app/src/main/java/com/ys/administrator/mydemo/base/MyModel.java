@@ -100,6 +100,7 @@ public class MyModel  {
                 .subscribe(new Observer<Response<Object>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        callback.onSubscribe(d);
                     }
 
                     @Override

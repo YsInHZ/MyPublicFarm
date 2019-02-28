@@ -40,6 +40,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.disposables.Disposable;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -104,6 +105,7 @@ public class UpLoadDataActivity extends BaseActivity {
     String[] baseinfo,repotrinfo,buildinfo,fitmentinfo,otherinfo;
     int id;
     ProjectInfoBean projectInfoBean;
+    Disposable disposable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,9 +138,7 @@ public class UpLoadDataActivity extends BaseActivity {
             }
 
             @Override
-            public void onError() {
-
-            }
+            public void onError() { }
 
             @Override
             public void onComplete() {
@@ -191,17 +191,6 @@ public class UpLoadDataActivity extends BaseActivity {
         }catch (Exception e){
             Log.d(TAG, "setDataInfo: ");
         }
-        
-
-//        baseinfolists = new ArrayList<>();
-//        for (String name:baseinfo) {
-//            FileListDataBean fileListDataBean = new FileListDataBean(name);
-//            List<FileInfoModel> files = getFiles(zxxm, name);
-//            if(files!=null&& files.size()>0){
-//                fileListDataBean.addFilePath(files);
-//            }
-//            baseinfolists.add(fileListDataBean);
-//        }
 
 
     }
@@ -282,14 +271,25 @@ public class UpLoadDataActivity extends BaseActivity {
         adapter.setmItemClickListener(new RestaurantMenuRightAdapter.OnItemClickListener() {
             @Override
             public void onChoiseClick(int pos) {
-                UpLoadDataActivity.this.pos = pos;
-                choiseWayDialog.show();
+                if(checkUping()){
+                    UpLoadDataActivity.this.pos = pos;
+                    choiseWayDialog.show();
+                }
+
             }
 
             @Override
             public void onDeleteClick(String name, String dir) {
                 deleteProjectFile(tvTypeName.getText().toString().trim()+"/"+dir,name);
                 
+            }
+
+            @Override
+            public void onCancelClick() {
+                if(disposable!=null && !disposable.isDisposed()){
+                    disposable.dispose();
+                    getData();
+                }
             }
         });
         recycler.setAdapter(adapter);
@@ -551,7 +551,6 @@ public class UpLoadDataActivity extends BaseActivity {
     }
 
 
-
     /**
      * 文件上传
      * @param path 文件的path
@@ -569,6 +568,11 @@ public class UpLoadDataActivity extends BaseActivity {
                 //TODO 刷新上传文件对应的数据列表，判断当前显示的数据列表是否为此列表，刷新/不刷新
                 getData();
                 Log.d(TAG, "onSuccess: ");
+            }
+
+            @Override
+            public void onSubscribe(Disposable d) {
+                disposable = d;
             }
 
             @Override

@@ -24,7 +24,13 @@
         <activity android:name=".activity.UpLoadDataActivity" />
         <activity
             android:name=".activity.WelcomeActivity"
-            android:theme="@style/StartTheme" />
+            android:theme="@style/StartTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activity.ItemChoiseActivity" />
         <activity android:name=".MainActivity">
             <intent-filter tools:ignore="AppLinkUrlError">
@@ -54,16 +60,13 @@
         <activity
             android:name=".activity.IndexActivity"
             android:windowSoftInputMode="adjustPan|stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".activity.MinePersonalDataActivity" />
         <activity android:name=".activity.MinePersonalPhoneChangeActivity" />
         <activity android:name=".activity.MineContactActivity" />
         <activity android:name=".activity.ProjectCreatActivity" />
+        <activity android:name=".activity.ProjectEditActivity" />
         <activity android:name=".activity.MineFileActivity" />
         <activity android:name=".activity.MineFileListActivity" />
         <activity android:name=".activity.ProgressChoiseActivity" />

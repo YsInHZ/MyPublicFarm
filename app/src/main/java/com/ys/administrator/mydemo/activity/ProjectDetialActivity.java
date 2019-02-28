@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -67,6 +69,7 @@ public class ProjectDetialActivity extends BaseActivity {
     String[] baseinfo,repotrinfo,buildinfo,fitmentinfo,otherinfo;
     ProjectFilesAdapter adapter;
     List<FileLocalListBean> fileList;
+    ProjectInfoBean projectInfoBean;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +112,21 @@ public class ProjectDetialActivity extends BaseActivity {
             }
         });
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_edit, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("id",id);
+        bundle.putString("name",projectInfoBean.getProject().getName());
+        bundle.putString("data",JSON.toJSONString(projectInfoBean.getProject().getInfo()));
+        openActivity(ProjectEditActivity.class,bundle);
+        return false;
+    }
     /**
      * 获取项目详情数据
      */
@@ -118,6 +136,7 @@ public class ProjectDetialActivity extends BaseActivity {
             @Override
             public void onSuccess(ProjectInfoBean data) {
                 Log.d(TAG, "onSuccess: ");
+                projectInfoBean = data;
                 setDataInfo(data);
             }
 

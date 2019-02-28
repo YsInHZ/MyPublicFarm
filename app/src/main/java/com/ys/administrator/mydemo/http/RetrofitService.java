@@ -155,9 +155,14 @@ public interface RetrofitService {
      * 新建项目
      * @return
      */
-
     @POST("/project")
     Observable<Response<BaseBean>> creatProject(@HeaderMap Map<String,String> map,@Body RequestBody body);
+    /**
+     * 编辑项目
+     * @return
+     */
+    @POST("/project/info")
+    Observable<Response<BaseBean>> editProject(@HeaderMap Map<String,String> map,@Body RequestBody body);
     /**
      * 新建项目
      * @return

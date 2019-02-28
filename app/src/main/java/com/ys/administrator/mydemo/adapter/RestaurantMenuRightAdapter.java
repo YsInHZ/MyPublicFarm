@@ -80,6 +80,7 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
                 ((DishViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        mItemClickListener.onCancelClick();
                     }
                 });
             }else {
@@ -219,6 +220,7 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
     public static interface OnItemClickListener {
         void onChoiseClick(int pos);
         void onDeleteClick(String itemName, String dir);
+        void onCancelClick();
     }
 
     public void setmItemClickListener(OnItemClickListener mItemClickListener) {
