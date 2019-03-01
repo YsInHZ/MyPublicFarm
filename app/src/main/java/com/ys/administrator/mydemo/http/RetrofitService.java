@@ -164,11 +164,17 @@ public interface RetrofitService {
     @POST("/project/info")
     Observable<Response<BaseBean>> editProject(@HeaderMap Map<String,String> map,@Body RequestBody body);
     /**
-     * 新建项目
+     * 删除项目文件
      * @return
      */
     @DELETE("/upload/project/data")
     Observable<Response<BaseBean>> deleteFile(@HeaderMap Map<String,String> map,@QueryMap Map<String,String> quremap);
+    /**
+     * 重命名项目文件
+     * @return
+     */
+    @DELETE("/upload/project/data")
+    Observable<Response<BaseBean>> renameFile(@HeaderMap Map<String,String> map,@QueryMap Map<String,String> quremap);
     /**
      * 上传资料
      * @return

@@ -111,6 +111,7 @@ public class UpLoadDataActivity extends BaseActivity {
     ProjectInfoBean projectInfoBean;
     Disposable disposable;
     EditText etName;
+    String renameDir,renameOldName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -295,6 +296,8 @@ public class UpLoadDataActivity extends BaseActivity {
             @Override
             public void onRenameClick(String itemName, String dir) {
                 // 重命名
+                renameDir = dir;
+                renameOldName = itemName;
                 etName.setText(itemName);
                 reNameDialog.show();
             }
@@ -378,7 +381,25 @@ public class UpLoadDataActivity extends BaseActivity {
                     reNameDialog.dismiss();
                     break;
                 case R.id.tvSure:
-                    //TODO 上传更名请求
+                    // 上传更名请求
+                    String trim = etName.getText().toString().trim();
+                    if(!trim.isEmpty()){
+                        showToast("文件名不能为空");
+                        return;
+                    }
+                    if(trim.indexOf(".")==-1){
+                        showToast("文件后缀不能为空");
+                        return;
+                    }
+                    if(trim.lastIndexOf(".")==trim.length()-1){
+                        showToast("文件后缀不能为空");
+                        return;
+                    }
+                    if(trim.equals(renameOldName)){
+                        showToast("文件名未变更");
+                        return;
+                    }
+                    renameProjectFile(renameDir,renameOldName,trim);
                     break;
             }
         }
@@ -470,6 +491,36 @@ public class UpLoadDataActivity extends BaseActivity {
             }
         });
         
+    }
+    private void renameProjectFile(String dir,String name ,String newName){
+        Map<String,String> map = new HashMap<>();
+        map.put("projectId",id+"");
+        map.put("dir", dir);
+        map.put("name", name);
+        map.put("newName", newName);
+        MyModel.getNetData(MyModel.getRetrofitService().renameFile(MyModel.getRequestHeaderMap("/upload/project/data"), map), new ICallBack() {
+            @Override
+            public void onSuccess(Object data) {
+                showToast("修改文件成功");
+                getData();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                Log.d(TAG, "onFailure: ");
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
     }
 
     @Override
