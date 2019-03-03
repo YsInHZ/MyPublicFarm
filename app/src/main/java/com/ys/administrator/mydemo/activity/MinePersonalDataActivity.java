@@ -92,8 +92,13 @@ public class MinePersonalDataActivity extends BaseActivity {
         if (infoDetialBean.getUser().getMobile() != null) {
             etPhone.setText(infoDetialBean.getUser().getMobile());
         }
-        if (!TextUtils.isEmpty(infoDetialBean.getUser().getAvatar())) {
-            Glide.with(getContext()).load(Constant.BitmapBaseUrl+infoDetialBean.getUser().getAvatar()).into(ciHead);
+        if(!TextUtils.isEmpty(infoDetialBean.getUser().getAvatar())){
+            if(infoDetialBean.getUser().getAvatar().indexOf("http")==-1){
+                Glide.with(getContext()).load(Constant.BitmapBaseUrl+infoDetialBean.getUser().getAvatar()).into(ciHead);
+            }else {
+                Glide.with(getContext()).load(infoDetialBean.getUser().getAvatar()).into(ciHead);
+            }
+
         }
         // 自定义图片加载器
         ISNav.getInstance().init(new ImageLoader() {

@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -21,7 +22,6 @@ import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
 import com.ys.administrator.mydemo.http.DownLoadUtils;
-import com.ys.administrator.mydemo.http.DownloadService;
 import com.ys.administrator.mydemo.model.FileInfoModel;
 import com.ys.administrator.mydemo.model.FileListDataBean;
 import com.ys.administrator.mydemo.model.FileLocalListBean;
@@ -30,8 +30,8 @@ import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.util.FilePathUtil;
 import com.ys.administrator.mydemo.util.SPUtil;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +39,6 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 public class ProjectDetialActivity extends BaseActivity {
 
@@ -71,7 +65,11 @@ public class ProjectDetialActivity extends BaseActivity {
 
     int id;
     List<FileListDataBean> baseinfolists,repotrinfolists,buildinfolists,fitmentinfolists,otherinfolists;
-    String[] baseinfo,repotrinfo,buildinfo,fitmentinfo,otherinfo;
+    //存储解析后的所有数据集
+    Map<String,List<FileListDataBean>> mapLists;
+    //存储解析后的所有文件名集
+    List<String> keyLists;
+//    String[] baseinfo,repotrinfo,buildinfo,fitmentinfo,otherinfo;
     ProjectFilesAdapter adapter;
     List<FileLocalListBean> fileList;
     ProjectInfoBean projectInfoBean;
@@ -91,12 +89,12 @@ public class ProjectDetialActivity extends BaseActivity {
             showToast("未获取到项目详情");
             finish();
         }
-        Resources res=getResources();
-        baseinfo=res.getStringArray(R.array.baseinfo);
-        repotrinfo=res.getStringArray(R.array.repotrinfo);
-        buildinfo=res.getStringArray(R.array.buildinfo);
-        fitmentinfo=res.getStringArray(R.array.fitmentinfo);
-        otherinfo=res.getStringArray(R.array.otherinfo);
+//        Resources res=getResources();
+//        baseinfo=res.getStringArray(R.array.baseinfo);
+//        repotrinfo=res.getStringArray(R.array.repotrinfo);
+//        buildinfo=res.getStringArray(R.array.buildinfo);
+//        fitmentinfo=res.getStringArray(R.array.fitmentinfo);
+//        otherinfo=res.getStringArray(R.array.otherinfo);
     }
     private void initView() {
         tvEdit.setVisibility(View.INVISIBLE);
@@ -106,7 +104,8 @@ public class ProjectDetialActivity extends BaseActivity {
         adapter.setmItemClickListener(new ProjectFilesAdapter.OnItemClickListener() {
             @Override
             public void onDownClick(int x, int y) {
-                downLoadFile(fileList.get(x).localFiles.get(y).getUrl());
+                int[] aa ={x,y};
+                downLoadFile(fileList.get(x).localFiles.get(y).getUrl(),aa);
             }
 
             @Override
@@ -125,12 +124,13 @@ public class ProjectDetialActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(projectInfoBean==null)
+            return false;
         Bundle bundle = new Bundle();
         bundle.putInt("id",id);
         bundle.putString("name",projectInfoBean.getProject().getName());
-        String s1 = JSONObject.toJSONString(projectInfoBean);
+        bundle.putInt("typeid",projectInfoBean.getProject().getType());
         ProjectInfoBean.ProjectBean.InfoBean info = projectInfoBean.getProject().getInfo();
-        String s = info.toString();
         bundle.putString("gn", info.get功能());
         bundle.putString("dz", info.get地址());
         bundle.putString("jzmj", info.get建筑面积());
@@ -154,6 +154,8 @@ public class ProjectDetialActivity extends BaseActivity {
 
             @Override
             public void onFailure(String msg) {
+                showToast(msg);
+                finish();
                 Log.d(TAG, "onFailure: ");
             }
 
@@ -196,27 +198,44 @@ public class ProjectDetialActivity extends BaseActivity {
                 }
             }
         }
-
+        mapLists = new HashMap<>();
+        keyLists = new ArrayList<>();
         Map<String, Object> data = projectInfoBean.getProject().getData();
 //        data.get("工程基本信息");
-        Map<String, Object> zxxm = getMapObject(data, "装修项目基础资料");
-        Map<String, Object> tssb = getMapObject(data, "图审合格资料");
-        Map<String, Object> tjtz = getMapObject(data, "工程基本信息");
-        Map<String, Object> zxtz = getMapObject(data, "装修图纸");
-        Map<String, Object> qtzl = getMapObject(data, "其他资料");
-
-        baseinfolists = setListFile(zxxm);
-        repotrinfolists = setListFile(tssb);
-        buildinfolists = setListFile(tjtz);
-        fitmentinfolists = setListFile(zxtz);
-        otherinfolists = setListFile(qtzl);
+        Set<String> strings = data.keySet();
+        Iterator<String> iterator = strings.iterator();
+        while (iterator.hasNext()){
+            String key = iterator.next();
+            Object o = data.get(key);
+            if(o==null){
+                continue;
+            }
+            Map<String, Object> ss = (Map<String, Object>) o;
+            List<FileListDataBean> fileListDataBeans = setListFile(ss);
+            mapLists.put(key,fileListDataBeans);
+            keyLists.add(key);
+        }
+//        Map<String, Object> zxxm = getMapObject(data, "装修项目基础资料");
+//        Map<String, Object> tssb = getMapObject(data, "图审合格资料");
+//        Map<String, Object> tjtz = getMapObject(data, "工程基本信息");
+//        Map<String, Object> zxtz = getMapObject(data, "装修图纸");
+//        Map<String, Object> qtzl = getMapObject(data, "其他资料");
+//
+//        baseinfolists = setListFile(zxxm);
+//        repotrinfolists = setListFile(tssb);
+//        buildinfolists = setListFile(tjtz);
+//        fitmentinfolists = setListFile(zxtz);
+//        otherinfolists = setListFile(qtzl);
         // 设置数据到adapter
         fileList = new ArrayList<>();
-        fileList.addAll(setAdapterList(baseinfolists,projectInfoBean.getProject().getName()+ "/装修项目基础资料"));
-        fileList.addAll(setAdapterList(repotrinfolists,projectInfoBean.getProject().getName()+ "/图审合格资料"));
-        fileList.addAll(setAdapterList(buildinfolists,projectInfoBean.getProject().getName()+ "/工程基本信息"));
-        fileList.addAll(setAdapterList(fitmentinfolists,projectInfoBean.getProject().getName()+ "/装修图纸"));
-        fileList.addAll(setAdapterList(otherinfolists,projectInfoBean.getProject().getName()+ "/其他资料"));
+        for (int i = 0; i < keyLists.size(); i++) {
+            fileList.addAll(setAdapterList(mapLists.get(keyLists.get(i)),projectInfoBean.getProject().getName()+ "/"+keyLists.get(i)));
+        }
+//        fileList.addAll(setAdapterList(baseinfolists,projectInfoBean.getProject().getName()+ "/装修项目基础资料"));
+//        fileList.addAll(setAdapterList(repotrinfolists,projectInfoBean.getProject().getName()+ "/图审合格资料"));
+//        fileList.addAll(setAdapterList(buildinfolists,projectInfoBean.getProject().getName()+ "/工程基本信息"));
+//        fileList.addAll(setAdapterList(fitmentinfolists,projectInfoBean.getProject().getName()+ "/装修图纸"));
+//        fileList.addAll(setAdapterList(otherinfolists,projectInfoBean.getProject().getName()+ "/其他资料"));
         adapter.setData(fileList);
 
     }
@@ -291,26 +310,32 @@ public class ProjectDetialActivity extends BaseActivity {
         }
         return infolist;
     }
-    private void downLoadFile(String url){
+    private void downLoadFile(String url,int[] pos){
         DownLoadUtils instance = DownLoadUtils.getInstance();
-        instance.downloadFile(url, new DownLoadUtils.DownloadListener() {
+        instance.downloadFile(url, pos,new DownLoadUtils.DownloadListener() {
             @Override
             public void onStart() {
 
             }
 
             @Override
-            public void onProgress(int currentLength) {
+            public void onProgress(int currentLength, int[] pos) {
+                runOnUiThread(() -> {
+                    fileList.get(pos[0]).localFiles.get(pos[1]).setIsdownLoad(true);
+                    fileList.get(pos[0]).localFiles.get(pos[1]).setDownloadLenth(currentLength);
+                    adapter.notifyDataSetChanged();
+                });
 
             }
 
             @Override
-            public void onFinish(String localPath) {
+            public void onFinish(String localPath, int[] pos) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         showToast("文件已下载到"+localPath);
-                        getData();
+                        fileList.get(pos[0]).localFiles.get(pos[1]).setIsdownLoad(false);
+                        adapter.notifyDataSetChanged();
                     }
                 });
             }
@@ -328,7 +353,7 @@ public class ProjectDetialActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode==111 && requestCode == 200){
+        if(requestCode==111 && resultCode == 200){
             getData();
         }
     }

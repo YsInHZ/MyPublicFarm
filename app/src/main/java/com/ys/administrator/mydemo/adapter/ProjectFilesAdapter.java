@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ys.administrator.mydemo.R;
@@ -79,8 +80,10 @@ public class ProjectFilesAdapter extends RecyclerView.Adapter {
             }else {
                 ((DishViewHolder) holder).tvDown.setText("下载");
             }
-            if(item.isWaitingForUp()){
+            if(item.isIsdownLoad() &&item.getDownloadLenth()>=0 ){
                 ((DishViewHolder) holder).tvDown.setVisibility(View.GONE);
+                ((DishViewHolder) holder).pbProgress.setVisibility(View.VISIBLE);
+                ((DishViewHolder) holder).pbProgress.setProgress(item.getDownloadLenth());
                 ((DishViewHolder) holder).tvDown.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -88,6 +91,7 @@ public class ProjectFilesAdapter extends RecyclerView.Adapter {
                 });
             }else {
                 ((DishViewHolder) holder).tvDown.setVisibility(View.VISIBLE);
+                ((DishViewHolder) holder).pbProgress.setVisibility(View.GONE);
                 final int[] tresPosition = getTresPosition(position);
                 ((DishViewHolder) holder).tvDown.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -127,12 +131,14 @@ public class ProjectFilesAdapter extends RecyclerView.Adapter {
     private class DishViewHolder extends RecyclerView.ViewHolder{
         private TextView tvName;
         private TextView tvDown;
+        private ProgressBar pbProgress;
 
 
         public DishViewHolder(View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvName);
             tvDown = itemView.findViewById(R.id.tvDown);
+            pbProgress = itemView.findViewById(R.id.pbProgress);
         }
 
     }

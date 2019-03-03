@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.ys.administrator.mydemo.R;
+import com.ys.administrator.mydemo.adapter.ItemChoisTZeAdapter;
 import com.ys.administrator.mydemo.adapter.ItemChoiseAdapter;
 import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
@@ -27,7 +28,9 @@ public class ItemChoiseActivity extends BaseActivity {
     RecyclerView recycler;
 
     ItemChoiseAdapter adapter;
+    ItemChoisTZeAdapter adaptertz;
     StatusListBean data;
+    int typeid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +39,7 @@ public class ItemChoiseActivity extends BaseActivity {
         initToolbar("选择");
         commonPresenter = new CommonPresenter();
         commonPresenter.attachView(this);
+        typeid = getIntent().getIntExtra("typeid",-1);
         initRecycler();
         getTypeList();
     }
@@ -43,7 +47,13 @@ public class ItemChoiseActivity extends BaseActivity {
     private void initRecycler() {
         recycler.setLayoutManager(new LinearLayoutManager(mContext));
         adapter = new ItemChoiseAdapter(R.layout.item_choise,new ArrayList<>());
-        recycler.setAdapter(adapter);
+        adaptertz = new ItemChoisTZeAdapter(R.layout.item_choise,new ArrayList<>());
+        if(typeid==-1){
+            recycler.setAdapter(adapter);
+        }else {
+            recycler.setAdapter(adaptertz);
+        }
+
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -54,6 +64,18 @@ public class ItemChoiseActivity extends BaseActivity {
                 finish();
             }
         });
+        adaptertz.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent i = new Intent();
+                StatusListBean.ListBean.TypesBean item = (StatusListBean.ListBean.TypesBean) adapter.getItem(position);
+                i.putExtra("id",item.getId());
+                i.putExtra("name",item.getName());
+                setResult(200,i);
+                finish();
+            }
+        });
+
     }
     private void getTypeList() {
         showUpingDialog();
@@ -61,7 +83,18 @@ public class ItemChoiseActivity extends BaseActivity {
             @Override
             public void onSuccess(StatusListBean data) {
                 ItemChoiseActivity.this.data = data;
-                adapter.setNewData(data.getList());
+                if(typeid==-1){
+                    adapter.setNewData(data.getList());
+                }else {
+                    for (int i = 0; i < data.getList().size(); i++) {
+                        if( data.getList().get(i).getId()==typeid){
+                            adaptertz.setNewData(data.getList().get(i).getTypes());
+                            break;
+                        }
+                    }
+
+                }
+
             }
 
             @Override

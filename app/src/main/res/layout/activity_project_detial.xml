@@ -53,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="110dp"
-                    android:text="联系人"
+                    android:text=""
                     android:textColor="#ff000000"
                     android:textSize="15sp" />
         </RelativeLayout>
@@ -79,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="110dp"
-                    android:text="联系人"
+                    android:text=""
                     android:textColor="#ff000000"
                     android:textSize="15sp" />
         </RelativeLayout>
@@ -105,7 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="110dp"
-                    android:text="联系人"
+                    android:text=""
                     android:textColor="#ff000000"
                     android:textSize="15sp" />
             </RelativeLayout>
@@ -131,7 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="110dp"
-                    android:text="联系人"
+                    android:text=""
                     android:textColor="#ff000000"
                     android:textSize="15sp" />
                 <TextView
@@ -165,7 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="110dp"
-                    android:text="联系人"
+                    android:text=""
                     android:textColor="#ff000000"
                     android:textSize="15sp" />
             </RelativeLayout>

@@ -2,11 +2,23 @@ package com.ys.administrator.mydemo.model;
 
 import java.util.List;
 
-import top.defaults.view.PickerView;
+public class test {
 
-public class StatusListBean extends BaseBean {
+    /**
+     * code : 200
+     * list : [{"id":1,"name":"图审","types":[{"id":1,"name":"土建"},{"id":3,"name":"装修"}]},{"id":2,"name":"小微","types":[{"id":2,"name":"土建"},{"id":4,"name":"装修"}]}]
+     */
 
+    private int code;
     private List<ListBean> list;
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
 
     public List<ListBean> getList() {
         return list;
@@ -16,31 +28,16 @@ public class StatusListBean extends BaseBean {
         this.list = list;
     }
 
-    public static class ListBean implements  PickerView.PickerItem{
-        public ListBean() {
-        }
-
-        public ListBean(String name) {
-            this.name = name;
-        }
-
+    public static class ListBean {
         /**
          * id : 1
-         * name : 开始设计
+         * name : 图审
+         * types : [{"id":1,"name":"土建"},{"id":3,"name":"装修"}]
          */
-
 
         private int id;
         private String name;
         private List<TypesBean> types;
-
-        public List<TypesBean> getTypes() {
-            return types;
-        }
-
-        public void setTypes(List<TypesBean> types) {
-            this.types = types;
-        }
 
         public int getId() {
             return id;
@@ -58,10 +55,14 @@ public class StatusListBean extends BaseBean {
             this.name = name;
         }
 
-        @Override
-        public String getText() {
-            return name;
+        public List<TypesBean> getTypes() {
+            return types;
         }
+
+        public void setTypes(List<TypesBean> types) {
+            this.types = types;
+        }
+
         public static class TypesBean {
             /**
              * id : 1

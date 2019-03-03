@@ -1,10 +1,15 @@
 package com.ys.administrator.mydemo.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import com.alibaba.fastjson.JSON;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.ys.administrator.mydemo.R;
@@ -41,6 +46,8 @@ public class MsgActivity extends BaseActivity {
         initView();
         getData(-1);
     }
+
+
 
     private void getData(int id) {
         if (id > 0) {
@@ -79,7 +86,8 @@ public class MsgActivity extends BaseActivity {
 
         @Override
         public void onComplete() {
-
+            refreshLayout.finishLoadmore();
+            refreshLayout.finishRefreshing();
         }
     };
 
@@ -115,6 +123,29 @@ public class MsgActivity extends BaseActivity {
 
             }
         });
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                MsgListBean.PageBean item = (MsgListBean.PageBean) adapter.getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putString("data", JSON.toJSONString(item));
+                openActivityWithResult(MsgDetialActivity.class,bundle,114);
+
+            }
+        });
+    }
+
+    @Override
+    protected void whenActivityFinish() {
+        super.whenActivityFinish();
+        setResult(200);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==114 && resultCode == 200 ){
+            getData(-1);
+        }
     }
 
     @Override

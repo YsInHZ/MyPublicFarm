@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -48,48 +50,6 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-/**
- * ----------装修项目基础资料-----------
- * 营业执照名称或预核名
- * 原始建筑图纸
- * 租赁合同
- * 建筑消防验收意见书
- * 建筑合法性证明文件
- * 建筑功能改变文件
- * 现场照片或视频
- * --------------------图审合格资料---------
- * 装修设计合同
- * 授权委托书
- * 委托人身份证复印件
- * 项目技术复核表
- * 项目投资金额
- * 项目立项文件、批文或备案文件
- * 建设用地规划许可证
- * 规划红线图及规划部门盖章的总平面图
- * 建设项目规划条件及面积预测绘报告
- * 初步设计批复或会议纪要
- * 建筑节能审查意见书及附节能评估报告书（表）或节能登记表
- * 工程地址勘察报告及外业见证报告
- * 勘察和设计资质证书复印件（非本省勘察设计单位提供进浙备案）
- * 勘察和设计合同复印件
- * 建筑设计合同
- * 项目投资金额
- * ---------------------工程基本信息--------------
- * 建筑
- * 给排水
- * 电气
- * 暖通
- * 结构（含计算书）
- * 节能（含设计表、自评表）
- * ----------装修图纸-----------
- * 装饰
- * 给排水
- * 电气
- * 暖通
- * 结构（含计算书）
- * --------其他资料----------
- * 其他资料
- */
 
 /**
  * TODO 首先获取项目资料详情，
@@ -105,8 +65,12 @@ public class UpLoadDataActivity extends BaseActivity {
     MyFillDialog choiseWayDialog;
     MyFillDialog reNameDialog;
     int pos;
-    List<FileListDataBean> baseinfolists,repotrinfolists,buildinfolists,fitmentinfolists,otherinfolists;
-    String[] baseinfo,repotrinfo,buildinfo,fitmentinfo,otherinfo;
+//    List<FileListDataBean> baseinfolists,repotrinfolists,buildinfolists,fitmentinfolists,otherinfolists;
+//    String[] baseinfo,repotrinfo,buildinfo,fitmentinfo,otherinfo;
+    //存储解析后的所有数据集
+    Map<String,List<FileListDataBean>> mapLists;
+    //存储解析后的所有文件名集
+    List<String> keyLists;
     int id;
     ProjectInfoBean projectInfoBean;
     Disposable disposable;
@@ -124,7 +88,17 @@ public class UpLoadDataActivity extends BaseActivity {
         commonPresenter = new CommonPresenter();
         commonPresenter.attachView(this);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_save, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return false;
+    }
     /**
      * 获取项目详情数据
      */
@@ -157,46 +131,78 @@ public class UpLoadDataActivity extends BaseActivity {
      * 读取项目详情-各个资料类别数据
      */
     private void setDataInfo() {
+        mapLists = new HashMap<>();
+        keyLists = new ArrayList<>();
         Map<String, Object> data = projectInfoBean.getProject().getData();
 //        data.get("工程基本信息");
-        Map<String, Object> zxxm = getMapObject(data, "装修项目基础资料");
-        Map<String, Object> tssb = getMapObject(data, "图审合格资料");
-        Map<String, Object> tjtz = getMapObject(data, "工程基本信息");
-        Map<String, Object> zxtz = getMapObject(data, "装修图纸");
-        Map<String, Object> qtzl = getMapObject(data, "其他资料");
-
-        baseinfolists = setListFile(zxxm);
-        repotrinfolists = setListFile(tssb);
-        buildinfolists = setListFile(tjtz);
-        fitmentinfolists = setListFile(zxtz);
-        otherinfolists = setListFile(qtzl);
-
-        if(tvTypeName.getText().toString().trim().isEmpty()){
-            tvTypeName.setText("装修项目基础资料");
-        }
-        try {
-            String trim = tvTypeName.getText().toString().trim();
-            switch (trim){
-                case "装修项目基础资料":
-                    adapter.setData(baseinfolists);
-                    break;
-                case "图审合格资料":
-                    adapter.setData(repotrinfolists);
-                    break;
-                case "工程基本信息":
-                    adapter.setData(buildinfolists);
-                    break;
-                case "装修图纸":
-                    adapter.setData(fitmentinfolists);
-                    break;
-                case "其他资料":
-                    adapter.setData(otherinfolists);
-                    break;
+        Set<String> strings = data.keySet();
+        Iterator<String> iterator = strings.iterator();
+        while (iterator.hasNext()){
+            String key = iterator.next();
+            if("图审合格资料".equals(key)){
+                continue;
             }
-
-        }catch (Exception e){
-            Log.d(TAG, "setDataInfo: ");
+            Object o = data.get(key);
+            if(o==null){
+                continue;
+            }
+            Map<String, Object> ss = (Map<String, Object>) o;
+            List<FileListDataBean> fileListDataBeans = setListFile(ss);
+            mapLists.put(key,fileListDataBeans);
+            keyLists.add(key);
         }
+//        data.get("工程基本信息");
+//        Map<String, Object> zxxm = getMapObject(data, "装修项目基础资料");
+//        Map<String, Object> tssb = getMapObject(data, "图审合格资料");
+//        Map<String, Object> tjtz = getMapObject(data, "工程基本信息");
+//        Map<String, Object> zxtz = getMapObject(data, "装修图纸");
+//        Map<String, Object> qtzl = getMapObject(data, "其他资料");
+
+//        baseinfolists = setListFile(zxxm);
+//        repotrinfolists = setListFile(tssb);
+//        buildinfolists = setListFile(tjtz);
+//        fitmentinfolists = setListFile(zxtz);
+//        otherinfolists = setListFile(qtzl);
+        if(tvTypeName.getText().toString().trim().isEmpty()){
+            for (int i = 0; i < keyLists.size(); i++) {
+                if(keyLists.get(i).indexOf("基础资料")>-1){
+                    tvTypeName.setText(keyLists.get(i));
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < keyLists.size(); i++) {
+            if(tvTypeName.getText().toString().trim().equals(keyLists.get(i))){
+                adapter.setData(mapLists.get(keyLists.get(i)));
+                break;
+            }
+        }
+//        if(tvTypeName.getText().toString().trim().isEmpty()){
+//            tvTypeName.setText("装修项目基础资料");
+//        }
+//        try {
+//            String trim = tvTypeName.getText().toString().trim();
+//            switch (trim){
+//                case "装修项目基础资料":
+//                    adapter.setData(baseinfolists);
+//                    break;
+//                case "图审合格资料":
+//                    adapter.setData(repotrinfolists);
+//                    break;
+//                case "工程基本信息":
+//                    adapter.setData(buildinfolists);
+//                    break;
+//                case "装修图纸":
+//                    adapter.setData(fitmentinfolists);
+//                    break;
+//                case "其他资料":
+//                    adapter.setData(otherinfolists);
+//                    break;
+//            }
+//
+//        }catch (Exception e){
+//            Log.d(TAG, "setDataInfo: ");
+//        }
 
 
     }
@@ -269,11 +275,11 @@ public class UpLoadDataActivity extends BaseActivity {
             }
         });
         Resources res=getResources();
-        baseinfo=res.getStringArray(R.array.baseinfo);
-        repotrinfo=res.getStringArray(R.array.repotrinfo);
-        buildinfo=res.getStringArray(R.array.buildinfo);
-        fitmentinfo=res.getStringArray(R.array.fitmentinfo);
-        otherinfo=res.getStringArray(R.array.otherinfo);
+//        baseinfo=res.getStringArray(R.array.baseinfo);
+//        repotrinfo=res.getStringArray(R.array.repotrinfo);
+//        buildinfo=res.getStringArray(R.array.buildinfo);
+//        fitmentinfo=res.getStringArray(R.array.fitmentinfo);
+//        otherinfo=res.getStringArray(R.array.otherinfo);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new RestaurantMenuRightAdapter(mContext,new ArrayList<>());
@@ -413,11 +419,16 @@ public class UpLoadDataActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rlChoiseType:
+                if(keyLists==null || keyLists.size()==0){
+                    showToast("数据加载中");
+                    return;
+                }
                 if(projectInfoBean!=null && checkUping()){
                     Bundle bundle = new Bundle();
-                    if(projectInfoBean.getProject().getType()==2){
+                    if(projectInfoBean.getProject().getType()==4){
                        bundle.putString("data","small");
                     }
+                    bundle.putString("list",JSON.toJSONString(keyLists));
                     openActivityWithResult(ProgressChoiseActivity.class,bundle,200);
                 }
                 break;
@@ -433,23 +444,29 @@ public class UpLoadDataActivity extends BaseActivity {
     private boolean checkUping() {
         String name = tvTypeName.getText().toString().trim();
         List<FileListDataBean> list = new ArrayList<>();
-        switch (name){
-            case "装修项目基础资料":
-                list = baseinfolists;
+        for (int i = 0; i < keyLists.size(); i++) {
+            if(name.equals(keyLists.get(i))){
+                list = mapLists.get(keyLists.get(i));
                 break;
-            case "图审合格资料":
-                list = repotrinfolists;
-                break;
-            case "工程基本信息":
-                list = buildinfolists;
-                break;
-            case "装修图纸":
-                list = fitmentinfolists;
-                break;
-            case "其他资料":
-                list = otherinfolists;
-                break;
+            }
         }
+//        switch (name){
+//            case "装修项目基础资料":
+//                list = baseinfolists;
+//                break;
+//            case "图审合格资料":
+//                list = repotrinfolists;
+//                break;
+//            case "工程基本信息":
+//                list = buildinfolists;
+//                break;
+//            case "装修图纸":
+//                list = fitmentinfolists;
+//                break;
+//            case "其他资料":
+//                list = otherinfolists;
+//                break;
+//        }
         for (int i = 0; i <list.size() ; i++) {
             List<FileInfoModel> filePath = list.get(i).getFilePath();
             if(filePath!=null){
@@ -539,33 +556,42 @@ public class UpLoadDataActivity extends BaseActivity {
                 String name = tvTypeName.getText().toString().trim();
                 String dir = "";
                 //1.根据当前的文件夹档案、点击选择文件位置pos 将未上传完成的图片放入adapter 2.获取点击位置的子文件夹名称
-                switch (name){
-                    case "装修项目基础资料":
-                        dir = baseinfolists.get(pos).getItemName();
-                        baseinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-                        adapter.setData(baseinfolists);
+                for (int i = 0; i < keyLists.size(); i++) {
+                    if(name.equals(keyLists.get(i))){
+                        List<FileListDataBean> fileListDataBeans = mapLists.get(keyLists.get(i));
+                        dir = fileListDataBeans.get(pos).getItemName();
+                        fileListDataBeans.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+                        adapter.setData(fileListDataBeans);
                         break;
-                    case "图审合格资料":
-                        dir = repotrinfolists.get(pos).getItemName();
-                        repotrinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-                        adapter.setData(repotrinfolists);
-                        break;
-                    case "工程基本信息":
-                        dir = buildinfolists.get(pos).getItemName();
-                        buildinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-                        adapter.setData(buildinfolists);
-                        break;
-                    case "装修图纸":
-                        dir = fitmentinfolists.get(pos).getItemName();
-                        fitmentinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-                        adapter.setData(fitmentinfolists);
-                        break;
-                    case "其他资料":
-                        dir = otherinfolists.get(pos).getItemName();
-                        otherinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-                        adapter.setData(otherinfolists);
-                        break;
+                    }
                 }
+//                switch (name){
+//                    case "装修项目基础资料":
+//                        dir = baseinfolists.get(pos).getItemName();
+//                        baseinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+//                        adapter.setData(baseinfolists);
+//                        break;
+//                    case "图审合格资料":
+//                        dir = repotrinfolists.get(pos).getItemName();
+//                        repotrinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+//                        adapter.setData(repotrinfolists);
+//                        break;
+//                    case "工程基本信息":
+//                        dir = buildinfolists.get(pos).getItemName();
+//                        buildinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+//                        adapter.setData(buildinfolists);
+//                        break;
+//                    case "装修图纸":
+//                        dir = fitmentinfolists.get(pos).getItemName();
+//                        fitmentinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+//                        adapter.setData(fitmentinfolists);
+//                        break;
+//                    case "其他资料":
+//                        dir = otherinfolists.get(pos).getItemName();
+//                        otherinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+//                        adapter.setData(otherinfolists);
+//                        break;
+//                }
                 //拼接出路径
                 dir = name+File.separator+dir;
                 upLoadFile(pathList.get(0),dir);
@@ -575,24 +601,31 @@ public class UpLoadDataActivity extends BaseActivity {
         }else if(requestCode == 200 && resultCode == 200 && data!=null){
             String name = data.getStringExtra("name");
             tvTypeName.setText(name);
-            switch (name){
-                case "装修项目基础资料":
-                    adapter.setData(baseinfolists);
+            for (int i = 0; i < keyLists.size(); i++) {
+                if(name.equals(keyLists.get(i))){
+                    List<FileListDataBean> fileListDataBeans = mapLists.get(keyLists.get(i));
+                    adapter.setData(fileListDataBeans);
                     break;
-                case "图审合格资料":
-                    adapter.setData(repotrinfolists);
-                    break;
-                case "工程基本信息":
-                    adapter.setData(buildinfolists);
-                    break;
-                case "装修图纸":
-                    adapter.setData(fitmentinfolists);
-                    break;
-                case "其他资料":
-                    adapter.setData(otherinfolists);
-                    break;
-
+                }
             }
+//            switch (name){
+//                case "装修项目基础资料":
+//                    adapter.setData(baseinfolists);
+//                    break;
+//                case "图审合格资料":
+//                    adapter.setData(repotrinfolists);
+//                    break;
+//                case "工程基本信息":
+//                    adapter.setData(buildinfolists);
+//                    break;
+//                case "装修图纸":
+//                    adapter.setData(fitmentinfolists);
+//                    break;
+//                case "其他资料":
+//                    adapter.setData(otherinfolists);
+//                    break;
+//
+//            }
         }else if(requestCode == 400 && resultCode == 200 && data!=null){
             String filepath = data.getStringExtra("data");
             File file = new File(filepath);
@@ -604,33 +637,42 @@ public class UpLoadDataActivity extends BaseActivity {
             String name = tvTypeName.getText().toString().trim();
             String dir = "";
             //1.根据当前的文件夹档案、点击选择文件位置pos 将未上传完成的图片放入adapter 2.获取点击位置的子文件夹名称
-            switch (name){
-                case "装修项目基础资料":
-                    dir = baseinfolists.get(pos).getItemName();
-                    baseinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-                    adapter.setData(baseinfolists);
+            for (int i = 0; i < keyLists.size(); i++) {
+                if(name.equals(keyLists.get(i))){
+                    List<FileListDataBean> fileListDataBeans = mapLists.get(keyLists.get(i));
+                    dir = fileListDataBeans.get(pos).getItemName();
+                    fileListDataBeans.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+                    adapter.setData(fileListDataBeans);
                     break;
-                case "图审合格资料":
-                    dir = repotrinfolists.get(pos).getItemName();
-                    repotrinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-                    adapter.setData(repotrinfolists);
-                    break;
-                case "工程基本信息":
-                    dir = buildinfolists.get(pos).getItemName();
-                    buildinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-                    adapter.setData(buildinfolists);
-                    break;
-                case "装修图纸":
-                    dir = fitmentinfolists.get(pos).getItemName();
-                    fitmentinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-                    adapter.setData(fitmentinfolists);
-                    break;
-                case "其他资料":
-                    dir = otherinfolists.get(pos).getItemName();
-                    otherinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-                    adapter.setData(otherinfolists);
-                    break;
+                }
             }
+//            switch (name){
+//                case "装修项目基础资料":
+//                    dir = baseinfolists.get(pos).getItemName();
+//                    baseinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+//                    adapter.setData(baseinfolists);
+//                    break;
+//                case "图审合格资料":
+//                    dir = repotrinfolists.get(pos).getItemName();
+//                    repotrinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+//                    adapter.setData(repotrinfolists);
+//                    break;
+//                case "工程基本信息":
+//                    dir = buildinfolists.get(pos).getItemName();
+//                    buildinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+//                    adapter.setData(buildinfolists);
+//                    break;
+//                case "装修图纸":
+//                    dir = fitmentinfolists.get(pos).getItemName();
+//                    fitmentinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+//                    adapter.setData(fitmentinfolists);
+//                    break;
+//                case "其他资料":
+//                    dir = otherinfolists.get(pos).getItemName();
+//                    otherinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
+//                    adapter.setData(otherinfolists);
+//                    break;
+//            }
             //拼接出路径
             dir = name+File.separator+dir;
             upLoadFile(filepath,dir);
@@ -665,6 +707,8 @@ public class UpLoadDataActivity extends BaseActivity {
 
             @Override
             public void onFailure(String msg) {
+                showToast(msg);
+                finish();
                 Log.d(TAG, "onFailure: ");
             }
 

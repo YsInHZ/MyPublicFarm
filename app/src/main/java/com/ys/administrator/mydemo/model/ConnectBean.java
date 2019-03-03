@@ -26,7 +26,7 @@ public class ConnectBean extends BaseBean {
 
         private String qq;
         private String wechat;
-        private String phone;
+        private String mobile;
         private long at;
 
         public String getQq() {
@@ -45,12 +45,12 @@ public class ConnectBean extends BaseBean {
             this.wechat = wechat;
         }
 
-        public String getPhone() {
-            return phone;
+        public String getMobile() {
+            return mobile;
         }
 
-        public void setPhone(String phone) {
-            this.phone = phone;
+        public void setMobile(String mobile) {
+            this.mobile = mobile;
         }
 
         public long getAt() {

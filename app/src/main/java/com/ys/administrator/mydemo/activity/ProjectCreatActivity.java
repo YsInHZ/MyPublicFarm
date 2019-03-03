@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
+import com.ys.administrator.mydemo.model.ProjectCreatBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
 import com.ys.administrator.mydemo.util.PhoneUtil;
 
@@ -38,7 +40,7 @@ public class ProjectCreatActivity extends BaseActivity {
     @BindView(R.id.etPjAddress)
     EditText etPjAddress;
 
-    int typeid;
+    int typeid=-1,typefinalid=-1;
     String phone;
     String leader;
     String pjname;
@@ -47,6 +49,8 @@ public class ProjectCreatActivity extends BaseActivity {
     String address;
     @BindView(R.id.tvPjType)
     TextView tvPjType;
+    @BindView(R.id.tvTZType)
+    TextView tvTZType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,21 +80,23 @@ public class ProjectCreatActivity extends BaseActivity {
         showUpingDialog();
         Map<String, Object> map = new HashMap<>();
         // 创建文件的参数
-        map.put("type",typeid);
-        map.put("name",pjname);
-        Map<String,String> mapinfo = new HashMap<>();
-        mapinfo.put("联系",leader);
-        mapinfo.put("电话",phone);
-        mapinfo.put("功能",gn);
-        mapinfo.put("建筑面积",area);
-        mapinfo.put("地址",address);
-        map.put("info",mapinfo);
+        map.put("type", typefinalid);
+        map.put("name", pjname);
+        Map<String, String> mapinfo = new HashMap<>();
+        mapinfo.put("联系", leader);
+        mapinfo.put("电话", phone);
+        mapinfo.put("功能", gn);
+        mapinfo.put("建筑面积", area);
+        mapinfo.put("地址", address);
+        map.put("info", mapinfo);
 
-        MyModel.getNetData(MyModel.getRetrofitService().creatProject(MyModel.getRequestHeaderMap("/project"), MyModel.getJsonRequestBody(map)), new ICallBack() {
+        MyModel.getNetData(MyModel.getRetrofitService().creatProject(MyModel.getRequestHeaderMap("/project"), MyModel.getJsonRequestBody(map)), new ICallBack<ProjectCreatBean>() {
             @Override
-            public void onSuccess(Object data) {
+            public void onSuccess(ProjectCreatBean data) {
                 showToast("创建项目成功");
-                setResult(200);
+                Intent intent = new Intent();
+                intent.putExtra("id",data.getProject().getId());
+                setResult(200,intent);
                 finish();
             }
 
@@ -101,7 +107,7 @@ public class ProjectCreatActivity extends BaseActivity {
 
             @Override
             public void onError() {
-
+                closeUpingDialog();
             }
 
             @Override
@@ -143,8 +149,12 @@ public class ProjectCreatActivity extends BaseActivity {
             showToast("请输入地址");
             return false;
         }
-        if (typeid==0) {
+        if (typeid == -1) {
             showToast("请选择项目类型");
+            return false;
+        }
+        if (typefinalid == -1) {
+            showToast("请选择项目土建/装修");
             return false;
         }
         return true;
@@ -155,16 +165,38 @@ public class ProjectCreatActivity extends BaseActivity {
 
     }
 
-    @OnClick(R.id.rxPjtype)
-    public void onViewClicked() {
-        openActivityWithResult(ItemChoiseActivity.class, null, 120);
-    }
+//    @OnClick({R.id.rxPjtype,R.id.rxTZtype})
+//    public void onViewClicked() {
+//        switch ()
+//        openActivityWithResult(ItemChoiseActivity.class, null, 120);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 120 && resultCode == 200 && data != null) {
             typeid = data.getIntExtra("id", 0);
             tvPjType.setText(data.getStringExtra("name"));
+        }else if(requestCode == 125 && resultCode == 200 && data != null){
+            typefinalid = data.getIntExtra("id", 0);
+            tvTZType.setText(data.getStringExtra("name"));
+        }
+    }
+
+    @OnClick({R.id.rxPjtype, R.id.rxTZtype})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.rxPjtype:
+                openActivityWithResult(ItemChoiseActivity.class, null, 120);
+                break;
+            case R.id.rxTZtype:
+                if(typeid==-1){
+                    showToast("请先选择项目类型");
+                    return;
+                }
+                Bundle bundle = new Bundle();
+                bundle.putInt("typeid",typeid);
+                openActivityWithResult(ItemChoiseActivity.class, bundle, 125);
+                break;
         }
     }
 }

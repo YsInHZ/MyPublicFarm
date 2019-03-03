@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.alibaba.fastjson.JSONArray;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.adapter.ItemChoiseAdapter;
@@ -43,14 +44,17 @@ public class ProgressChoiseActivity extends BaseActivity {
     private void initData() {
         String data = getIntent().getStringExtra("data");
         boolean isSmall = "small".equals(data);
+        String list = getIntent().getStringExtra("list");
         lists = new ArrayList<>();
-        lists.add(new StatusListBean.ListBean("装修项目基础资料"));
-        if(!isSmall){
-            lists.add(new StatusListBean.ListBean("图审合格资料"));
+        List<String> strings = JSONArray.parseArray(list, String.class);
+        for (int i = 0; i < strings.size(); i++) {
+            if(isSmall &&  strings.get(i).indexOf("图审上传资料")!=-1 ){
+                continue;
+            }
+            lists.add(new StatusListBean.ListBean(strings.get(i)));
         }
-        lists.add(new StatusListBean.ListBean("工程基本信息"));
-        lists.add(new StatusListBean.ListBean("装修图纸"));
-        lists.add(new StatusListBean.ListBean("其他资料"));
+
+
     }
 
     private void initRecycler() {

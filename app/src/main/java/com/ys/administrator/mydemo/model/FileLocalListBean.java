@@ -20,6 +20,24 @@ public class FileLocalListBean {
 
     public static class LocalFile extends FileInfoModel{
         private String localPath;
+        private int  downloadLenth = -1;
+        private boolean isdownLoad = false;
+
+        public int getDownloadLenth() {
+            return downloadLenth;
+        }
+
+        public void setDownloadLenth(int downloadLenth) {
+            this.downloadLenth = downloadLenth;
+        }
+
+        public boolean isIsdownLoad() {
+            return isdownLoad;
+        }
+
+        public void setIsdownLoad(boolean isdownLoad) {
+            this.isdownLoad = isdownLoad;
+        }
 
         public LocalFile(String name, String url, String localPath) {
             super(name, url);

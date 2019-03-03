@@ -162,10 +162,19 @@ public class IndexActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 110 && resultCode==200){
-            //TODO 刷新列表数据
-//            fragments.get(0).
+            // 刷新列表数据
+            int dataid = data.getIntExtra("id", -1);
+
+            fragments.get(0).onActivityResult(requestCode,resultCode,data);
+            if(dataid!=-1){
+                Bundle bundle = new Bundle();
+                bundle.putInt("id",dataid);
+                openActivity(UpLoadDataActivity.class,bundle);
+            }
         }else if(requestCode == 550 ){//更换个人资料
             fragments.get(1).onActivityResult(requestCode,resultCode,data);
+        }else if(requestCode == 555 && resultCode==200){//消息中心
+            fragments.get(0).onActivityResult(requestCode,resultCode,data);
         }
     }
 }

@@ -2,8 +2,10 @@ package com.ys.administrator.mydemo.http;
 
 import com.ys.administrator.mydemo.model.BaseBean;
 import com.ys.administrator.mydemo.model.ConnectBean;
+import com.ys.administrator.mydemo.model.DocBean;
 import com.ys.administrator.mydemo.model.FileUpBean;
 import com.ys.administrator.mydemo.model.MsgListBean;
+import com.ys.administrator.mydemo.model.ProjectCreatBean;
 import com.ys.administrator.mydemo.model.ProjectInfoBean;
 import com.ys.administrator.mydemo.model.ProjectListBean;
 import com.ys.administrator.mydemo.model.StatusListBean;
@@ -83,6 +85,7 @@ public interface RetrofitService {
      */
     @GET("/user/setMobile")
     Observable<Response<UserInfoBean>> setMobile(@HeaderMap Map<String,String> map,@Body RequestBody body);
+
     /**
      * 获取token
      * @return
@@ -101,6 +104,12 @@ public interface RetrofitService {
      */
     @GET("/project/type/list")
     Observable<Response<StatusListBean>> getTypeList();
+    /**
+     * 获取文档模板列表
+     * @return
+     */
+    @GET("/doc/template")
+    Observable<Response<DocBean>> getDocList();
     /**
      * 获取项目详情
      * @return
@@ -151,12 +160,22 @@ public interface RetrofitService {
     Observable<Response<MsgListBean>> getMsg(@HeaderMap Map<String,String> map, @Query("lastId") int id);
     @GET("/user/msg")
     Observable<Response<MsgListBean>> getMsg(@HeaderMap Map<String,String> map);
+    @GET("/user/msg")
+    Observable<Response<MsgListBean>> getMsg(@HeaderMap Map<String,String> map, @Query("onlyUnread") boolean onlyUnread);
+
+    /**
+     * 消息设为已读
+     * @param map
+     * @return
+     */
+    @GET("/user/msg/read")
+    Observable<Response<BaseBean>> msgRead(@HeaderMap Map<String,String> map, @Query("id") int id);
     /**
      * 新建项目
      * @return
      */
     @POST("/project")
-    Observable<Response<BaseBean>> creatProject(@HeaderMap Map<String,String> map,@Body RequestBody body);
+    Observable<Response<ProjectCreatBean>> creatProject(@HeaderMap Map<String,String> map, @Body RequestBody body);
     /**
      * 编辑项目
      * @return
@@ -173,7 +192,7 @@ public interface RetrofitService {
      * 重命名项目文件
      * @return
      */
-    @DELETE("/upload/project/data")
+    @GET("/upload/project/data")
     Observable<Response<BaseBean>> renameFile(@HeaderMap Map<String,String> map,@QueryMap Map<String,String> quremap);
     /**
      * 上传资料

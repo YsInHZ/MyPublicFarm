@@ -52,7 +52,7 @@ public class WeiXinUtil {
             getIWXAPI();
         }
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = "http://www.baidu.com/";
+        webpage.webpageUrl = "https://www.hzmyxf119.com/static/app-release.apk";
 
         WXMediaMessage msg = new WXMediaMessage(webpage);
         msg.title = "名邑消防";

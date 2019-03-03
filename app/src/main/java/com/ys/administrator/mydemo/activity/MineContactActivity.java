@@ -93,7 +93,7 @@ public class MineContactActivity extends BaseActivity {
                 phmap.put("type","phone");
                 qqmap.put("name",data.getContact().getQq());
                 wxmap.put("name",data.getContact().getWechat());
-                phmap.put("name",data.getContact().getPhone());
+                phmap.put("name",data.getContact().getMobile());
                 lists.add(qqmap);
                 lists.add(wxmap);
                 lists.add(phmap);

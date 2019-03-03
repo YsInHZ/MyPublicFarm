@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.ys.administrator.mydemo.R;
+import com.ys.administrator.mydemo.activity.DocDownLoadActivity;
 import com.ys.administrator.mydemo.activity.IndexActivity;
 import com.ys.administrator.mydemo.activity.LoginActivity;
 import com.ys.administrator.mydemo.activity.MineContactActivity;
@@ -126,7 +127,12 @@ public class MineFragment extends Fragment {
                 String nickname = data.getUser().getNickname();
                 tvName.setText(TextUtils.isEmpty(nickname)?"用户"+Constant.getMobile().substring(7):nickname);
                 if(!TextUtils.isEmpty(data.getUser().getAvatar())){
-                    Glide.with(getContext()).load(Constant.BitmapBaseUrl+data.getUser().getAvatar()).into(ciHead);
+                    if(data.getUser().getAvatar().indexOf("http")==-1){
+                        Glide.with(getContext()).load(Constant.BitmapBaseUrl+data.getUser().getAvatar()).into(ciHead);
+                    }else {
+                        Glide.with(getContext()).load(data.getUser().getAvatar()).into(ciHead);
+                    }
+
                 }
             }
 
@@ -168,6 +174,7 @@ public class MineFragment extends Fragment {
                 ((BaseActivity)getContext()).openActivity(MineFileActivity.class);
                 break;
             case R.id.wdmb:
+                ((BaseActivity)getContext()).openActivity(DocDownLoadActivity.class);
                 break;
             case R.id.fxyy:
                 shareDialog.show();

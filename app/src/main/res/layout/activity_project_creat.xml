@@ -61,6 +61,36 @@
             </RelativeLayout>
             <include layout="@layout/line_project_basemsg"/>
             <RelativeLayout
+                android:id="@+id/rxTZtype"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="土建/装修"
+                    android:textColor="#ff000000"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tvTZType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="110dp"
+                    android:text=""
+                    android:textColor="#ff000000"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="22dp"
+                    android:src="@mipmap/img_in_gray" />
+            </RelativeLayout>
+            <include layout="@layout/line_project_basemsg"/>
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:gravity="center_vertical"
                 android:layout_height="50dp">

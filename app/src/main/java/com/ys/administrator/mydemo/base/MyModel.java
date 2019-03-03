@@ -312,6 +312,8 @@ public class MyModel  {
             String encode = URLEncoder.encode(url, "UTF-8");
             String replace = encode.replace("%2F", "/");
             replace = replace.replace("+", "%20");
+            replace = replace.replace("%28", "(");
+            replace = replace.replace("%29", ")");
             map.put("sign",MD5.encodeMd5(Constant.getUserId()+ replace + ts +Constant.getToken()+Constant.getLoginAt()));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

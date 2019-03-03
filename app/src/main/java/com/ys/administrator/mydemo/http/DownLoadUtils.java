@@ -1,9 +1,7 @@
 package com.ys.administrator.mydemo.http;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
-import android.webkit.DownloadListener;
 
 import com.ys.administrator.mydemo.base.MyModel;
 import com.ys.administrator.mydemo.util.Constant;
@@ -87,11 +85,11 @@ public class DownLoadUtils {
         }
     }
 
-    public void downloadFile(String url,DownloadListener downloadListener){
-        downloadFile(url,mRetrofit,downloadListener);
+    public void downloadFile(String url,int[] pos,DownloadListener downloadListener){
+        downloadFile(url,mRetrofit,pos,downloadListener);
     }
 
-    public void downloadFile(String url, Retrofit retrofit, final DownloadListener downloadListener) {
+    public void downloadFile(String url, Retrofit retrofit,int[] pos, final DownloadListener downloadListener) {
         Log.d(TAG,"downloadFile");
         //建立一个文件夹
 
@@ -124,7 +122,7 @@ public class DownLoadUtils {
                             @Override
                             public void run() {
                                 super.run();
-                                writeFileSDcard(responseBody.body(), mFile, downloadListener);
+                                writeFileSDcard(responseBody.body(), mFile, downloadListener,pos);
                             }
                         };
                         mThread.start();
@@ -142,7 +140,7 @@ public class DownLoadUtils {
                 });
     }
 
-    public void writeFileSDcard(ResponseBody responseBody, File mFile, DownloadListener downloadListener) {
+    public void writeFileSDcard(ResponseBody responseBody, File mFile, DownloadListener downloadListener,int[] pos) {
         downloadListener.onStart();
         Log.d(TAG,"writeFileSDcard");
         long currentLength = 0;
@@ -163,9 +161,9 @@ public class DownLoadUtils {
                 Log.d(TAG,"当前长度: " + currentLength);
                 int progress = (int) (100 * currentLength / totalLength);
                 Log.d(TAG,"当前进度: " + progress);
-                downloadListener.onProgress(progress);
+                downloadListener.onProgress(progress,pos);
                 if (progress == 100) {
-                    downloadListener.onFinish(mVideoPath);
+                    downloadListener.onFinish(mVideoPath,pos);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -196,9 +194,9 @@ public class DownLoadUtils {
     public interface DownloadListener {
         void onStart();
 
-        void onProgress(int currentLength);
+        void onProgress(int currentLength, int[] pos);
 
-        void onFinish(String localPath);
+        void onFinish(String localPath, int[] pos);
 
         void onFailure(String msg);
 

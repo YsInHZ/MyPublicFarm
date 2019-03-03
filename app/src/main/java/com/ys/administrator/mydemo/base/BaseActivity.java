@@ -222,6 +222,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    whenActivityFinish();
                     closeInputMethod();
                     ((Activity)mContext).finish();
 
@@ -230,6 +231,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         }
 
         title.setText(titleString);
+    }
+    protected void whenActivityFinish(){
+
     }
     /***************** 双击退出程序 ************************************************/
     private long exitTime = 0;

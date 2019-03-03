@@ -1,5 +1,6 @@
 package com.ys.administrator.mydemo.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
 import com.ys.administrator.mydemo.custom_view.MyFillDialog;
+import com.ys.administrator.mydemo.model.MsgListBean;
 import com.ys.administrator.mydemo.model.ProjectListBean;
 import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.util.RefreshUtil;
@@ -96,6 +98,7 @@ public class IndexFragment extends Fragment {
         getStatusList();
         getTypeList();
         getProjectList(new HashMap<>());
+        getMsgOnReadList();
         return view;
     }
 
@@ -152,7 +155,6 @@ public class IndexFragment extends Fragment {
                         }
                         isRefresh = true;
                         getProjectList(map);
-                        getProjectList(new HashMap<>());
                     }
                 });
             }
@@ -213,7 +215,23 @@ public class IndexFragment extends Fragment {
             }
         });
     }
+    private void getMsgOnReadList(){
+        MyModel.getNetData(MyModel.getRetrofitService().getMsg(MyModel.getRequestHeaderMap("/user/msg"), true), new ICallBack<MsgListBean>() {
+            @Override
+            public void onSuccess(MsgListBean data) {
+                if(data.getPage()==null || data.getPage().size()==0){
+                    vPoint.setVisibility(View.GONE);
+                }else {
+                    vPoint.setVisibility(View.VISIBLE);
+                }
+            }
 
+            @Override
+            public void onFailure(String msg) {
+
+            }
+        });
+    }
     /**
      * 获取类型列表
      */
@@ -294,7 +312,7 @@ public class IndexFragment extends Fragment {
         switch (view.getId()) {
             case R.id.rlMsg:
                 // 消息中心
-                ((BaseActivity)getActivity()).openActivity(MsgActivity.class);
+                ((BaseActivity)getActivity()).openActivityWithResult(MsgActivity.class,null,555);
                 break;
             case R.id.ivSearch:
                 Map<String, String> map = new HashMap<>();
@@ -313,6 +331,16 @@ public class IndexFragment extends Fragment {
             case R.id.llPlan:
                 progressDialog.show();
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode== 555&& resultCode==200){
+            getMsgOnReadList();
+        }else if(requestCode == 110 && resultCode==200){
+            isRefresh = true;
+            getProjectList(new HashMap<>());
         }
     }
 

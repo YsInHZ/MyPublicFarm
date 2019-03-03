@@ -6,17 +6,18 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
-import com.ys.administrator.mydemo.model.ProjectInfoBean;
+import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
 import com.ys.administrator.mydemo.util.PhoneUtil;
+import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class ProjectEditActivity extends BaseActivity {
     @BindView(R.id.etPjAddress)
     EditText etPjAddress;
 
-    int typeid;
+    int typeid=-1,typefinalid=-1;
     String phone;
     String leader;
     String pjname;
@@ -51,6 +52,9 @@ public class ProjectEditActivity extends BaseActivity {
     TextView tvPjType;
 
     int id;
+    @BindView(R.id.tvTZType)
+    TextView tvTZType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,20 +67,31 @@ public class ProjectEditActivity extends BaseActivity {
     }
 
     private void initData() {
-         id = getIntent().getIntExtra("id", -1);
-         if(id==-1){
-             showToast("未获取到项目id");
-             finish();
-         }
+        id = getIntent().getIntExtra("id", -1);
+        if (id == -1) {
+            showToast("未获取到项目id");
+            finish();
+        }
 //        String data = getIntent().getStringExtra("data");
 //        ProjectInfoBean projectInfoBean = JSON.parseObject(data,ProjectInfoBean.class);
 //        ProjectInfoBean.ProjectBean.InfoBean infoBean = projectInfoBean.getProject().getInfo();
+        typefinalid = getIntent().getIntExtra("typeid", -1);
         etGn.setText(getIntent().getStringExtra("gn"));
-        etPjName.setText( getIntent().getStringExtra("name"));
+        etPjName.setText(getIntent().getStringExtra("name"));
         etPjLeader.setText(getIntent().getStringExtra("lxr"));
         etPhone.setText(getIntent().getStringExtra("dh"));
         etPjarea.setText(getIntent().getStringExtra("jzmj"));
         etPjAddress.setText(getIntent().getStringExtra("dz"));
+        StatusListBean typeList = SPUtil.getTypeList();
+        for (int i = 0; i <typeList.getList().size() ; i++) {
+            for (int j = 0; j < typeList.getList().get(i).getTypes().size(); j++) {
+                if(typeList.getList().get(i).getTypes().get(j).getId() == typefinalid){
+                    tvPjType.setText(typeList.getList().get(i).getName());
+                    tvTZType.setText(typeList.getList().get(i).getTypes().get(j).getName());
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -92,6 +107,7 @@ public class ProjectEditActivity extends BaseActivity {
         }
         return false;
     }
+
     //    检查输入
     private boolean checkInput() {
         phone = etPhone.getText().toString().trim();
@@ -124,26 +140,31 @@ public class ProjectEditActivity extends BaseActivity {
             showToast("请输入地址");
             return false;
         }
-        if (typeid==0) {
+        if (typeid == -1) {
             showToast("请选择项目类型");
+            return false;
+        }
+        if (typefinalid == -1) {
+            showToast("请选择项目土建/装修");
             return false;
         }
         return true;
     }
+
     private void saveData() {
         showUpingDialog();
         Map<String, Object> map = new HashMap<>();
         // 创建文件的参数
-        map.put("type",typeid);
-        map.put("id",id);
-        map.put("name",pjname);
-        Map<String,String> mapinfo = new HashMap<>();
-        mapinfo.put("联系",leader);
-        mapinfo.put("电话",phone);
-        mapinfo.put("功能",gn);
-        mapinfo.put("建筑面积",area);
-        mapinfo.put("地址",address);
-        map.put("info",mapinfo);
+        map.put("type", typefinalid);
+        map.put("id", id);
+        map.put("name", pjname);
+        Map<String, String> mapinfo = new HashMap<>();
+        mapinfo.put("联系", leader);
+        mapinfo.put("电话", phone);
+        mapinfo.put("功能", gn);
+        mapinfo.put("建筑面积", area);
+        mapinfo.put("地址", address);
+        map.put("info", mapinfo);
 
         MyModel.getNetData(MyModel.getRetrofitService().editProject(MyModel.getRequestHeaderMap("/project/info"), MyModel.getJsonRequestBody(map)), new ICallBack() {
             @Override
@@ -169,13 +190,28 @@ public class ProjectEditActivity extends BaseActivity {
             }
         });
     }
+
     @Override
     public void showData(Object data) {
 
     }
-    @OnClick(R.id.rxPjtype)
-    public void onViewClicked() {
-        openActivityWithResult(ItemChoiseActivity.class, null, 120);
+
+    @OnClick({R.id.rxPjtype, R.id.rxTZtype})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.rxPjtype:
+                openActivityWithResult(ItemChoiseActivity.class, null, 120);
+                break;
+            case R.id.rxTZtype:
+                if(typeid==-1){
+                    showToast("请先选择项目类型");
+                    return;
+                }
+                Bundle bundle = new Bundle();
+                bundle.putInt("typeid",typeid);
+                openActivityWithResult(ItemChoiseActivity.class, bundle, 125);
+                break;
+        }
     }
 
     @Override
@@ -183,6 +219,10 @@ public class ProjectEditActivity extends BaseActivity {
         if (requestCode == 120 && resultCode == 200 && data != null) {
             typeid = data.getIntExtra("id", 0);
             tvPjType.setText(data.getStringExtra("name"));
+        } else if (requestCode == 125 && resultCode == 200 && data != null) {
+            typefinalid = data.getIntExtra("id", 0);
+            tvTZType.setText(data.getStringExtra("name"));
         }
     }
+
 }
