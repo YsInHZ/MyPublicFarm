@@ -83,7 +83,7 @@ public class ProjectCreatActivity extends BaseActivity {
         map.put("type", typefinalid);
         map.put("name", pjname);
         Map<String, String> mapinfo = new HashMap<>();
-        mapinfo.put("联系", leader);
+        mapinfo.put("联系人", leader);
         mapinfo.put("电话", phone);
         mapinfo.put("功能", gn);
         mapinfo.put("建筑面积", area);

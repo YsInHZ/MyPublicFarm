@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
 import com.ys.administrator.mydemo.base.MyModel;
+import com.ys.administrator.mydemo.model.ProjectInfoBean;
 import com.ys.administrator.mydemo.model.StatusListBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
 import com.ys.administrator.mydemo.util.PhoneUtil;
@@ -55,6 +57,7 @@ public class ProjectEditActivity extends BaseActivity {
     @BindView(R.id.tvTZType)
     TextView tvTZType;
 
+    ProjectInfoBean projectInfoBean;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +67,7 @@ public class ProjectEditActivity extends BaseActivity {
         initData();
         commonPresenter = new CommonPresenter();
         commonPresenter.attachView(this);
+        getData();
     }
 
     private void initData() {
@@ -75,23 +79,15 @@ public class ProjectEditActivity extends BaseActivity {
 //        String data = getIntent().getStringExtra("data");
 //        ProjectInfoBean projectInfoBean = JSON.parseObject(data,ProjectInfoBean.class);
 //        ProjectInfoBean.ProjectBean.InfoBean infoBean = projectInfoBean.getProject().getInfo();
-        typefinalid = getIntent().getIntExtra("typeid", -1);
-        etGn.setText(getIntent().getStringExtra("gn"));
-        etPjName.setText(getIntent().getStringExtra("name"));
-        etPjLeader.setText(getIntent().getStringExtra("lxr"));
-        etPhone.setText(getIntent().getStringExtra("dh"));
-        etPjarea.setText(getIntent().getStringExtra("jzmj"));
-        etPjAddress.setText(getIntent().getStringExtra("dz"));
-        StatusListBean typeList = SPUtil.getTypeList();
-        for (int i = 0; i <typeList.getList().size() ; i++) {
-            for (int j = 0; j < typeList.getList().get(i).getTypes().size(); j++) {
-                if(typeList.getList().get(i).getTypes().get(j).getId() == typefinalid){
-                    tvPjType.setText(typeList.getList().get(i).getName());
-                    tvTZType.setText(typeList.getList().get(i).getTypes().get(j).getName());
-                    break;
-                }
-            }
-        }
+//        typefinalid = getIntent().getIntExtra("typeid", -1);
+//        typeid = 0;
+//        etGn.setText(getIntent().getStringExtra("gn"));
+//        etPjName.setText(getIntent().getStringExtra("name"));
+//        etPjLeader.setText(getIntent().getStringExtra("lxr"));
+//        etPhone.setText(getIntent().getStringExtra("dh"));
+//        etPjarea.setText(getIntent().getStringExtra("jzmj"));
+//        etPjAddress.setText(getIntent().getStringExtra("dz"));
+
     }
 
     @Override
@@ -151,6 +147,57 @@ public class ProjectEditActivity extends BaseActivity {
         return true;
     }
 
+    private void getData() {
+        showUpingDialog();
+        MyModel.getNetData(MyModel.getRetrofitService().getPeojectDetail(MyModel.getRequestHeaderMap("/project/info"), id), new ICallBack<ProjectInfoBean>() {
+            @Override
+            public void onSuccess(ProjectInfoBean data) {
+                projectInfoBean = (ProjectInfoBean) data;
+                Log.d(TAG, "onSuccess: ");
+                setDataInfo();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                Log.d(TAG, "onFailure: ");
+            }
+
+            @Override
+            public void onError() {closeUpingDialog(); }
+
+            @Override
+            public void onComplete() {
+                closeUpingDialog();
+            }
+        });
+    }
+
+    private void setDataInfo() {
+        if(projectInfoBean==null){
+            return;
+
+        }
+        ProjectInfoBean.ProjectBean.InfoBean info = projectInfoBean.getProject().getInfo();
+        etGn.setText(info.get功能());
+        etPjName.setText(projectInfoBean.getProject().getName());
+        etPjLeader.setText(info.get联系人());
+        etPhone.setText(info.get电话());
+        etPjarea.setText(info.get建筑面积());
+        etPjAddress.setText(info.get地址());
+        typefinalid = projectInfoBean.getProject().getType();
+        StatusListBean typeList = SPUtil.getTypeList();
+        for (int i = 0; i <typeList.getList().size() ; i++) {
+            for (int j = 0; j < typeList.getList().get(i).getTypes().size(); j++) {
+                if(typeList.getList().get(i).getTypes().get(j).getId() == typefinalid){
+                    tvPjType.setText(typeList.getList().get(i).getName());
+                    tvTZType.setText(typeList.getList().get(i).getTypes().get(j).getName());
+                    typeid = typeList.getList().get(i).getId();
+                    break;
+                }
+            }
+        }
+    }
+
     private void saveData() {
         showUpingDialog();
         Map<String, Object> map = new HashMap<>();
@@ -159,7 +206,7 @@ public class ProjectEditActivity extends BaseActivity {
         map.put("id", id);
         map.put("name", pjname);
         Map<String, String> mapinfo = new HashMap<>();
-        mapinfo.put("联系", leader);
+        mapinfo.put("联系人", leader);
         mapinfo.put("电话", phone);
         mapinfo.put("功能", gn);
         mapinfo.put("建筑面积", area);
@@ -170,8 +217,11 @@ public class ProjectEditActivity extends BaseActivity {
             @Override
             public void onSuccess(Object data) {
                 showToast("编辑项目成功");
-                setResult(200);
-                finish();
+//                setResult(200);
+//                finish();
+                Bundle bundle = new Bundle();
+                bundle.putInt("id",id);
+                openActivityWithResult(UpLoadDataActivity.class,bundle,450);
             }
 
             @Override
@@ -207,6 +257,10 @@ public class ProjectEditActivity extends BaseActivity {
                     showToast("请先选择项目类型");
                     return;
                 }
+                if(typeid==0){
+                    showToast("请重新选择项目类型");
+                    return;
+                }
                 Bundle bundle = new Bundle();
                 bundle.putInt("typeid",typeid);
                 openActivityWithResult(ItemChoiseActivity.class, bundle, 125);
@@ -222,6 +276,9 @@ public class ProjectEditActivity extends BaseActivity {
         } else if (requestCode == 125 && resultCode == 200 && data != null) {
             typefinalid = data.getIntExtra("id", 0);
             tvTZType.setText(data.getStringExtra("name"));
+        }else if (requestCode == 450 && resultCode == 200 ){
+            setResult(200);
+            finish();
         }
     }
 

@@ -48,6 +48,8 @@ public class ProjectDetialActivity extends BaseActivity {
     TextView tvC1;
     @BindView(R.id.tvC2)
     TextView tvC2;
+    @BindView(R.id.tvC3)
+    TextView tvC3;
     @BindView(R.id.tvEdit)
     TextView tvEdit;
     @BindView(R.id.tvLxr)
@@ -186,8 +188,11 @@ public class ProjectDetialActivity extends BaseActivity {
         StatusListBean typeList = SPUtil.getTypeList();
         if(typeList!=null){
             for (StatusListBean.ListBean s:typeList.getList()) {
-                if(s.getId()==projectInfoBean.getProject().getType()){
-                    tvC2.setText(s.getName());
+                for (int i = 0; i <s.getTypes().size(); i++) {
+                    if(s.getTypes().get(i).getId()==projectInfoBean.getProject().getType()){
+                        tvC2.setText(s.getName());
+                        tvC3.setText(s.getTypes().get(i).getName());
+                    }
                 }
             }
         }

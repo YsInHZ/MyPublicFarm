@@ -18,6 +18,7 @@ import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.activity.MsgActivity;
 import com.ys.administrator.mydemo.activity.ProjectDetialActivity;
+import com.ys.administrator.mydemo.activity.ProjectEditActivity;
 import com.ys.administrator.mydemo.activity.UpLoadDataActivity;
 import com.ys.administrator.mydemo.adapter.IndexAdapter;
 import com.ys.administrator.mydemo.base.BaseActivity;
@@ -107,7 +108,7 @@ public class IndexFragment extends Fragment {
         adapter.setOnItemEdit(id -> {
             Bundle bundle = new Bundle();
             bundle.putInt("id",id);
-            ((BaseActivity)getActivity()).openActivity(UpLoadDataActivity.class,bundle);
+            ((BaseActivity)getActivity()).openActivity(ProjectEditActivity.class,bundle);
         });
         adapter.setOnItemClickListener((adapter, view, position) -> {
             Bundle bundle = new Bundle();

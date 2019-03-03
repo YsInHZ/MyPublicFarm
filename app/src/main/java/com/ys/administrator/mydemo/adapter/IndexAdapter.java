@@ -34,9 +34,13 @@ public class IndexAdapter extends BaseQuickAdapter<ProjectListBean.PageBean,Base
         }
         if(typeList!=null){
             for (StatusListBean.ListBean s:typeList.getList()) {
-                if(s.getId()==item.getType()){
-                    helper.setText(R.id.tvC2,s.getName());
+                for (int i = 0; i <s.getTypes().size(); i++) {
+                    if(s.getTypes().get(i).getId()==item.getType()){
+                        helper.setText(R.id.tvC2,s.getName());
+                        helper.setText(R.id.tvC3,s.getTypes().get(i).getName());
+                    }
                 }
+
             }
         }
         View view = helper.getView(R.id.tvEdit);

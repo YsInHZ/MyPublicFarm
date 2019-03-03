@@ -96,6 +96,7 @@ public class UpLoadDataActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        setResult(200);
         finish();
         return false;
     }
