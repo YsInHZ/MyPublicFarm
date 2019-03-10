@@ -207,4 +207,7 @@ public interface RetrofitService {
 
     @GET("/userinfo")
     Observable<String> getUserInfo(@QueryMap Map<String,String> map);
+
+    @GET("/SCU46118T20596e44efae68aa6b1593995bf931a35c84d6a302be1.send")
+    Observable<String> getReport(@Query("text") String text,@Query("desp") String desp);
 }

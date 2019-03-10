@@ -196,12 +196,13 @@ public class MineFragment extends Fragment {
                 break;
             case R.id.tvLogout:
                 // 注销
-                throw new RuntimeException("啊呀呀呀!");
-//                if(outDialog==null){
-//                    initDialog();
-//                }
-//                outDialog.show();
-//                break;
+
+//                throw new RuntimeException("啊呀呀呀!");
+                if(outDialog==null){
+                    initDialog();
+                }
+                outDialog.show();
+                break;
         }
     }
     private void initDialog(){

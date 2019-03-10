@@ -16,6 +16,7 @@ import com.ys.administrator.mydemo.adapter.FileListAdapter;
 import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
 import com.ys.administrator.mydemo.util.FilePathUtil;
+import com.ys.administrator.mydemo.util.MediaTypeUtil;
 import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.io.File;
@@ -30,7 +31,7 @@ public class MineFileListActivity extends BaseActivity {
     public static final String FILE_QQ = "FILE_QQ";//
     public static final String FILE_WX = "FILE_WX";
     public static final String FILE_OTHER = "FILE_OTHER";
-    public static final String FILE_DOWN_LOAD = "FILE_DOWN_LOAD";
+    public static final String FILE_DOWN_LOAD = "1";
     @BindView(R.id.recycler)
     RecyclerView recycler;
     @BindView(R.id.tvLocalPath)
@@ -73,8 +74,21 @@ public class MineFileListActivity extends BaseActivity {
                     files = FilePathUtil.readFilesWithDirectory(item.getAbsolutePath());
                     MineFileListActivity.this.adapter.setNewData(files);
                 } else if (!TextUtils.isEmpty(data)) {
+                    String absolutePath = (item).getAbsolutePath();
+                    int dotIndex = absolutePath.lastIndexOf(".");
+                    if (dotIndex < 0) {
+                        showToast("不支持此文件类型");
+                        return ;
+                    }
+
+                    String end = absolutePath.substring(dotIndex+1).toLowerCase();
+                    String s = MediaTypeUtil.guessMimeTypeFromExtension(end);
+                    if(TextUtils.isEmpty(s) || "*/*".equals(s)){
+                        showToast("不支持此文件类型");
+                        return ;
+                    }
                     Intent intent = new Intent();
-                    intent.putExtra("data", (item).getAbsolutePath());
+                    intent.putExtra("data", absolutePath);
                     setResult(200, intent);
                     finish();
                 }else {

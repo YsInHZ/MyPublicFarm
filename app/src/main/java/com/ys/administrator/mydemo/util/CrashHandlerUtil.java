@@ -5,7 +5,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.ys.administrator.mydemo.base.BaseActivity;
+import com.ys.administrator.mydemo.base.ICallBack;
+import com.ys.administrator.mydemo.base.MyModel;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -176,15 +181,25 @@ public class CrashHandlerUtil implements Thread.UncaughtExceptionHandler {
             sb.append(result);
 
             Logger.e(sb.toString());
-            if(BuildConfig.DEBUG) {
-                return null;
-            }
+//            if(BuildConfig.DEBUG) {
+//                return null;
+//            }
 
         /*
         这个 crashInfo 就是我们收集到的所有信息，可以做一个异常上报的接口用来提交用户的crash信息
          */
             String crashInfo = sb.toString();
+            MyModel.getReport(MyModel.getReportService().getReport("消防BUG", crashInfo), new ICallBack() {
+                @Override
+                public void onSuccess(Object data) {
+                    Log.d("", "onSuccess: ");
+                }
 
+                @Override
+                public void onFailure(String msg) {
+                    Log.d("", "onFailure: ");
+                }
+            });
             return null;
         }
     }

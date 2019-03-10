@@ -6,12 +6,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FilePathUtil {
@@ -74,7 +77,12 @@ public class FilePathUtil {
                     fileList.add(files[i]);
                 }
             }
-
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    return o2.lastModified() == o1.lastModified()?0:(o2.lastModified()> o1.lastModified()?1:-1);
+                }
+            });
             //一切顺利返回数组
             return fileList;
 
@@ -103,9 +111,14 @@ public class FilePathUtil {
             List<File> fileList = new ArrayList<>();
             for (int i = 0; i <files.length ; i++) {
                fileList.add(files[i]);
-
             }
 
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    return  o2.lastModified() == o1.lastModified()?0:(o2.lastModified()> o1.lastModified()?1:-1);
+                }
+            });
             //一切顺利返回数组
             return fileList;
 
@@ -137,7 +150,7 @@ public class FilePathUtil {
 
         String type = getMIMEType(filesPath);
         intent.setDataAndType(uri, type);
-        if (!type.equals("*/*")) {
+        if (!TextUtils.isEmpty(type) && !type.equals("*/*")) {
             try {
                 context.startActivity(intent);
             } catch (Exception e) {

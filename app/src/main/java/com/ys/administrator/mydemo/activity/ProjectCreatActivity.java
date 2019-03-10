@@ -149,14 +149,14 @@ public class ProjectCreatActivity extends BaseActivity {
 //            showToast("请输入地址");
 //            return false;
 //        }
-//        if (typeid == -1) {
-//            showToast("请选择项目类型");
-//            return false;
-//        }
-//        if (typefinalid == -1) {
-//            showToast("请选择项目土建/装修");
-//            return false;
-//        }
+        if (typeid == -1) {
+            showToast("请选择项目类型");
+            return false;
+        }
+        if (typefinalid == -1) {
+            showToast("请选择项目土建/装修");
+            return false;
+        }
         return true;
     }
 

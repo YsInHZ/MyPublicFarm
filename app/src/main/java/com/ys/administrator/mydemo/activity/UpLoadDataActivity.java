@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -185,32 +186,6 @@ public class UpLoadDataActivity extends BaseActivity {
                 break;
             }
         }
-//        if(tvTypeName.getText().toString().trim().isEmpty()){
-//            tvTypeName.setText("装修项目基础资料");
-//        }
-//        try {
-//            String trim = tvTypeName.getText().toString().trim();
-//            switch (trim){
-//                case "装修项目基础资料":
-//                    adapter.setData(baseinfolists);
-//                    break;
-//                case "图审合格资料":
-//                    adapter.setData(repotrinfolists);
-//                    break;
-//                case "工程基本信息":
-//                    adapter.setData(buildinfolists);
-//                    break;
-//                case "装修图纸":
-//                    adapter.setData(fitmentinfolists);
-//                    break;
-//                case "其他资料":
-//                    adapter.setData(otherinfolists);
-//                    break;
-//            }
-//
-//        }catch (Exception e){
-//            Log.d(TAG, "setDataInfo: ");
-//        }
 
 
     }
@@ -258,6 +233,8 @@ public class UpLoadDataActivity extends BaseActivity {
         Iterator<String> iterator = strings.iterator();
         while(iterator.hasNext()){
             String name = iterator.next();
+            if("remark".equals(name))
+                continue;
             FileListDataBean fileListDataBean = new FileListDataBean(name);
             List<FileInfoModel> files = getFiles(data, name);
             if(files!=null&& files.size()>0){
@@ -481,23 +458,7 @@ public class UpLoadDataActivity extends BaseActivity {
                 break;
             }
         }
-//        switch (name){
-//            case "装修项目基础资料":
-//                list = baseinfolists;
-//                break;
-//            case "图审合格资料":
-//                list = repotrinfolists;
-//                break;
-//            case "工程基本信息":
-//                list = buildinfolists;
-//                break;
-//            case "装修图纸":
-//                list = fitmentinfolists;
-//                break;
-//            case "其他资料":
-//                list = otherinfolists;
-//                break;
-//        }
+
         for (int i = 0; i <list.size() ; i++) {
             List<FileInfoModel> filePath = list.get(i).getFilePath();
             if(filePath!=null){
@@ -596,38 +557,10 @@ public class UpLoadDataActivity extends BaseActivity {
                         break;
                     }
                 }
-//                switch (name){
-//                    case "装修项目基础资料":
-//                        dir = baseinfolists.get(pos).getItemName();
-//                        baseinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-//                        adapter.setData(baseinfolists);
-//                        break;
-//                    case "图审合格资料":
-//                        dir = repotrinfolists.get(pos).getItemName();
-//                        repotrinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-//                        adapter.setData(repotrinfolists);
-//                        break;
-//                    case "工程基本信息":
-//                        dir = buildinfolists.get(pos).getItemName();
-//                        buildinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-//                        adapter.setData(buildinfolists);
-//                        break;
-//                    case "装修图纸":
-//                        dir = fitmentinfolists.get(pos).getItemName();
-//                        fitmentinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-//                        adapter.setData(fitmentinfolists);
-//                        break;
-//                    case "其他资料":
-//                        dir = otherinfolists.get(pos).getItemName();
-//                        otherinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-//                        adapter.setData(otherinfolists);
-//                        break;
-//                }
+
                 //拼接出路径
                 dir = name+File.separator+dir;
                 upLoadFile(pathList.get(0),dir);
-
-
             }
         }else if(requestCode == 200 && resultCode == 200 && data!=null){
             String name = data.getStringExtra("name");
@@ -639,30 +572,14 @@ public class UpLoadDataActivity extends BaseActivity {
                     break;
                 }
             }
-//            switch (name){
-//                case "装修项目基础资料":
-//                    adapter.setData(baseinfolists);
-//                    break;
-//                case "图审合格资料":
-//                    adapter.setData(repotrinfolists);
-//                    break;
-//                case "工程基本信息":
-//                    adapter.setData(buildinfolists);
-//                    break;
-//                case "装修图纸":
-//                    adapter.setData(fitmentinfolists);
-//                    break;
-//                case "其他资料":
-//                    adapter.setData(otherinfolists);
-//                    break;
-//
-//            }
+
         }else if(requestCode == 400 && resultCode == 200 && data!=null){
             String filepath = data.getStringExtra("data");
             File file = new File(filepath);
             if(!file.exists()){
                 return;
             }
+
             if(file.length()/(1024*1024)>200){
                 showToast("文件大小超过200M，请联系管理员");
                 return;
@@ -681,33 +598,6 @@ public class UpLoadDataActivity extends BaseActivity {
                     break;
                 }
             }
-//            switch (name){
-//                case "装修项目基础资料":
-//                    dir = baseinfolists.get(pos).getItemName();
-//                    baseinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-//                    adapter.setData(baseinfolists);
-//                    break;
-//                case "图审合格资料":
-//                    dir = repotrinfolists.get(pos).getItemName();
-//                    repotrinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-//                    adapter.setData(repotrinfolists);
-//                    break;
-//                case "工程基本信息":
-//                    dir = buildinfolists.get(pos).getItemName();
-//                    buildinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-//                    adapter.setData(buildinfolists);
-//                    break;
-//                case "装修图纸":
-//                    dir = fitmentinfolists.get(pos).getItemName();
-//                    fitmentinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-//                    adapter.setData(fitmentinfolists);
-//                    break;
-//                case "其他资料":
-//                    dir = otherinfolists.get(pos).getItemName();
-//                    otherinfolists.get(pos).getFilePath().add(new FileInfoModel(filename,true));
-//                    adapter.setData(otherinfolists);
-//                    break;
-//            }
             //拼接出路径
             dir = name+File.separator+dir;
             upLoadFile(filepath,dir);

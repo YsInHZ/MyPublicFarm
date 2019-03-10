@@ -233,7 +233,7 @@ public class MediaTypeUtil {
         add("image/gif", "gif");
         // image/ico isn't IANA, so image/x-icon should come first.
         add("application/x-autocad", "dwg");
-        add("application/x-autocad", "dwl");
+        add("application/x-autocad", "dwf");
         add("image/x-icon", "ico");
         add("image/ico", "cur");
         add("image/ico", "ico");

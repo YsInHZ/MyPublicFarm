@@ -48,6 +48,7 @@ public class MyModel  {
 
     private static Retrofit retrofit=null;
     private static Retrofit wxRetrofit = null;
+    private static Retrofit rpRetrofit = null;
     /**
      * 初始化Retrofit
      */
@@ -69,14 +70,28 @@ public class MyModel  {
      * 初始化微信retrofit
      */
     private static void initWXRetrofit(){
-        if(retrofit==null){
+        if(wxRetrofit==null){
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd hh:mm:ss")
                     .create();
-            retrofit = new Retrofit.Builder()
+            wxRetrofit = new Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .baseUrl("https://api.weixin.qq.com/sns/")
+                    .build();
+        }
+    }
+    /**
+     */
+    private static void initReport(){
+        if(rpRetrofit==null){
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd hh:mm:ss")
+                    .create();
+            rpRetrofit = new Retrofit.Builder()
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .baseUrl("https://sc.ftqq.com/")
                     .build();
         }
     }
@@ -91,7 +106,15 @@ public class MyModel  {
         return retrofitService;
     }
     public static <T> T getRetrofitService(Class<T> tClass) { return retrofit.create(tClass); }
-
+    /**
+     * 获取RetrofitService
+     * @return
+     */
+    public static RetrofitService getReportService(){
+        initReport();
+        RetrofitService retrofitService = rpRetrofit.create(RetrofitService.class);
+        return retrofitService;
+    }
     /**
      * 实际网络请求方法
      * @param observable Observable
@@ -278,6 +301,37 @@ public class MyModel  {
                             e.printStackTrace();
                             iCallBack.onFailure("微信获取用户信息失败");
                         }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if(NetWorkTool.netWorkState(MyApplication.getInstance())){
+                            iCallBack.onFailure("微信登录失败");
+                        }else {
+                            iCallBack.onFailure("无网络连接，请检查网络");
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        iCallBack.onComplete();
+                    }
+                });
+    }
+    public static void getReport(Observable<String> observable,ICallBack iCallBack){
+        initReport();
+        observable.subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(String o) {
+                        iCallBack.onSuccess(null);
                     }
 
                     @Override

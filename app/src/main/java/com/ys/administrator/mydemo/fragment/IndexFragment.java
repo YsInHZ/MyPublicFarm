@@ -10,16 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.ys.administrator.mydemo.R;
 import com.ys.administrator.mydemo.activity.MsgActivity;
 import com.ys.administrator.mydemo.activity.ProjectDetialActivity;
 import com.ys.administrator.mydemo.activity.ProjectEditActivity;
-import com.ys.administrator.mydemo.activity.UpLoadDataActivity;
 import com.ys.administrator.mydemo.adapter.IndexAdapter;
 import com.ys.administrator.mydemo.base.BaseActivity;
 import com.ys.administrator.mydemo.base.ICallBack;
@@ -74,6 +73,8 @@ public class IndexFragment extends Fragment {
     TextView tvType;
     @BindView(R.id.tvProgress)
     TextView tvProgress;
+    @BindView(R.id.llReset)
+    LinearLayout llReset;
 
     public IndexFragment() {
         // Required empty public constructor
@@ -107,14 +108,14 @@ public class IndexFragment extends Fragment {
         adapter = new IndexAdapter(R.layout.item_indexproject, new ArrayList<>());
         adapter.setOnItemEdit(id -> {
             Bundle bundle = new Bundle();
-            bundle.putInt("id",id);
-            ((BaseActivity)getActivity()).openActivity(ProjectEditActivity.class,bundle);
+            bundle.putInt("id", id);
+            ((BaseActivity) getActivity()).openActivity(ProjectEditActivity.class, bundle);
         });
         adapter.setOnItemClickListener((adapter, view, position) -> {
             Bundle bundle = new Bundle();
             ProjectListBean.PageBean ib = (ProjectListBean.PageBean) adapter.getItem(position);
-            bundle.putInt("id",ib.getId());
-            ((BaseActivity)getActivity()).openActivity(ProjectDetialActivity.class,bundle);
+            bundle.putInt("id", ib.getId());
+            ((BaseActivity) getActivity()).openActivity(ProjectDetialActivity.class, bundle);
         });
         rvProject.setLayoutManager(new LinearLayoutManager(getContext()));
         rvProject.setAdapter(adapter);
@@ -190,7 +191,7 @@ public class IndexFragment extends Fragment {
      * 获取状态列表
      */
     private void getStatusList() {
-        MyModel.getNetData(getContext(),MyModel.getRetrofitService().getStatusList(), new ICallBack<StatusListBean>() {
+        MyModel.getNetData(getContext(), MyModel.getRetrofitService().getStatusList(), new ICallBack<StatusListBean>() {
             @Override
             public void onSuccess(StatusListBean data) {
                 SPUtil.saveStatusList(data);
@@ -216,13 +217,14 @@ public class IndexFragment extends Fragment {
             }
         });
     }
-    private void getMsgOnReadList(){
-        MyModel.getNetData(getContext(),MyModel.getRetrofitService().getMsg(MyModel.getRequestHeaderMap("/user/msg"), true), new ICallBack<MsgListBean>() {
+
+    private void getMsgOnReadList() {
+        MyModel.getNetData(getContext(), MyModel.getRetrofitService().getMsg(MyModel.getRequestHeaderMap("/user/msg"), true), new ICallBack<MsgListBean>() {
             @Override
             public void onSuccess(MsgListBean data) {
-                if(data.getPage()==null || data.getPage().size()==0){
+                if (data.getPage() == null || data.getPage().size() == 0) {
                     vPoint.setVisibility(View.GONE);
-                }else {
+                } else {
                     vPoint.setVisibility(View.VISIBLE);
                 }
             }
@@ -233,11 +235,12 @@ public class IndexFragment extends Fragment {
             }
         });
     }
+
     /**
      * 获取类型列表
      */
     private void getTypeList() {
-        MyModel.getNetData(getContext(),MyModel.getRetrofitService().getTypeList(), new ICallBack<StatusListBean>() {
+        MyModel.getNetData(getContext(), MyModel.getRetrofitService().getTypeList(), new ICallBack<StatusListBean>() {
             @Override
             public void onSuccess(StatusListBean data) {
                 SPUtil.saveTypeList(data);
@@ -272,7 +275,7 @@ public class IndexFragment extends Fragment {
         if (!etSearch.getText().toString().trim().isEmpty()) {
             map.put("name", etSearch.getText().toString().trim());
         }
-        MyModel.getNetData(getContext(),MyModel.getRetrofitService().getProjectSearch(MyModel.getRequestHeaderMap("/project/search"), map), new ICallBack<ProjectListBean>() {
+        MyModel.getNetData(getContext(), MyModel.getRetrofitService().getProjectSearch(MyModel.getRequestHeaderMap("/project/search"), map), new ICallBack<ProjectListBean>() {
             @Override
             public void onSuccess(ProjectListBean data) {
                 num.setText(data.getCount() + "");
@@ -308,12 +311,12 @@ public class IndexFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.rlMsg, R.id.ivSearch, R.id.llType, R.id.llPlan})
+    @OnClick({R.id.rlMsg, R.id.ivSearch, R.id.llType, R.id.llPlan,R.id.llReset})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rlMsg:
                 // 消息中心
-                ((BaseActivity)getActivity()).openActivityWithResult(MsgActivity.class,null,555);
+                ((BaseActivity) getActivity()).openActivityWithResult(MsgActivity.class, null, 555);
                 break;
             case R.id.ivSearch:
                 Map<String, String> map = new HashMap<>();
@@ -332,14 +335,23 @@ public class IndexFragment extends Fragment {
             case R.id.llPlan:
                 progressDialog.show();
                 break;
+            case R.id.llReset:
+                typeid = -1;
+                tvType.setText("项目类型");
+                progressid = -1;
+                tvProgress.setText("项目进度");
+                etSearch.setText("");
+                getProjectList(new HashMap<>());
+                break;
+
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode== 555&& resultCode==200){
+        if (requestCode == 555 && resultCode == 200) {
             getMsgOnReadList();
-        }else if(requestCode == 110 && resultCode==200){
+        } else if (requestCode == 110 && resultCode == 200) {
             isRefresh = true;
             getProjectList(new HashMap<>());
         }
@@ -419,6 +431,7 @@ public class IndexFragment extends Fragment {
                     getProjectList(map1);
                     tvProgress.setText(selectedItem.getName());
                     break;
+
             }
         }
     };
