@@ -38,7 +38,7 @@ public class ProjectCreatActivity extends BaseActivity {
     @BindView(R.id.etPjarea)
     EditText etPjarea;
     @BindView(R.id.etPjAddress)
-    EditText etPjAddress;
+    TextView etPjAddress;
 
     int typeid=-1,typefinalid=-1;
     String phone;
@@ -64,7 +64,7 @@ public class ProjectCreatActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_save, menu);
+        getMenuInflater().inflate(R.menu.menu_save_next, menu);
         return true;
     }
 
@@ -90,7 +90,7 @@ public class ProjectCreatActivity extends BaseActivity {
         mapinfo.put("地址", address);
         map.put("info", mapinfo);
 
-        MyModel.getNetData(MyModel.getRetrofitService().creatProject(MyModel.getRequestHeaderMap("/project"), MyModel.getJsonRequestBody(map)), new ICallBack<ProjectCreatBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().creatProject(MyModel.getRequestHeaderMap("/project"), MyModel.getJsonRequestBody(map)), new ICallBack<ProjectCreatBean>() {
             @Override
             public void onSuccess(ProjectCreatBean data) {
                 showToast("创建项目成功");
@@ -125,38 +125,38 @@ public class ProjectCreatActivity extends BaseActivity {
         gn = etGn.getText().toString().trim();
         area = etPjarea.getText().toString().trim();
         address = etPjAddress.getText().toString().trim();
-        if (TextUtils.isEmpty(phone) || !PhoneUtil.isMobileNumber(phone)) {
-            showToast("请输入正确的联系电话");
-            return false;
-        }
-        if (TextUtils.isEmpty(leader)) {
-            showToast("请输入负责人");
-            return false;
-        }
+//        if (TextUtils.isEmpty(phone) || !PhoneUtil.isMobileNumber(phone)) {
+//            showToast("请输入正确的联系电话");
+//            return false;
+//        }
+//        if (TextUtils.isEmpty(leader)) {
+//            showToast("请输入负责人");
+//            return false;
+//        }
         if (TextUtils.isEmpty(pjname)) {
             showToast("请输入项目名称");
             return false;
         }
-        if (TextUtils.isEmpty(area)) {
-            showToast("请输入建筑面积");
-            return false;
-        }
-        if (TextUtils.isEmpty(gn)) {
-            showToast("请输入功能");
-            return false;
-        }
-        if (TextUtils.isEmpty(address)) {
-            showToast("请输入地址");
-            return false;
-        }
-        if (typeid == -1) {
-            showToast("请选择项目类型");
-            return false;
-        }
-        if (typefinalid == -1) {
-            showToast("请选择项目土建/装修");
-            return false;
-        }
+//        if (TextUtils.isEmpty(area)) {
+//            showToast("请输入建筑面积");
+//            return false;
+//        }
+//        if (TextUtils.isEmpty(gn)) {
+//            showToast("请输入功能");
+//            return false;
+//        }
+//        if (TextUtils.isEmpty(address)) {
+//            showToast("请输入地址");
+//            return false;
+//        }
+//        if (typeid == -1) {
+//            showToast("请选择项目类型");
+//            return false;
+//        }
+//        if (typefinalid == -1) {
+//            showToast("请选择项目土建/装修");
+//            return false;
+//        }
         return true;
     }
 
@@ -179,10 +179,21 @@ public class ProjectCreatActivity extends BaseActivity {
         }else if(requestCode == 125 && resultCode == 200 && data != null){
             typefinalid = data.getIntExtra("id", 0);
             tvTZType.setText(data.getStringExtra("name"));
+        }else if (requestCode == 114 && resultCode == 1 ){
+            String provinceName = data.getStringExtra("provinceName");
+            String cityName = data.getStringExtra("cityName");
+            String areaName = data.getStringExtra("areaName");
+            String address="";
+            if(cityName.equals(provinceName)){
+                address = cityName+areaName;
+            }else {
+                address =provinceName+ cityName+areaName;
+            }
+            etPjAddress.setText(address);
         }
     }
 
-    @OnClick({R.id.rxPjtype, R.id.rxTZtype})
+    @OnClick({R.id.rxPjtype, R.id.rxTZtype,R.id.etPjAddress})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rxPjtype:
@@ -196,6 +207,9 @@ public class ProjectCreatActivity extends BaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putInt("typeid",typeid);
                 openActivityWithResult(ItemChoiseActivity.class, bundle, 125);
+                break;
+            case  R.id.etPjAddress:
+                openActivityWithResult(ProvinceActivity.class,null,114);
                 break;
         }
     }

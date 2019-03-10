@@ -41,7 +41,7 @@ public class ProjectEditActivity extends BaseActivity {
     @BindView(R.id.etPjarea)
     EditText etPjarea;
     @BindView(R.id.etPjAddress)
-    EditText etPjAddress;
+    TextView etPjAddress;
 
     int typeid=-1,typefinalid=-1;
     String phone;
@@ -63,7 +63,7 @@ public class ProjectEditActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_creat);
         ButterKnife.bind(this);
-        initToolbar("编辑项目");
+        initToolbar("项目基本信息");
         initData();
         commonPresenter = new CommonPresenter();
         commonPresenter.attachView(this);
@@ -92,7 +92,7 @@ public class ProjectEditActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_save, menu);
+        getMenuInflater().inflate(R.menu.menu_save_next, menu);
         return true;
     }
 
@@ -112,30 +112,30 @@ public class ProjectEditActivity extends BaseActivity {
         gn = etGn.getText().toString().trim();
         area = etPjarea.getText().toString().trim();
         address = etPjAddress.getText().toString().trim();
-        if (TextUtils.isEmpty(phone) || !PhoneUtil.isMobileNumber(phone)) {
-            showToast("请输入正确的联系电话");
-            return false;
-        }
-        if (TextUtils.isEmpty(leader)) {
-            showToast("请输入负责人");
-            return false;
-        }
+//        if (TextUtils.isEmpty(phone) || !PhoneUtil.isMobileNumber(phone)) {
+//            showToast("请输入正确的联系电话");
+//            return false;
+//        }
+//        if (TextUtils.isEmpty(leader)) {
+//            showToast("请输入负责人");
+//            return false;
+//        }
         if (TextUtils.isEmpty(pjname)) {
             showToast("请输入项目名称");
             return false;
         }
-        if (TextUtils.isEmpty(area)) {
-            showToast("请输入建筑面积");
-            return false;
-        }
-        if (TextUtils.isEmpty(gn)) {
-            showToast("请输入功能");
-            return false;
-        }
-        if (TextUtils.isEmpty(address)) {
-            showToast("请输入地址");
-            return false;
-        }
+//        if (TextUtils.isEmpty(area)) {
+//            showToast("请输入建筑面积");
+//            return false;
+//        }
+//        if (TextUtils.isEmpty(gn)) {
+//            showToast("请输入功能");
+//            return false;
+//        }
+//        if (TextUtils.isEmpty(address)) {
+//            showToast("请输入地址");
+//            return false;
+//        }
         if (typeid == -1) {
             showToast("请选择项目类型");
             return false;
@@ -149,7 +149,7 @@ public class ProjectEditActivity extends BaseActivity {
 
     private void getData() {
         showUpingDialog();
-        MyModel.getNetData(MyModel.getRetrofitService().getPeojectDetail(MyModel.getRequestHeaderMap("/project/info"), id), new ICallBack<ProjectInfoBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getPeojectDetail(MyModel.getRequestHeaderMap("/project/info"), id), new ICallBack<ProjectInfoBean>() {
             @Override
             public void onSuccess(ProjectInfoBean data) {
                 projectInfoBean = (ProjectInfoBean) data;
@@ -213,7 +213,7 @@ public class ProjectEditActivity extends BaseActivity {
         mapinfo.put("地址", address);
         map.put("info", mapinfo);
 
-        MyModel.getNetData(MyModel.getRetrofitService().editProject(MyModel.getRequestHeaderMap("/project/info"), MyModel.getJsonRequestBody(map)), new ICallBack() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().editProject(MyModel.getRequestHeaderMap("/project/info"), MyModel.getJsonRequestBody(map)), new ICallBack() {
             @Override
             public void onSuccess(Object data) {
                 showToast("编辑项目成功");
@@ -246,7 +246,7 @@ public class ProjectEditActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.rxPjtype, R.id.rxTZtype})
+    @OnClick({R.id.rxPjtype, R.id.rxTZtype, R.id.etPjAddress})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rxPjtype:
@@ -265,6 +265,9 @@ public class ProjectEditActivity extends BaseActivity {
                 bundle.putInt("typeid",typeid);
                 openActivityWithResult(ItemChoiseActivity.class, bundle, 125);
                 break;
+                case  R.id.etPjAddress:
+                    openActivityWithResult(ProvinceActivity.class,null,114);
+                    break;
         }
     }
 
@@ -279,6 +282,17 @@ public class ProjectEditActivity extends BaseActivity {
         }else if (requestCode == 450 && resultCode == 200 ){
             setResult(200);
             finish();
+        }else if (requestCode == 114 && resultCode == 1 ){
+            String provinceName = data.getStringExtra("provinceName");
+            String cityName = data.getStringExtra("cityName");
+            String areaName = data.getStringExtra("areaName");
+            String address="";
+            if(cityName.equals(provinceName)){
+                address = cityName+areaName;
+            }else {
+                address =provinceName+ cityName+areaName;
+            }
+            etPjAddress.setText(address);
         }
     }
 

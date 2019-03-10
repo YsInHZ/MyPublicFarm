@@ -51,9 +51,9 @@ public class MsgActivity extends BaseActivity {
 
     private void getData(int id) {
         if (id > 0) {
-            MyModel.getNetData(MyModel.getRetrofitService().getMsg(MyModel.getRequestHeaderMap("/user/msg"), id), iCallBack);
+            MyModel.getNetData(mContext,MyModel.getRetrofitService().getMsg(MyModel.getRequestHeaderMap("/user/msg"), id), iCallBack);
         } else {
-            MyModel.getNetData(MyModel.getRetrofitService().getMsg(MyModel.getRequestHeaderMap("/user/msg")), iCallBack);
+            MyModel.getNetData(mContext,MyModel.getRetrofitService().getMsg(MyModel.getRequestHeaderMap("/user/msg")), iCallBack);
 
         }
     }

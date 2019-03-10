@@ -3,6 +3,8 @@ package com.ys.administrator.mydemo.application;
 import android.app.Application;
 import android.content.Context;
 
+import com.ys.administrator.mydemo.util.CrashHandlerUtil;
+
 
 public class MyApplication extends Application{
     private static  Context context;
@@ -11,6 +13,7 @@ public class MyApplication extends Application{
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        CrashHandlerUtil.getInstance().init(mInstance);
 
     }
 //    private static DaoSession daoSession;

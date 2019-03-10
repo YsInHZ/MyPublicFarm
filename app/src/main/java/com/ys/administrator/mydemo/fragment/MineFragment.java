@@ -1,5 +1,6 @@
 package com.ys.administrator.mydemo.fragment;
 
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -120,7 +121,7 @@ public class MineFragment extends Fragment {
      */
     private void getUserDetialInfo() {
 
-        MyModel.getNetData(MyModel.getRetrofitService().getUserDetialInfo(MyModel.getRequestHeaderMap("/user/my")), new ICallBack<UserInfoDetialBean>() {
+        MyModel.getNetData(getContext(),MyModel.getRetrofitService().getUserDetialInfo(MyModel.getRequestHeaderMap("/user/my")), new ICallBack<UserInfoDetialBean>() {
             @Override
             public void onSuccess(UserInfoDetialBean data) {
                 jsonData = JSON.toJSONString(data);
@@ -188,17 +189,19 @@ public class MineFragment extends Fragment {
                 },200);
                 break;
             case R.id.grzx:
+
                 Bundle bundle = new Bundle();
                 bundle.putString("data",jsonData);
                 ((BaseActivity)getContext()).openActivityWithResult(MinePersonalDataActivity.class,bundle,550);
                 break;
             case R.id.tvLogout:
                 // 注销
-                if(outDialog==null){
-                    initDialog();
-                }
-                outDialog.show();
-                break;
+                throw new RuntimeException("啊呀呀呀!");
+//                if(outDialog==null){
+//                    initDialog();
+//                }
+//                outDialog.show();
+//                break;
         }
     }
     private void initDialog(){

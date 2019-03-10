@@ -78,7 +78,7 @@ public class MinePersonalPhoneChangeActivity extends BaseActivity {
         Map<String,String> map = new HashMap<>();
         map.put("mobile",etNew.getText().toString().trim());
         map.put("smsCode",etCode.getText().toString().trim());
-        MyModel.getNetData(MyModel.getRetrofitService().setMobile(MyModel.getRequestHeaderMap("/user/setMobile"),MyModel.getJsonRequestBody(map)), new ICallBack<BaseBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().setMobile(MyModel.getRequestHeaderMap("/user/setMobile"),MyModel.getJsonRequestBody(map)), new ICallBack<BaseBean>() {
             @Override
             public void onSuccess(BaseBean data) {
                 Log.d(TAG, "onSuccess: ");
@@ -157,7 +157,7 @@ public class MinePersonalPhoneChangeActivity extends BaseActivity {
     }
 
     private void sendCode(String phoneString) {
-        MyModel.getNetData(MyModel.getRetrofitService().getSmsCode(phoneString), new ICallBack<BaseBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getSmsCode(phoneString), new ICallBack<BaseBean>() {
             @Override
             public void onSuccess(BaseBean data) {
                 Log.d(TAG, "onSuccess: ");

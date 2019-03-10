@@ -77,6 +77,9 @@ public class MineFileListActivity extends BaseActivity {
                     intent.putExtra("data", (item).getAbsolutePath());
                     setResult(200, intent);
                     finish();
+                }else {
+                    currentPath = item.getAbsolutePath();
+                    FilePathUtil.openFiles(mContext,currentPath);
                 }
             }
         });
@@ -119,9 +122,9 @@ public class MineFileListActivity extends BaseActivity {
             title = "项目下载文件";
             // 已下载的项目列表遍历
             //需要以文件为item的适配器，每点击item如果为文件夹则遍历文件夹更新列表
-            files = FilePathUtil.readFilesWithDirectory(FilePathUtil.getFilePath() + "project");
-            currentPath = FilePathUtil.getFilePath() + "project";
-            tvLocalPath.setText("根目录>MyProjece>projcet>");
+            files = FilePathUtil.readFilesWithDirectory(FilePathUtil.getFilePathWithOutEnd());
+            currentPath = FilePathUtil.getFilePathWithOutEnd() ;
+            tvLocalPath.setText("根目录>MyProjece>");
         } else {
             finish();
         }
@@ -135,13 +138,16 @@ public class MineFileListActivity extends BaseActivity {
 
     @OnClick(R.id.tvBack)
     public void onViewClicked() {
-        if(currentPath.equals(FilePathUtil.getFilePath() + "project")){
+        if(currentPath.equals(FilePathUtil.getFilePathWithOutEnd() )){
             return;
         }
         File file = new File(currentPath);
+        String replace="";
         currentPath = file.getParent();
-        String substring = currentPath.substring(FilePathUtil.getFilePath().length());
-        String replace = substring.replace("/", ">");
+        if(currentPath.length()>FilePathUtil.getFilePath().length()){
+            String substring = currentPath.substring(FilePathUtil.getFilePath().length());
+            replace = substring.replace("/", ">");
+        }
         tvLocalPath.setText("根目录>MyProjece>"+replace);
         files = FilePathUtil.readFilesWithDirectory(currentPath);
         MineFileListActivity.this.adapter.setNewData(files);

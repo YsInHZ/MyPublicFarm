@@ -114,6 +114,7 @@ public class ProjectDetialActivity extends BaseActivity {
             public void onOpenClick(int x, int y) {
                 String url = fileList.get(x).localFiles.get(y).getUrl();
                 String s = FilePathUtil.getFilePathWithOutEnd() + url;
+                FilePathUtil.openFiles(mContext,s);
                 showToast("请到\n"+s+"下查看文件");
             }
         });
@@ -146,7 +147,7 @@ public class ProjectDetialActivity extends BaseActivity {
      */
     private void getData() {
         showUpingDialog();
-        MyModel.getNetData(MyModel.getRetrofitService().getPeojectDetail(MyModel.getRequestHeaderMap("/project/info"), id), new ICallBack<ProjectInfoBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getPeojectDetail(MyModel.getRequestHeaderMap("/project/info"), id), new ICallBack<ProjectInfoBean>() {
             @Override
             public void onSuccess(ProjectInfoBean data) {
                 Log.d(TAG, "onSuccess: ");

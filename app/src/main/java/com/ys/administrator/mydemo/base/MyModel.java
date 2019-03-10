@@ -1,10 +1,14 @@
 package com.ys.administrator.mydemo.base;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 //import com.example.administrator.mydemo.download_util.DownLoadManager;
 import com.alibaba.fastjson.JSON;
+import com.ys.administrator.mydemo.activity.LoginActivity;
 import com.ys.administrator.mydemo.application.MyApplication;
 import com.ys.administrator.mydemo.http.RetrofitService;
 import com.ys.administrator.mydemo.model.BaseBean;
@@ -93,7 +97,7 @@ public class MyModel  {
      * @param observable Observable
      * @param callback ICallBack
      */
-    public static void getNetData (Observable observable,ICallBack callback){
+    public static void getNetData (Context context, Observable observable, ICallBack callback){
 //        Log.d("httppost", observable.);
         initRetrofit();
         observable.subscribeOn(Schedulers.io())
@@ -116,7 +120,12 @@ public class MyModel  {
                             if(bb.getCode()==200){
                                 callback.onSuccess(o.body());
                             }else if(bb.getCode()==503){
-                                callback.onFailure("重新登录");
+//                                callback.onFailure("重新登录");
+                                Toast.makeText(context,"登录已过期，请重新登录",Toast.LENGTH_LONG).show();
+                                Constant.clearUserInfo();
+                                SPUtil.clearStore();
+                                Intent intent = new Intent(context, LoginActivity.class);
+                                context.startActivity(intent);
                             }
                             else {
                                 callback.onFailure(bb.getMsg());
@@ -319,5 +328,26 @@ public class MyModel  {
             e.printStackTrace();
         }
         return map;
+    }
+    public static String getBitmapSign(String url){
+        long ts = System.currentTimeMillis();
+        StringBuilder builder = new StringBuilder();
+        builder.append("?");
+        builder.append("userId=");
+        builder.append(SPUtil.getId()+"&");
+        builder.append("ts=");
+        builder.append(ts+"&");
+        try {
+            String encode = URLEncoder.encode(url, "UTF-8");
+            String replace = encode.replace("%2F", "/");
+            replace = replace.replace("+", "%20");
+            replace = replace.replace("%28", "(");
+            replace = replace.replace("%29", ")");
+            builder.append("sign=");
+            builder.append(MD5.encodeMd5(Constant.getUserId()+ replace + ts +Constant.getToken()+Constant.getLoginAt()));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return builder.toString();
     }
 }

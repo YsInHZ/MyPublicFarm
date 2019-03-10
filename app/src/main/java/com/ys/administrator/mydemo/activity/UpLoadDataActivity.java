@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +30,7 @@ import com.ys.administrator.mydemo.model.FileInfoModel;
 import com.ys.administrator.mydemo.model.FileListDataBean;
 import com.ys.administrator.mydemo.model.ProjectInfoBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
+import com.ys.administrator.mydemo.util.Constant;
 import com.ys.administrator.mydemo.util.MediaTypeUtil;
 import com.yuyh.library.imgsel.ISNav;
 import com.yuyh.library.imgsel.common.ImageLoader;
@@ -64,6 +66,7 @@ public class UpLoadDataActivity extends BaseActivity {
     RestaurantMenuRightAdapter adapter;
     MyFillDialog choiseWayDialog;
     MyFillDialog reNameDialog;
+    MyFillDialog imgDialog;
     int pos;
 //    List<FileListDataBean> baseinfolists,repotrinfolists,buildinfolists,fitmentinfolists,otherinfolists;
 //    String[] baseinfo,repotrinfo,buildinfo,fitmentinfo,otherinfo;
@@ -76,6 +79,7 @@ public class UpLoadDataActivity extends BaseActivity {
     Disposable disposable;
     EditText etName;
     String renameDir,renameOldName;
+    ImageView img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +100,11 @@ public class UpLoadDataActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        setResult(200);
-        finish();
+        if(checkUping()){
+            setResult(200);
+            finish();
+        }
+
         return false;
     }
     /**
@@ -105,7 +112,7 @@ public class UpLoadDataActivity extends BaseActivity {
      */
     private void getData() {
         showUpingDialog();
-        MyModel.getNetData(MyModel.getRetrofitService().getPeojectDetail(MyModel.getRequestHeaderMap("/project/info"), id), new ICallBack<ProjectInfoBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getPeojectDetail(MyModel.getRequestHeaderMap("/project/info"), id), new ICallBack<ProjectInfoBean>() {
             @Override
             public void onSuccess(ProjectInfoBean data) {
                 projectInfoBean = (ProjectInfoBean) data;
@@ -295,6 +302,19 @@ public class UpLoadDataActivity extends BaseActivity {
             }
 
             @Override
+            public void onItemClick(String url) {
+                if(!TextUtils.isEmpty(url)){
+                    if(url.endsWith(".jpg") || url.endsWith(".png")){
+                        Log.d(TAG, "onItemClick: "+url);
+                        String s = Constant.BitmapBaseUrl + url + MyModel.getBitmapSign(url);
+                        Log.d(TAG, "onItemClick: "+s);
+                        Glide.with(mContext).load(s).into(img);
+                        imgDialog.show();
+                    }
+                }
+            }
+
+            @Override
             public void onDeleteClick(String name, String dir) {
                 deleteProjectFile(tvTypeName.getText().toString().trim()+"/"+dir,name);
                 
@@ -303,7 +323,7 @@ public class UpLoadDataActivity extends BaseActivity {
             @Override
             public void onRenameClick(String itemName, String dir) {
                 // 重命名
-                renameDir = dir;
+                renameDir = tvTypeName.getText().toString().trim()+"/"+dir;
                 renameOldName = itemName;
                 etName.setText(itemName);
                 reNameDialog.show();
@@ -333,6 +353,15 @@ public class UpLoadDataActivity extends BaseActivity {
         tvSure.setOnClickListener(renameClick);
         tvCancel.setOnClickListener(renameClick);
 
+        imgDialog= new MyFillDialog(this,R.layout.dialog_photoshow);
+        imgDialog.setCancelable(true);
+        img = (ImageView) imgDialog.findViewById(R.id.img);
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imgDialog.dismiss();
+            }
+        });
     }
     View.OnClickListener dialogClick = new View.OnClickListener() {
         @Override
@@ -390,7 +419,7 @@ public class UpLoadDataActivity extends BaseActivity {
                 case R.id.tvSure:
                     // 上传更名请求
                     String trim = etName.getText().toString().trim();
-                    if(!trim.isEmpty()){
+                    if(trim.isEmpty()){
                         showToast("文件名不能为空");
                         return;
                     }
@@ -406,6 +435,7 @@ public class UpLoadDataActivity extends BaseActivity {
                         showToast("文件名未变更");
                         return;
                     }
+                    reNameDialog.dismiss();
                     renameProjectFile(renameDir,renameOldName,trim);
                     break;
             }
@@ -486,7 +516,7 @@ public class UpLoadDataActivity extends BaseActivity {
         map.put("projectId",id+"");
         map.put("dir", dir);
         map.put("name", name);
-        MyModel.getNetData(MyModel.getRetrofitService().deleteFile(MyModel.getRequestHeaderMap("/upload/project/data"), map), new ICallBack() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().deleteFile(MyModel.getRequestHeaderMap("/upload/project/data"), map), new ICallBack() {
             @Override
             public void onSuccess(Object data) {
                 showToast("删除文件成功");
@@ -516,7 +546,7 @@ public class UpLoadDataActivity extends BaseActivity {
         map.put("dir", dir);
         map.put("name", name);
         map.put("newName", newName);
-        MyModel.getNetData(MyModel.getRetrofitService().renameFile(MyModel.getRequestHeaderMap("/upload/project/data"), map), new ICallBack() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().renameFile(MyModel.getRequestHeaderMap("/upload/project/data"), map), new ICallBack() {
             @Override
             public void onSuccess(Object data) {
                 showToast("修改文件成功");
@@ -633,6 +663,10 @@ public class UpLoadDataActivity extends BaseActivity {
             if(!file.exists()){
                 return;
             }
+            if(file.length()/(1024*1024)>200){
+                showToast("文件大小超过200M，请联系管理员");
+                return;
+            }
             String filename = file.getName();
             //拿到当前选中的文件夹档案
             String name = tvTypeName.getText().toString().trim();
@@ -681,6 +715,13 @@ public class UpLoadDataActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void whenActivityFinish() {
+        super.whenActivityFinish();
+        if(disposable!=null &&  !disposable.isDisposed()){
+            disposable.dispose();
+        }
+    }
 
     /**
      * 文件上传
@@ -693,11 +734,9 @@ public class UpLoadDataActivity extends BaseActivity {
         String nameSuffix = filename.substring(filename.lastIndexOf(".")+1);
         RequestBody requestFile = RequestBody.create(MediaType.parse(MediaTypeUtil.guessMimeTypeFromExtension(nameSuffix)), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-        MyModel.getNetData(MyModel.getRetrofitService().uploadFile(MyModel.getRequestHeaderMap("/upload/project/data"), id, dir, body), new ICallBack<Map>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().uploadFile(MyModel.getRequestHeaderMap("/upload/project/data"), id, dir, body), new ICallBack<Map>() {
             @Override
             public void onSuccess(Map data) {
-                //TODO 刷新上传文件对应的数据列表，判断当前显示的数据列表是否为此列表，刷新/不刷新
-                getData();
                 Log.d(TAG, "onSuccess: ");
             }
 
@@ -709,7 +748,6 @@ public class UpLoadDataActivity extends BaseActivity {
             @Override
             public void onFailure(String msg) {
                 showToast(msg);
-                finish();
                 Log.d(TAG, "onFailure: ");
             }
 
@@ -720,7 +758,8 @@ public class UpLoadDataActivity extends BaseActivity {
 
             @Override
             public void onComplete() {
-
+                //无论上传成功与否都刷新数据
+                getData();
             }
         });
     }

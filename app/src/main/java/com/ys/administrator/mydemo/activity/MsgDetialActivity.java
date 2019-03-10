@@ -57,7 +57,7 @@ public class MsgDetialActivity extends BaseActivity {
     }
 
     private void setReadMsg() {
-        MyModel.getNetData(MyModel.getRetrofitService().msgRead(MyModel.getRequestHeaderMap("/user/msg/read"), msgBean.getId()), new ICallBack() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().msgRead(MyModel.getRequestHeaderMap("/user/msg/read"), msgBean.getId()), new ICallBack() {
             @Override
             public void onSuccess(Object data) {
                 setResult(200);
@@ -83,6 +83,7 @@ public class MsgDetialActivity extends BaseActivity {
             @Override
             public void poenClick(String url, int[] pos) {
                 String s = FilePathUtil.getFilePathWithOutEnd() + url;
+                FilePathUtil.openFiles(mContext,s);
                 showToast("请到\n"+s+"下查看文件");
             }
         });

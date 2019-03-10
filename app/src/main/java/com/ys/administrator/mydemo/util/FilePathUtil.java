@@ -1,6 +1,12 @@
 package com.ys.administrator.mydemo.util;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,6 +112,81 @@ public class FilePathUtil {
         }else {
             return new ArrayList<>();
         }
+
+    }
+
+
+
+
+    public static void openFiles(Context context, String filesPath) {
+
+
+//        Uri uri = Uri.parse("file://" + filesPath);
+        Uri uri ;
+        if (Build.VERSION.SDK_INT >= 24) {
+            uri = FileProvider.getUriForFile(context.getApplicationContext(), "com.ys.administrator.mydemo.fileprovider", new File(filesPath));
+        } else {
+            uri = Uri.fromFile(new File(filesPath));
+        }
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        intent.setAction(Intent.ACTION_VIEW);
+
+        String type = getMIMEType(filesPath);
+        intent.setDataAndType(uri, type);
+        if (!type.equals("*/*")) {
+            try {
+                context.startActivity(intent);
+            } catch (Exception e) {
+                context.startActivity(showOpenTypeDialog(filesPath));
+            }
+        } else {
+//            context.startActivity(showOpenTypeDialog(filesPath));
+            Toast.makeText(context,"无法解析文件类型，请到"+filesPath+"下查看",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //显示打开方式
+    public static void show(Context context,String filesPath){
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(Intent.ACTION_VIEW);
+        context.startActivity(showOpenTypeDialog(filesPath));
+    }
+
+    public static Intent showOpenTypeDialog(String param) {
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(new File(param));
+        intent.setDataAndType(uri, "*/*");
+        return intent;
+    }
+
+    /**
+     * --获取文件类型 --
+     */
+    public static String getMIMEType(String filePath) {
+        String type = "*/*";
+        String fName = filePath;
+
+        int dotIndex = fName.lastIndexOf(".");
+        if (dotIndex < 0) {
+            return type;
+        }
+
+        String end = fName.substring(dotIndex+1).toLowerCase();
+        if (end == "") {
+            return type;
+        }
+
+        type = MediaTypeUtil.guessMimeTypeFromExtension(end);
+        return type;
 
     }
 }

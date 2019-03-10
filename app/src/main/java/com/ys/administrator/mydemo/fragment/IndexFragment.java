@@ -190,7 +190,7 @@ public class IndexFragment extends Fragment {
      * 获取状态列表
      */
     private void getStatusList() {
-        MyModel.getNetData(MyModel.getRetrofitService().getStatusList(), new ICallBack<StatusListBean>() {
+        MyModel.getNetData(getContext(),MyModel.getRetrofitService().getStatusList(), new ICallBack<StatusListBean>() {
             @Override
             public void onSuccess(StatusListBean data) {
                 SPUtil.saveStatusList(data);
@@ -217,7 +217,7 @@ public class IndexFragment extends Fragment {
         });
     }
     private void getMsgOnReadList(){
-        MyModel.getNetData(MyModel.getRetrofitService().getMsg(MyModel.getRequestHeaderMap("/user/msg"), true), new ICallBack<MsgListBean>() {
+        MyModel.getNetData(getContext(),MyModel.getRetrofitService().getMsg(MyModel.getRequestHeaderMap("/user/msg"), true), new ICallBack<MsgListBean>() {
             @Override
             public void onSuccess(MsgListBean data) {
                 if(data.getPage()==null || data.getPage().size()==0){
@@ -237,7 +237,7 @@ public class IndexFragment extends Fragment {
      * 获取类型列表
      */
     private void getTypeList() {
-        MyModel.getNetData(MyModel.getRetrofitService().getTypeList(), new ICallBack<StatusListBean>() {
+        MyModel.getNetData(getContext(),MyModel.getRetrofitService().getTypeList(), new ICallBack<StatusListBean>() {
             @Override
             public void onSuccess(StatusListBean data) {
                 SPUtil.saveTypeList(data);
@@ -272,7 +272,7 @@ public class IndexFragment extends Fragment {
         if (!etSearch.getText().toString().trim().isEmpty()) {
             map.put("name", etSearch.getText().toString().trim());
         }
-        MyModel.getNetData(MyModel.getRetrofitService().getProjectSearch(MyModel.getRequestHeaderMap("/project/search"), map), new ICallBack<ProjectListBean>() {
+        MyModel.getNetData(getContext(),MyModel.getRetrofitService().getProjectSearch(MyModel.getRequestHeaderMap("/project/search"), map), new ICallBack<ProjectListBean>() {
             @Override
             public void onSuccess(ProjectListBean data) {
                 num.setText(data.getCount() + "");

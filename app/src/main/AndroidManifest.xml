@@ -19,6 +19,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            tools:replace="android:authorities"
+            android:authorities="com.ys.administrator.mydemo.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                tools:replace="android:resource"
+                android:resource="@xml/filepaths"/>
+        </provider>
         <activity android:name=".activity.MsgDetialActivity"></activity>
         <activity android:name=".activity.DocDownLoadActivity" />
         <activity android:name=".activity.MsgActivity" />
@@ -70,12 +81,17 @@
         <activity android:name=".activity.MineFileActivity" />
         <activity android:name=".activity.MineFileListActivity" />
         <activity android:name=".activity.ProgressChoiseActivity" />
+        <activity android:name=".activity.ProvinceActivity" />
+        <activity android:name=".activity.CityChoiseActivity" />
+        <activity android:name=".activity.AreaChoiseActivity" />
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:noHistory="true"
             android:theme="@android:style/Theme.Translucent" />
+
     </application>
+
 
 </manifest>

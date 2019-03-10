@@ -91,7 +91,7 @@ public class RegisterActivity extends BaseActivity {
         map.put("passwd",secretString);
         map.put("smsCode",codeString);
 
-        MyModel.getNetData(MyModel.getRetrofitService().getSingUp(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getSingUp(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
             @Override
             public void onSuccess(UserInfoBean data) {
                 Log.d(TAG, "onSuccess: ");
@@ -121,7 +121,7 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void sendCode() {
-        MyModel.getNetData(MyModel.getRetrofitService().getSmsCode(phoneString), new ICallBack<BaseBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getSmsCode(phoneString), new ICallBack<BaseBean>() {
             @Override
             public void onSuccess(BaseBean data) {
                 Log.d(TAG, "onSuccess: ");

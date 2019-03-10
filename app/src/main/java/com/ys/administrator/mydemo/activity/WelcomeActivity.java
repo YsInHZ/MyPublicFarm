@@ -45,7 +45,7 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     private void getToken(){
-        MyModel.getNetData(MyModel.getRetrofitService().getUserToken(MyModel.getRequestHeaderMap("/user/token")), new ICallBack<UserInfoBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getUserToken(MyModel.getRequestHeaderMap("/user/token")), new ICallBack<UserInfoBean>() {
             @Override
             public void onSuccess(UserInfoBean data) {
                 SPUtil.saveUserToken(data.getUser());

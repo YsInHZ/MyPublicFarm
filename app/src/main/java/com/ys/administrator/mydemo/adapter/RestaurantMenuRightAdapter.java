@@ -74,10 +74,16 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
             });
         }else {
             DishViewHolder dishholder = (DishViewHolder) holder;
-            FileInfoModel item = getDishByPosition(position);
 
+            FileInfoModel item = getDishByPosition(position);
+            dishholder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mItemClickListener.onItemClick(item.getUrl());
+                }
+            });
             if(item.isWaitingForUp()){
-                ((DishViewHolder) holder).delete.setText("上传中");
+                ((DishViewHolder) holder).delete.setText("上传中(点击取消)");
                 ((DishViewHolder) holder).delete.setOnClickListener(v -> mItemClickListener.onCancelClick());
                 ((DishViewHolder) holder).rename.setVisibility(View.GONE);
             }else {
@@ -221,6 +227,7 @@ public class RestaurantMenuRightAdapter extends RecyclerView.Adapter {
     }
     public static interface OnItemClickListener {
         void onChoiseClick(int pos);
+        void onItemClick(String url);
         void onDeleteClick(String itemName, String dir);
         void onRenameClick(String itemName, String dir);
         void onCancelClick();

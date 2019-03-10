@@ -151,7 +151,7 @@ public class MinePersonalDataActivity extends BaseActivity {
         File file = new File(path);
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-        MyModel.getNetData(MyModel.getRetrofitService().uploadAavatar(MyModel.getRequestHeaderMap("/upload/avatar"), body), new ICallBack<FileUpBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().uploadAavatar(MyModel.getRequestHeaderMap("/upload/avatar"), body), new ICallBack<FileUpBean>() {
             @Override
             public void onSuccess(FileUpBean data) {
                 String avatar = data.getAvatar();
@@ -181,7 +181,7 @@ public class MinePersonalDataActivity extends BaseActivity {
         map.put("nickname", etNick.getText().toString().trim()+"");
         map.put("gender",( rbNan.isChecked()?1:2)+"");
         map.put("avatar",avatar==null?"":avatar);
-        MyModel.getNetData(MyModel.getRetrofitService().saveUserDetialInfo(MyModel.getRequestHeaderMap("/user/my"), MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoDetialBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().saveUserDetialInfo(MyModel.getRequestHeaderMap("/user/my"), MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoDetialBean>() {
             @Override
             public void onSuccess(UserInfoDetialBean data) {
                 Intent i = new Intent();

@@ -82,7 +82,7 @@ public class MineContactActivity extends BaseActivity {
     }
 
     private void getContact(){
-        MyModel.getNetData(MyModel.getRetrofitService().getContact(), new ICallBack<ConnectBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getContact(), new ICallBack<ConnectBean>() {
             @Override
             public void onSuccess(ConnectBean data) {
                 Map<String,String> qqmap = new HashMap<>();

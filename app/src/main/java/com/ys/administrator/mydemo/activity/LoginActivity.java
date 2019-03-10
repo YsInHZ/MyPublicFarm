@@ -168,7 +168,7 @@ public class LoginActivity extends BaseActivity  {
         Map<String,String> map = new HashMap<>();
         map.put("mobile",phoneString);
         map.put("passwd",secretString);
-        MyModel.getNetData(MyModel.getRetrofitService().getLogin(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getLogin(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
             @Override
             public void onSuccess(UserInfoBean data) {
                 SPUtil.saveUserInfo(data.getUser());
@@ -229,7 +229,7 @@ public class LoginActivity extends BaseActivity  {
         showUpingDialog();
         Map<String,String> map = new HashMap<>();
         map.put("wx",code);
-        MyModel.getNetData(MyModel.getRetrofitService().getWXLogin(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getWXLogin(MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoBean>() {
             @Override
             public void onSuccess(UserInfoBean data) {
                 SPUtil.saveUserInfo(data.getUser());

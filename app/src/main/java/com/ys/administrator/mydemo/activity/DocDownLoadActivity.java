@@ -37,7 +37,7 @@ public class DocDownLoadActivity extends BaseActivity {
 
     private void getData() {
         showUpingDialog();
-        MyModel.getNetData(MyModel.getRetrofitService().getDocList(), new ICallBack<DocBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getDocList(), new ICallBack<DocBean>() {
             @Override
             public void onSuccess(DocBean data) {
                 docBean = data;
@@ -69,6 +69,7 @@ public class DocDownLoadActivity extends BaseActivity {
             @Override
             public void poenClick(String url, int[] pos) {
                 String s = FilePathUtil.getFilePathWithOutEnd() + url;
+                FilePathUtil.openFiles(mContext,s);
                 showToast("请到\n"+s+"下查看文件");
             }
         });

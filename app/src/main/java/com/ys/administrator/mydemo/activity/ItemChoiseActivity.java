@@ -79,7 +79,7 @@ public class ItemChoiseActivity extends BaseActivity {
     }
     private void getTypeList() {
         showUpingDialog();
-        MyModel.getNetData(MyModel.getRetrofitService().getTypeList(), new ICallBack<StatusListBean>() {
+        MyModel.getNetData(mContext,MyModel.getRetrofitService().getTypeList(), new ICallBack<StatusListBean>() {
             @Override
             public void onSuccess(StatusListBean data) {
                 ItemChoiseActivity.this.data = data;
