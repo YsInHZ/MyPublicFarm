@@ -54,6 +54,28 @@
     </RelativeLayout>
     <include layout="@layout/line_project_basemsg"/>
     <RelativeLayout
+        android:id="@+id/rlWXvoid"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="微信视频" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@mipmap/img_in_gray" />
+    </RelativeLayout>
+    <include layout="@layout/line_project_basemsg"/>
+    <RelativeLayout
         android:id="@+id/rlDownLoadfile"
         android:layout_width="match_parent"
         android:layout_height="50dp"

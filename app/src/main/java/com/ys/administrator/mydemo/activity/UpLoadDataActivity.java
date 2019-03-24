@@ -33,12 +33,15 @@ import com.ys.administrator.mydemo.model.ProjectInfoBean;
 import com.ys.administrator.mydemo.presenter.CommonPresenter;
 import com.ys.administrator.mydemo.util.Constant;
 import com.ys.administrator.mydemo.util.MediaTypeUtil;
+import com.ys.administrator.mydemo.util.SortUtil;
 import com.yuyh.library.imgsel.ISNav;
 import com.yuyh.library.imgsel.common.ImageLoader;
 import com.yuyh.library.imgsel.config.ISListConfig;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -155,8 +158,18 @@ public class UpLoadDataActivity extends BaseActivity {
             if(o==null){
                 continue;
             }
+            final  String kestore = key;
             Map<String, Object> ss = (Map<String, Object>) o;
             List<FileListDataBean> fileListDataBeans = setListFile(ss);
+            Collections.sort(fileListDataBeans, new Comparator<FileListDataBean>() {
+                @Override
+                public int compare(FileListDataBean o1, FileListDataBean o2) {
+                    String itemName1 = o1.getItemName();
+                    String itemName2 = o2.getItemName();
+                    return SortUtil.sort(kestore,itemName1,itemName2);
+                }
+            });
+
             mapLists.put(key,fileListDataBeans);
             keyLists.add(key);
         }
@@ -436,6 +449,22 @@ public class UpLoadDataActivity extends BaseActivity {
                     if(projectInfoBean.getProject().getType()==4){
                        bundle.putString("data","small");
                     }
+                    Collections.sort(keyLists, new Comparator<String>() {
+                        @Override
+                        public int compare(String o1, String o2) {
+                            if(o1.indexOf("基础资料")!=-1){
+                                return -1;
+                            }else if(o2.indexOf("基础资料")!=-1){
+                                return 1;
+                            }else if(o1.indexOf("设计图纸")!=-1){
+                                return -1;
+                            }else if(o2.indexOf("设计图纸")!=-1){
+                                return 1;
+                            }else {
+                                return 0;
+                            }
+                        }
+                    });
                     bundle.putString("list",JSON.toJSONString(keyLists));
                     openActivityWithResult(ProgressChoiseActivity.class,bundle,200);
                 }

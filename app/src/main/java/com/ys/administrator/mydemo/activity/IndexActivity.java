@@ -175,6 +175,8 @@ public class IndexActivity extends BaseActivity {
             fragments.get(1).onActivityResult(requestCode,resultCode,data);
         }else if(requestCode == 555 && resultCode==200){//消息中心
             fragments.get(0).onActivityResult(requestCode,resultCode,data);
+        }else if(requestCode == 20 && resultCode==200){//消息中心
+            fragments.get(0).onActivityResult(requestCode,resultCode,data);
         }
     }
 }

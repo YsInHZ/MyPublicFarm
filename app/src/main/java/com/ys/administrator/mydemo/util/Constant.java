@@ -1,5 +1,7 @@
 package com.ys.administrator.mydemo.util;
 
+import android.text.TextUtils;
+
 /**
  * Created by Administrator on 2019/1/8.
  */
@@ -30,7 +32,7 @@ public class Constant {
         return loginAt;
     }
     public static String getToken(){
-        if(token==null){
+        if(TextUtils.isEmpty(token)){
             token = SPUtil.getToken();
         }
         return token;

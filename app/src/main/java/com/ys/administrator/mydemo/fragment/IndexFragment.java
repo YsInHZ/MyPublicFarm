@@ -109,13 +109,13 @@ public class IndexFragment extends Fragment {
         adapter.setOnItemEdit(id -> {
             Bundle bundle = new Bundle();
             bundle.putInt("id", id);
-            ((BaseActivity) getActivity()).openActivity(ProjectEditActivity.class, bundle);
+            ((BaseActivity) getActivity()).openActivityWithResult(ProjectEditActivity.class, bundle,20);
         });
         adapter.setOnItemClickListener((adapter, view, position) -> {
             Bundle bundle = new Bundle();
             ProjectListBean.PageBean ib = (ProjectListBean.PageBean) adapter.getItem(position);
             bundle.putInt("id", ib.getId());
-            ((BaseActivity) getActivity()).openActivity(ProjectDetialActivity.class, bundle);
+            ((BaseActivity) getActivity()).openActivityWithResult(ProjectDetialActivity.class, bundle,20);
         });
         rvProject.setLayoutManager(new LinearLayoutManager(getContext()));
         rvProject.setAdapter(adapter);
@@ -289,7 +289,7 @@ public class IndexFragment extends Fragment {
 
             @Override
             public void onFailure(String msg) {
-
+                ((BaseActivity)getContext()).showToast(msg);
             }
 
             @Override
@@ -352,6 +352,9 @@ public class IndexFragment extends Fragment {
         if (requestCode == 555 && resultCode == 200) {
             getMsgOnReadList();
         } else if (requestCode == 110 && resultCode == 200) {
+            isRefresh = true;
+            getProjectList(new HashMap<>());
+        } else if (requestCode == 20 && resultCode == 200) {
             isRefresh = true;
             getProjectList(new HashMap<>());
         }

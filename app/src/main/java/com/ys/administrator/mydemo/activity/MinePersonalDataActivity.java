@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -59,6 +60,8 @@ public class MinePersonalDataActivity extends BaseActivity {
     RadioButton rbNv;
 
     String path = null;
+    @BindView(R.id.bChange)
+    Button bChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,13 +92,15 @@ public class MinePersonalDataActivity extends BaseActivity {
             rbNan.setChecked(false);
             rbNv.setChecked(false);
         }
-        if (infoDetialBean.getUser().getMobile() != null) {
+        if (!TextUtils.isEmpty(infoDetialBean.getUser().getMobile())) {
             etPhone.setText(infoDetialBean.getUser().getMobile());
+        } else {
+            bChange.setEnabled(false);
         }
-        if(!TextUtils.isEmpty(infoDetialBean.getUser().getAvatar())){
-            if(infoDetialBean.getUser().getAvatar().indexOf("http")==-1){
-                Glide.with(getContext()).load(Constant.BitmapBaseUrl+infoDetialBean.getUser().getAvatar()).into(ciHead);
-            }else {
+        if (!TextUtils.isEmpty(infoDetialBean.getUser().getAvatar())) {
+            if (infoDetialBean.getUser().getAvatar().indexOf("http") == -1) {
+                Glide.with(getContext()).load(Constant.BitmapBaseUrl + infoDetialBean.getUser().getAvatar()).into(ciHead);
+            } else {
                 Glide.with(getContext()).load(infoDetialBean.getUser().getAvatar()).into(ciHead);
             }
 
@@ -118,11 +123,11 @@ public class MinePersonalDataActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.save) {
-            if(checkInput()){
+            if (checkInput()) {
                 showUpingDialog();
-                if(path!=null){
+                if (path != null) {
                     upLoadImage();
-                }else {
+                } else {
                     saveUserDetialInfo(infoDetialBean.getUser().getAvatar());
                 }
             }
@@ -131,11 +136,11 @@ public class MinePersonalDataActivity extends BaseActivity {
     }
 
     private boolean checkInput() {
-        if(etNick.getText().toString().trim().isEmpty()){
+        if (etNick.getText().toString().trim().isEmpty()) {
             showToast("请输入昵称");
             return false;
         }
-        if(!rbNan.isChecked() && !rbNv.isChecked()){
+        if (!rbNan.isChecked() && !rbNv.isChecked()) {
             showToast("请选择性别");
             return false;
         }
@@ -147,11 +152,11 @@ public class MinePersonalDataActivity extends BaseActivity {
 
     }
 
-    private void upLoadImage(){
+    private void upLoadImage() {
         File file = new File(path);
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-        MyModel.getNetData(mContext,MyModel.getRetrofitService().uploadAavatar(MyModel.getRequestHeaderMap("/upload/avatar"), body), new ICallBack<FileUpBean>() {
+        MyModel.getNetData(mContext, MyModel.getRetrofitService().uploadAavatar(MyModel.getRequestHeaderMap("/upload/avatar"), body), new ICallBack<FileUpBean>() {
             @Override
             public void onSuccess(FileUpBean data) {
                 String avatar = data.getAvatar();
@@ -175,18 +180,18 @@ public class MinePersonalDataActivity extends BaseActivity {
         });
     }
 
-    private void saveUserDetialInfo(String avatar){
-        Map<String,String> map = new HashMap<>();
-        map.put("id", Constant.getUserId()+"");
-        map.put("nickname", etNick.getText().toString().trim()+"");
-        map.put("gender",( rbNan.isChecked()?1:2)+"");
-        map.put("avatar",avatar==null?"":avatar);
-        MyModel.getNetData(mContext,MyModel.getRetrofitService().saveUserDetialInfo(MyModel.getRequestHeaderMap("/user/my"), MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoDetialBean>() {
+    private void saveUserDetialInfo(String avatar) {
+        Map<String, String> map = new HashMap<>();
+        map.put("id", Constant.getUserId() + "");
+        map.put("nickname", etNick.getText().toString().trim() + "");
+        map.put("gender", (rbNan.isChecked() ? 1 : 2) + "");
+        map.put("avatar", avatar == null ? "" : avatar);
+        MyModel.getNetData(mContext, MyModel.getRetrofitService().saveUserDetialInfo(MyModel.getRequestHeaderMap("/user/my"), MyModel.getJsonRequestBody(map)), new ICallBack<UserInfoDetialBean>() {
             @Override
             public void onSuccess(UserInfoDetialBean data) {
                 Intent i = new Intent();
-                i.putExtra("data",JSON.toJSONString(data));
-                setResult(200,i);
+                i.putExtra("data", JSON.toJSONString(data));
+                setResult(200, i);
                 showToast("保存个人资料成功");
                 finish();
             }
@@ -207,6 +212,7 @@ public class MinePersonalDataActivity extends BaseActivity {
             }
         });
     }
+
     @OnClick({R.id.ciHead, R.id.bChange})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -239,24 +245,25 @@ public class MinePersonalDataActivity extends BaseActivity {
                         // 最大选择图片数量，默认9
                         .maxNum(1)
                         .build();
-                    // 跳转到图片选择器
+                // 跳转到图片选择器
                 ISNav.getInstance().toListActivity(this, config, 300);
                 break;
             case R.id.bChange:
                 Bundle bundle = new Bundle();
-                bundle.putString("data",infoDetialBean.getUser().getMobile());
-                openActivity(MinePersonalPhoneChangeActivity.class,bundle);
+                bundle.putString("data", infoDetialBean.getUser().getMobile());
+                openActivity(MinePersonalPhoneChangeActivity.class, bundle);
 
                 break;
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 300 && resultCode == RESULT_OK && data != null) {
             List<String> pathList = data.getStringArrayListExtra("result");
-            if(pathList!=null && pathList.size()>0){
+            if (pathList != null && pathList.size() > 0) {
                 path = pathList.get(0);
                 Glide.with(mContext).load(pathList.get(0)).into(ciHead);
             }

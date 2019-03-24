@@ -42,6 +42,8 @@ public class ProjectEditActivity extends BaseActivity {
     EditText etPjarea;
     @BindView(R.id.etPjAddress)
     TextView etPjAddress;
+    @BindView(R.id.etAddress)
+    EditText etAddress;
 
     int typeid=-1,typefinalid=-1;
     String phone;
@@ -76,17 +78,6 @@ public class ProjectEditActivity extends BaseActivity {
             showToast("未获取到项目id");
             finish();
         }
-//        String data = getIntent().getStringExtra("data");
-//        ProjectInfoBean projectInfoBean = JSON.parseObject(data,ProjectInfoBean.class);
-//        ProjectInfoBean.ProjectBean.InfoBean infoBean = projectInfoBean.getProject().getInfo();
-//        typefinalid = getIntent().getIntExtra("typeid", -1);
-//        typeid = 0;
-//        etGn.setText(getIntent().getStringExtra("gn"));
-//        etPjName.setText(getIntent().getStringExtra("name"));
-//        etPjLeader.setText(getIntent().getStringExtra("lxr"));
-//        etPhone.setText(getIntent().getStringExtra("dh"));
-//        etPjarea.setText(getIntent().getStringExtra("jzmj"));
-//        etPjAddress.setText(getIntent().getStringExtra("dz"));
 
     }
 
@@ -111,7 +102,8 @@ public class ProjectEditActivity extends BaseActivity {
         pjname = etPjName.getText().toString().trim();
         gn = etGn.getText().toString().trim();
         area = etPjarea.getText().toString().trim();
-        address = etPjAddress.getText().toString().trim();
+        String trim = etAddress.getText().toString().trim();
+        address = TextUtils.isEmpty(trim)?etPjAddress.getText().toString().trim():etPjAddress.getText().toString().trim() +"-"+ trim;
 //        if (TextUtils.isEmpty(phone) || !PhoneUtil.isMobileNumber(phone)) {
 //            showToast("请输入正确的联系电话");
 //            return false;
@@ -183,7 +175,19 @@ public class ProjectEditActivity extends BaseActivity {
         etPjLeader.setText(info.get联系人());
         etPhone.setText(info.get电话());
         etPjarea.setText(info.get建筑面积());
-        etPjAddress.setText(info.get地址());
+        String ad = info.get地址();
+        if(ad.length()>1){
+            int i = ad.indexOf("-");
+            if(i>0){
+                etPjAddress.setText(ad.substring(0,i));
+                etAddress .setText(ad.substring(i+1));
+            }else {
+                etPjAddress.setText(ad);
+            }
+
+        }else {
+            etPjAddress.setText(ad);
+        }
         typefinalid = projectInfoBean.getProject().getType();
         StatusListBean typeList = SPUtil.getTypeList();
         for (int i = 0; i <typeList.getList().size() ; i++) {
@@ -272,14 +276,35 @@ public class ProjectEditActivity extends BaseActivity {
     }
 
     @Override
+    protected void whenActivityFinish() {
+        super.whenActivityFinish();
+        setResult(200);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 120 && resultCode == 200 && data != null) {
             typeid = data.getIntExtra("id", 0);
             tvPjType.setText(data.getStringExtra("name"));
+            String trim = tvTZType.getText().toString().trim();
+            if(typeid==1){
+                if(trim.indexOf("土建")!=-1){
+                    typefinalid = 1;
+                }else if(trim.indexOf("装修")!=-1){
+                    typefinalid = 3;
+                }
+            }else if(typeid==2){
+                if(trim.indexOf("土建")!=-1){
+                    typefinalid = 2;
+                }else if(trim.indexOf("装修")!=-1){
+                    typefinalid = 4;
+                }
+            }
+
         } else if (requestCode == 125 && resultCode == 200 && data != null) {
             typefinalid = data.getIntExtra("id", 0);
             tvTZType.setText(data.getStringExtra("name"));
-        }else if (requestCode == 450 && resultCode == 200 ){
+        }else if (requestCode == 450 && resultCode == 200 ){//UpLoadDataActivity huidiao
             setResult(200);
             finish();
         }else if (requestCode == 114 && resultCode == 1 ){

@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -166,11 +168,22 @@ public class CityChoiseActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * Volley加载数据
-     */
-    private void volley_get(){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_save, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent=new Intent();
+        intent.putExtra("areaName","");
+        intent.putExtra("cityName","");
+        intent.putExtra("provinceName",provinceName);
+//                intent.putExtra("provinceName",provinceName);
+        setResult(1, intent);
+        finish();
+        return false;
     }
 
     /**

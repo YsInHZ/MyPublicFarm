@@ -136,20 +136,28 @@ public class MyModel  {
                     public void onNext(Response<Object> o) {
                         Log.d("httppost", o.raw().networkResponse().request().url().toString());
                         String s = JSON.toJSONString(o.body());
+                        if(o.code()==503){
+                            Toast.makeText(context,"登录已过期，请重新登录",Toast.LENGTH_LONG).show();
+                            Constant.clearUserInfo();
+                            SPUtil.clearStore();
+                            Intent intent = new Intent(context, LoginActivity.class);
+                            context.startActivity(intent);
+                            return;
+                        }
 //                        boolean b = o.body() instanceof BaseBean;
                         if(o.isSuccessful() && o.body()!=null /*&& b*/){
                             BaseBean bb = JSON.parseObject(s,BaseBean.class);
                             // 返回码判断请求结果
                             if(bb.getCode()==200){
                                 callback.onSuccess(o.body());
-                            }else if(bb.getCode()==503){
+                            }/*else if(bb.getCode()==503){
 //                                callback.onFailure("重新登录");
                                 Toast.makeText(context,"登录已过期，请重新登录",Toast.LENGTH_LONG).show();
                                 Constant.clearUserInfo();
                                 SPUtil.clearStore();
                                 Intent intent = new Intent(context, LoginActivity.class);
                                 context.startActivity(intent);
-                            }
+                            }*/
                             else {
                                 callback.onFailure(bb.getMsg());
                             }
@@ -160,6 +168,7 @@ public class MyModel  {
 
                     @Override
                     public void onError(Throwable e) {
+
                         Log.d("httppost", e.getLocalizedMessage()+"'");
                         callback.onFailure(e.getLocalizedMessage()+"");
                     }

@@ -43,7 +43,7 @@
         android:layout_height="1dp"
         android:background="#EAEAEA"/>
     <TextView
-        android:id="@+id/tvC1"
+        android:id="@+id/tvC2"
         app:layout_constraintBaseline_toBaselineOf="@id/tvEdit"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="14dp"
@@ -59,8 +59,8 @@
         android:textSize="12sp"
         />
     <TextView
-        android:id="@+id/tvC2"
-        app:layout_constraintLeft_toRightOf="@id/tvC1"
+        android:id="@+id/tvC3"
+        app:layout_constraintLeft_toRightOf="@id/tvC2"
         app:layout_constraintBaseline_toBaselineOf="@id/tvEdit"
         android:layout_marginLeft="10dp"
         android:background="@drawable/index_item_white_text_bg"
@@ -75,8 +75,8 @@
         android:textSize="12sp"
         />
     <TextView
-        android:id="@+id/tvC3"
-        app:layout_constraintLeft_toRightOf="@id/tvC2"
+        android:id="@+id/tvC1"
+        app:layout_constraintLeft_toRightOf="@id/tvC3"
         app:layout_constraintBaseline_toBaselineOf="@id/tvEdit"
         android:layout_marginLeft="10dp"
         android:background="@drawable/index_item_white_text_bg"

@@ -21,6 +21,8 @@ import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -31,6 +33,7 @@ public class MineFileListActivity extends BaseActivity {
     public static final String FILE_QQ = "FILE_QQ";//
     public static final String FILE_WX = "FILE_WX";
     public static final String FILE_OTHER = "FILE_OTHER";
+    public static final String FILE_WX_VOID = "FILE_WX_VOID";
     public static final String FILE_DOWN_LOAD = "1";
     @BindView(R.id.recycler)
     RecyclerView recycler;
@@ -60,7 +63,12 @@ public class MineFileListActivity extends BaseActivity {
 
     private void initView() {
         recycler.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new FileListAdapter(R.layout.item_mine_list_file, files);
+        if(FILE_WX_VOID.equals(fileType)){
+            adapter = new FileListAdapter(R.layout.item_mine_list_file, files,true);
+        }else {
+            adapter = new FileListAdapter(R.layout.item_mine_list_file, files);
+        }
+
         recycler.setAdapter(adapter);
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
@@ -139,6 +147,37 @@ public class MineFileListActivity extends BaseActivity {
             files = FilePathUtil.readFilesWithDirectory(FilePathUtil.getFilePathWithOutEnd());
             currentPath = FilePathUtil.getFilePathWithOutEnd() ;
             tvLocalPath.setText("根目录>MyProjece>");
+        }else if(FILE_WX_VOID.equals(fileType)){//微信下的视频文件
+            title = "微信视频(仅显示最近200个)";
+            path = s+"/tencent/MicroMsg";
+            List<File> mfiles = FilePathUtil.readDirectory(path);
+            if(mfiles==null || mfiles.size()==0)
+                return;
+            List<File> voidFile = new ArrayList<>();
+            //拿到所有void的文件夹
+            for (int i = 0; i < mfiles.size(); i++) {
+                File aVoid = FilePathUtil.findLocalFile(mfiles.get(i), "video");
+                if(aVoid!=null){
+                    voidFile.add(aVoid);
+                }
+
+            }
+            //拿到所有void文件夹下的视频文件
+            List<File> voieLists = new ArrayList<>();
+            for (int i = 0; i < voidFile.size(); i++) {
+                List<File> mp = FilePathUtil.findLocalSuffix(voidFile.get(i), "mp4");
+                voieLists.addAll(mp);
+            }
+            Collections.sort(voieLists, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    return  o2.lastModified() == o1.lastModified()?0:(o2.lastModified()> o1.lastModified()?1:-1);
+                }
+            });
+            files = new ArrayList<>();
+            for (int i = 0; i < 200 && i<voieLists.size(); i++) {
+                files.add(voieLists.get(i));
+            }
         } else {
             finish();
         }

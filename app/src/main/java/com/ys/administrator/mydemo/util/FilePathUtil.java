@@ -127,10 +127,82 @@ public class FilePathUtil {
         }
 
     }
+    /**
+     * 根据传入的文件夹路径 获取子文件夹
+     * @param path 文件夹路径
+     * @return
+     */
+    public static List<File> readDirectory(String path) {
+        //根据路径拿到文件
+        File file = new File(path);
+        //判断 文件已存在并且为文件夹
+        if(file.exists() && file.isDirectory()){
+            //获取文件列表
+            File[] files = file.listFiles();
+            //如果文件为空返回空数组
+            if(files ==null || files.length==0){
+                return new ArrayList<>();
+            }
+            //转换为list
+            List<File> fileList = new ArrayList<>();
+            for (int i = 0; i <files.length ; i++) {
+                if(files[i].isDirectory()){
+                    fileList.add(files[i]);
+                }
+            }
 
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    return  o2.lastModified() == o1.lastModified()?0:(o2.lastModified()> o1.lastModified()?1:-1);
+                }
+            });
+            //一切顺利返回数组
+            return fileList;
 
+        }else {
+            return new ArrayList<>();
+        }
 
+    }
 
+    /**
+     * 根据传入的文件夹路径 获目标文件
+     * @return
+     */
+    public static File findLocalFile(File file,String  localName){
+        if(!file.exists() || !file.isDirectory()){
+            return null;
+        }
+        File[] files = file.listFiles();
+        for (File ff:files) {
+            if(ff.isDirectory() && ff.getName().equals(localName)){
+                return ff;
+            }
+        }
+        return null;
+    }
+    /**
+     * 根据传入的文件夹路径 获目标后缀文件列表
+     * @return
+     */
+    public static  List<File> findLocalSuffix(File file,String  localSuffix){
+        List<File> results = new ArrayList<>();
+        if(file==null || !file.exists() || !file.isDirectory()){
+            return results;
+        }
+        File[] files = file.listFiles();
+        for (File ff:files) {
+            if(!ff.isDirectory()){
+                String name = ff.getName();
+                if(name.endsWith(localSuffix)){
+                    results.add(ff);
+                }
+
+            }
+        }
+        return results;
+    }
     public static void openFiles(Context context, String filesPath) {
 
 

@@ -51,6 +51,8 @@ public class ProjectCreatActivity extends BaseActivity {
     TextView tvPjType;
     @BindView(R.id.tvTZType)
     TextView tvTZType;
+    @BindView(R.id.etAddress)
+    EditText etAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +126,8 @@ public class ProjectCreatActivity extends BaseActivity {
         pjname = etPjName.getText().toString().trim();
         gn = etGn.getText().toString().trim();
         area = etPjarea.getText().toString().trim();
-        address = etPjAddress.getText().toString().trim();
+        String trim = etAddress.getText().toString().trim();
+        address = TextUtils.isEmpty(trim)?etPjAddress.getText().toString().trim():etPjAddress.getText().toString().trim()+"-"+trim;
 //        if (TextUtils.isEmpty(phone) || !PhoneUtil.isMobileNumber(phone)) {
 //            showToast("请输入正确的联系电话");
 //            return false;
@@ -176,6 +179,20 @@ public class ProjectCreatActivity extends BaseActivity {
         if (requestCode == 120 && resultCode == 200 && data != null) {
             typeid = data.getIntExtra("id", 0);
             tvPjType.setText(data.getStringExtra("name"));
+            String trim = tvTZType.getText().toString().trim();
+            if(typeid==1){
+                if(trim.indexOf("土建")!=-1){
+                    typefinalid = 1;
+                }else if(trim.indexOf("装修")!=-1){
+                    typefinalid = 3;
+                }
+            }else if(typeid==2){
+                if(trim.indexOf("土建")!=-1){
+                    typefinalid = 2;
+                }else if(trim.indexOf("装修")!=-1){
+                    typefinalid = 4;
+                }
+            }
         }else if(requestCode == 125 && resultCode == 200 && data != null){
             typefinalid = data.getIntExtra("id", 0);
             tvTZType.setText(data.getStringExtra("name"));

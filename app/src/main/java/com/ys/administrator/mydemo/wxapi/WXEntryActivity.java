@@ -57,7 +57,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
                     //请求成功
                     Constant.WX_LGOIN = true;
                     Log.d("wwx", "requestsuccess ");
-                    Intent intent = new Intent(this,LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    Intent intent = new Intent(this,LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Intent intent = new Intent(this,LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK );
                     intent.putExtra("code",code);
                     startActivity(intent);
                 }else if(baseResp.getType() == ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX){//微信分享

@@ -14,23 +14,26 @@
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/img_icon"
+        android:icon="@drawable/img_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/img_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.AboutUsActivity"></activity>
+
         <provider
-            tools:replace="android:authorities"
-            android:authorities="com.ys.administrator.mydemo.fileprovider"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.ys.administrator.mydemo.fileprovider"
+            android:exported="false"
             android:grantUriPermissions="true"
-            android:exported="false">
+            tools:replace="android:authorities">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                tools:replace="android:resource"
-                android:resource="@xml/filepaths"/>
+                android:resource="@xml/filepaths"
+                tools:replace="android:resource" />
         </provider>
-        <activity android:name=".activity.MsgDetialActivity"></activity>
+
+        <activity android:name=".activity.MsgDetialActivity" />
         <activity android:name=".activity.DocDownLoadActivity" />
         <activity android:name=".activity.MsgActivity" />
         <activity android:name=".activity.ProjectDetialActivity" />
@@ -93,8 +96,6 @@
             android:label="@string/app_name"
             android:noHistory="true"
             android:theme="@android:style/Theme.Translucent" />
-
     </application>
-
 
 </manifest>

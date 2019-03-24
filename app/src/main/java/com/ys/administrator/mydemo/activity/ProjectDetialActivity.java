@@ -31,6 +31,8 @@ import com.ys.administrator.mydemo.util.FilePathUtil;
 import com.ys.administrator.mydemo.util.SPUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -235,13 +237,32 @@ public class ProjectDetialActivity extends BaseActivity {
         // 设置数据到adapter
         fileList = new ArrayList<>();
         for (int i = 0; i < keyLists.size(); i++) {
-            fileList.addAll(setAdapterList(mapLists.get(keyLists.get(i)),projectInfoBean.getProject().getName()+ "/"+keyLists.get(i)));
+//            fileList.addAll(setAdapterList(mapLists.get(keyLists.get(i)),projectInfoBean.getProject().getName()+ "/"+keyLists.get(i)));
+            fileList.addAll(setAdapterList(mapLists.get(keyLists.get(i)),keyLists.get(i)));
         }
 //        fileList.addAll(setAdapterList(baseinfolists,projectInfoBean.getProject().getName()+ "/装修项目基础资料"));
 //        fileList.addAll(setAdapterList(repotrinfolists,projectInfoBean.getProject().getName()+ "/图审合格资料"));
 //        fileList.addAll(setAdapterList(buildinfolists,projectInfoBean.getProject().getName()+ "/工程基本信息"));
 //        fileList.addAll(setAdapterList(fitmentinfolists,projectInfoBean.getProject().getName()+ "/装修图纸"));
 //        fileList.addAll(setAdapterList(otherinfolists,projectInfoBean.getProject().getName()+ "/其他资料"));
+        Collections.sort(fileList, new Comparator<FileLocalListBean>() {
+            @Override
+            public int compare(FileLocalListBean o1, FileLocalListBean o2) {
+                String titleName1 = o1.titleName;
+                String titleName2 = o2.titleName;
+                if(titleName1.indexOf("基础资料")!=-1){
+                    return -1;
+                }else if(titleName2.indexOf("基础资料")!=-1){
+                    return 1;
+                }else if(titleName1.indexOf("设计图纸")!=-1){
+                    return -1;
+                }else if(titleName2.indexOf("设计图纸")!=-1){
+                    return 1;
+                }else {
+                    return 0;
+                }
+            }
+        });
         adapter.setData(fileList);
 
     }
@@ -355,6 +376,12 @@ public class ProjectDetialActivity extends BaseActivity {
     @Override
     public void showData(Object data) {
 
+    }
+
+    @Override
+    protected void whenActivityFinish() {
+        super.whenActivityFinish();
+        setResult(200);
     }
 
     @Override

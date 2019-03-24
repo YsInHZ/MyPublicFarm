@@ -248,6 +248,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
                 exitTime = System.currentTimeMillis();
             } else {
                 finishAll();
+                finish();
             }
             return true;
         }

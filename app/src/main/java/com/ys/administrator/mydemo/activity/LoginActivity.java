@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -172,7 +173,13 @@ public class LoginActivity extends BaseActivity  {
             @Override
             public void onSuccess(UserInfoBean data) {
                 SPUtil.saveUserInfo(data.getUser());
-                openActivity(IndexActivity.class);
+                if(data.getUser()!=null && !TextUtils.isEmpty(data.getUser().getLoginToken())){
+                    openActivity(IndexActivity.class);
+                    finish();
+                }else {
+                    showToast("未获取到用户信息，请重新登录");
+                }
+
                 Log.d(TAG, "onSuccess: ");
             }
 
@@ -233,7 +240,12 @@ public class LoginActivity extends BaseActivity  {
             @Override
             public void onSuccess(UserInfoBean data) {
                 SPUtil.saveUserInfo(data.getUser());
-                openActivity(IndexActivity.class);
+                if(data.getUser()!=null && !TextUtils.isEmpty(data.getUser().getLoginToken())){
+                    openActivity(IndexActivity.class);
+                    finish();
+                }else {
+                    showToast("未获取到用户信息，请重新登录");
+                }
             }
 
             @Override
@@ -243,7 +255,7 @@ public class LoginActivity extends BaseActivity  {
 
             @Override
             public void onError() {
-
+                Log.d(TAG, "onError: ");
             }
 
             @Override
@@ -297,6 +309,7 @@ public class LoginActivity extends BaseActivity  {
         MyModel.getUserInfo(MyModel.getRetrofitService().getUserInfo(map), new ICallBack() {
             @Override
             public void onSuccess(Object data) {
+                
                 //TODO 传入openID，服务器登录
             }
 
